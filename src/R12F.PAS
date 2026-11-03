@@ -15,7 +15,5 @@ uses LIT;
 
 { 0000 }
 begin
-  asm
-  end;
 end.
 

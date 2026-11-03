@@ -7,7 +7,7 @@ interface
 uses GAMEDATA;
 
 procedure pO075_011F;
-procedure pO075_3770(a0: word; a1: word);
+procedure pO075_3770(a0: byte; a1: byte);
 procedure pO075_3D36;
 procedure pO075_23CA;
 
@@ -15,162 +15,1122 @@ implementation
 
 uses LIT, Crt, O06E, O079, O0AA, O0E2, O0EC, O102, O108, O13E, R142, R1C3, R47F, R670, R6DD, R716;
 
+type
+  AL17_byte = array[17..32017] of byte;
+  E16_byte = record f: byte; _r: array[1..15] of byte end;
+  E2_byte = record f: byte; _r: array[1..1] of byte end;
+  E42_byte = record f: byte; _r: array[1..41] of byte end;
+  E6_byte = record f: byte; _r: array[1..5] of byte end;
+  E8_pointer = record f: pointer; _r: array[1..4] of byte end;
+  R0_byte = record v: byte end;
+  R0_pointer = record v: pointer end;
+  R0_string = record v: string end;
+  R0_string_15_ = record v: string[15] end;
+  R0_string_40_ = record v: string[40] end;
+  R178_byte = record _p: array[1..178] of byte; v: byte end;
+  R18_word = record _p: array[1..18] of byte; v: word end;
+  R1_byte = record _p: array[1..1] of byte; v: byte end;
+  R23_pointer = record _p: array[1..23] of byte; v: pointer end;
+  R25_byte = record _p: array[1..25] of byte; v: byte end;
+  R27_byte = record _p: array[1..27] of byte; v: byte end;
+  R28_byte = record _p: array[1..28] of byte; v: byte end;
+  R29_byte = record _p: array[1..29] of byte; v: byte end;
+  R31_byte = record _p: array[1..31] of byte; v: byte end;
+  R327_byte = record _p: array[1..327] of byte; v: byte end;
+  R337_byte = record _p: array[1..337] of byte; v: byte end;
+  R339_byte = record _p: array[1..339] of byte; v: byte end;
+  R340_byte = record _p: array[1..340] of byte; v: byte end;
+  R341_byte = record _p: array[1..341] of byte; v: byte end;
+  R342_byte = record _p: array[1..342] of byte; v: byte end;
+  R343_byte = record _p: array[1..343] of byte; v: byte end;
+  R347_byte = record _p: array[1..347] of byte; v: byte end;
+  R348_byte = record _p: array[1..348] of byte; v: byte end;
+  R370_longint = record _p: array[1..370] of byte; v: longint end;
+  R412_byte = record _p: array[1..412] of byte; v: byte end;
+  R413_byte = record _p: array[1..413] of byte; v: byte end;
+  R41_byte = record _p: array[1..41] of byte; v: byte end;
+  R422_byte = record _p: array[1..422] of byte; v: byte end;
+  R423_pointer = record _p: array[1..423] of byte; v: pointer end;
+  R42_longint = record _p: array[1..42] of byte; v: longint end;
+  R42_pointer = record _p: array[1..42] of byte; v: pointer end;
+  R46_byte = record _p: array[1..46] of byte; v: byte end;
+  R47_byte = record _p: array[1..47] of byte; v: byte end;
+  R483_pointer = record _p: array[1..483] of byte; v: pointer end;
+  R493_byte = record _p: array[1..493] of byte; v: byte end;
+  R508_byte = record _p: array[1..508] of byte; v: byte end;
+  R52_byte = record _p: array[1..52] of byte; v: byte end;
+  R53_byte = record _p: array[1..53] of byte; v: byte end;
+  R57_byte = record _p: array[1..57] of byte; v: byte end;
+  R5_pointer = record _p: array[1..5] of byte; v: pointer end;
+  RA0_byte = record a: array[0..32000] of byte end;
+  RA16_byte = record _p: array[1..16] of byte; a: array[0..32000] of byte end;
+  RA178_byte = record _p: array[1..178] of byte; a: array[0..32000] of byte end;
+  RA17_byte = record _p: array[1..17] of byte; a: array[0..32000] of byte end;
+W0_12_441E = record case byte of 0: (_p0: array[1..337] of byte;
+      _w12_337abyte: array[0..32000] of byte) end;
+W0_4_23CA = record case byte of 0: (_w4_0string: string); 1: (_p1: array[1..494] of byte;
+      _w4_494byte: byte) end;
+W0_4_38C5 = record case byte of 0: (_p0: array[1..173] of byte; _w4_173byte: byte);
+      1: (_p1: array[1..337] of byte; _w4_337byte: byte); 2: (_p2: array[1..339] of byte; _w4_339byte: byte);
+      3: (_p3: array[1..340] of byte; _w4_340byte: byte); 4: (_p4: array[1..341] of byte; _w4_341byte: byte);
+      5: (_p5: array[1..342] of byte; _w4_342byte: byte); 6: (_p6: array[1..358] of byte; _w4_358byte: byte);
+      7: (_p7: array[1..410] of byte; _w4_410byte: byte); 8: (_p8: array[1..411] of byte; _w4_411byte: byte);
+      9: (_p9: array[1..413] of byte; _w4_413byte: byte) end;
+  W101_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W103_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W105_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W107_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W109_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W111_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W113_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W115_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W117_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W119_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W11_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W121_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W123_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W125_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W127_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W129_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W131_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W133_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W135_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W137_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W139_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W13_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W141_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W143_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W145_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W147_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W149_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W151_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W153_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W155_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W157_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W159_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W15_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W161_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W163_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W165_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W167_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W169_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W171_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W173_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W175_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W177_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W179_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W17_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W181_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W183_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W185_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W187_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W189_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W191_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W193_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W195_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W197_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W199_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W19_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W1_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W201_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W203_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W205_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W207_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W209_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W211_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W213_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W215_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W217_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W219_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W21_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W221_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W223_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W225_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W227_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W229_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W231_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W233_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W235_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W237_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W239_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W23_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W241_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W243_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W245_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W247_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W249_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W251_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W253_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W255_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  X6 = array[0..5] of byte;
+W257_281_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w281_410byte: byte);
+      1: (_p1: array[1..411] of byte; _w281_411byte: byte); 2: (_p2: array[1..412] of byte;
+      _w281_412byte: byte); 3: (_p3: array[1..413] of byte; _w281_413byte: byte);
+      4: (_p4: array[1..413] of byte; _w281_413abyte: array[0..32000] of byte);
+      5: (_p5: array[1..414] of byte; _w281_414X6: X6) end;
+  W259_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W25_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W261_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W263_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W265_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W267_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W269_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W271_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W273_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W275_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W277_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W279_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W27_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  WE2_byte = record f: byte; _r: array[1..1] of byte end;
+W27_69_2668 = record case byte of 0: (_p0: array[1..17] of byte; _w69_17r2_0: array[0..16000] of WE2_byte);
+      1: (_p1: array[1..28] of byte; _w69_28byte: byte); 2: (_p2: array[1..173] of byte;
+      _w69_173shortint: shortint); 3: (_p3: array[1..174] of byte; _w69_174shortint: shortint);
+      4: (_p4: array[1..178] of byte; _w69_178byte: byte); 5: (_p5: array[1..339] of byte;
+      _w69_339byte: byte); 6: (_p6: array[1..340] of byte; _w69_340byte: byte);
+      7: (_p7: array[1..341] of byte; _w69_341byte: byte); 8: (_p8: array[1..358] of byte;
+      _w69_358shortint: shortint); 9: (_p9: array[1..381] of byte; _w69_381byte: byte);
+      10: (_p10: array[1..508] of byte; _w69_508byte: byte) end;
+  W281_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W283_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W285_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W287_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W289_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W291_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W293_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W295_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W297_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W299_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W29_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+W29_69_2668 = record case byte of 0: (_p0: array[1..178] of byte; _w69_178byte: byte);
+      1: (_p1: array[1..337] of byte; _w69_337abyte: array[0..32000] of byte);
+      2: (_p2: array[1..380] of byte; _w69_380byte: byte) end;
+W2_4_23CA = record case byte of 0: (_w4_0string: string); 1: (_p1: array[1..494] of byte;
+      _w4_494byte: byte) end;
+W2_5_21EE = record case byte of 0: (_p0: array[1..259] of byte; _w5_259byte: byte);
+      1: (_p1: array[1..260] of byte; _w5_260byte: byte); 2: (_p2: array[1..261] of byte; _w5_261byte: byte);
+      3: (_p3: array[1..262] of byte; _w5_262byte: byte); 4: (_p4: array[1..263] of byte; _w5_263byte: byte);
+      5: (_p5: array[1..265] of byte; _w5_265byte: byte); 6: (_p6: array[1..266] of byte; _w5_266byte: byte);
+      7: (_p7: array[1..269] of byte; _w5_269byte: byte); 8: (_p8: array[1..270] of byte; _w5_270byte: byte);
+      9: (_p9: array[1..289] of byte; _w5_289byte: byte); 10: (_p10: array[1..290] of byte;
+      _w5_290byte: byte); 11: (_p11: array[1..291] of byte; _w5_291byte: byte);
+      12: (_p12: array[1..292] of byte; _w5_292byte: byte); 13: (_p13: array[1..293] of byte;
+      _w5_293byte: byte); 14: (_p14: array[1..295] of byte; _w5_295byte: byte);
+      15: (_p15: array[1..296] of byte; _w5_296byte: byte); 16: (_p16: array[1..297] of byte;
+      _w5_297byte: byte); 17: (_p17: array[1..402] of byte; _w5_402byte: byte);
+      18: (_p18: array[1..403] of byte; _w5_403byte: byte); 19: (_p19: array[1..404] of byte;
+      _w5_404byte: byte); 20: (_p20: array[1..405] of byte; _w5_405byte: byte);
+      21: (_p21: array[1..407] of byte; _w5_407byte: byte) end;
+  W301_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W303_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W305_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W307_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W309_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W311_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W313_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W315_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W317_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W319_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W31_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W321_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W323_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W325_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W327_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W329_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W331_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W333_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W335_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W337_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W339_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W33_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W341_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W343_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W345_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W347_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W349_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W351_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W353_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W355_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W357_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W359_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W35_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W361_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W363_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W365_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W367_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W369_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W371_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W373_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W375_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W377_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W379_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W37_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W381_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W383_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W385_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W387_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W389_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W391_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W393_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W395_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W397_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W399_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W39_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W3_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W401_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W403_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W405_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W407_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W409_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W411_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W413_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W415_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W417_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W419_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W41_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W421_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W423_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W425_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W427_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W429_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W431_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W433_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W435_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W437_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W439_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W43_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W441_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W443_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W445_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W447_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W449_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W451_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W453_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W455_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W457_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W459_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W45_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W461_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W463_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W465_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W467_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W469_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W471_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W473_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W475_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W477_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W479_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W47_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W481_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W483_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W485_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W487_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W489_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W491_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W493_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W495_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W497_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W499_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W49_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W501_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W503_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W505_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W507_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W509_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W511_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W513_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+W515_281_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w281_410byte: byte);
+      1: (_p1: array[1..411] of byte; _w281_411byte: byte); 2: (_p2: array[1..412] of byte;
+      _w281_412byte: byte); 3: (_p3: array[1..413] of byte; _w281_413byte: byte);
+      4: (_p4: array[1..413] of byte; _w281_413abyte: array[0..32000] of byte);
+      5: (_p5: array[1..414] of byte; _w281_414X6: X6) end;
+  W51_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W53_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W55_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W57_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W59_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W5_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W61_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W63_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W65_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W67_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W69_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+W6_20_0015 = record case byte of 0: (_p0: array[1..323] of byte; _w20_323pointer: pointer);
+      1: (_p1: array[1..423] of byte; _w20_423pointer: pointer); 2: (_p2: array[1..487] of byte;
+      _w20_487pointer: pointer) end;
+W6_44_4638 = record case byte of 0: (_w44_0byte: byte); 1: (_p1: array[1..17] of byte; _w44_17byte: byte);
+      2: (_p2: array[1..19] of byte; _w44_19byte: byte); 3: (_p3: array[1..173] of byte; _w44_173byte: byte);
+      4: (_p4: array[1..178] of byte; _w44_178abyte: array[0..32000] of byte);
+      5: (_p5: array[1..312] of byte; _w44_312byte: byte); 6: (_p6: array[1..313] of byte;
+      _w44_313byte: byte); 7: (_p7: array[1..337] of byte; _w44_337abyte: array[0..32000] of byte);
+      8: (_p8: array[1..341] of byte; _w44_341byte: byte); 9: (_p9: array[1..342] of byte;
+      _w44_342byte: byte); 10: (_p10: array[1..370] of byte; _w44_370longint: longint);
+      11: (_p11: array[1..379] of byte; _w44_379byte: byte); 12: (_p12: array[1..492] of byte;
+      _w44_492byte: byte) end;
+  W71_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W73_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W75_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W77_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W79_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W7_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W81_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W83_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W85_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W87_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W89_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W91_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W93_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W95_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
+  W97_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W99_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+  W9_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
+W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
+      _w40_413abyte: array[0..32000] of byte) end;
+  PAL17_byte = ^AL17_byte;
+  PR0_byte = ^R0_byte;
+  PR0_pointer = ^R0_pointer;
+  PR0_string = ^R0_string;
+  PR0_string_15_ = ^R0_string_15_;
+  PR0_string_40_ = ^R0_string_40_;
+  PR178_byte = ^R178_byte;
+  PR18_word = ^R18_word;
+  PR1_byte = ^R1_byte;
+  PR23_pointer = ^R23_pointer;
+  PR25_byte = ^R25_byte;
+  PR27_byte = ^R27_byte;
+  PR28_byte = ^R28_byte;
+  PR29_byte = ^R29_byte;
+  PR31_byte = ^R31_byte;
+  PR327_byte = ^R327_byte;
+  PR337_byte = ^R337_byte;
+  PR339_byte = ^R339_byte;
+  PR340_byte = ^R340_byte;
+  PR341_byte = ^R341_byte;
+  PR342_byte = ^R342_byte;
+  PR343_byte = ^R343_byte;
+  PR347_byte = ^R347_byte;
+  PR348_byte = ^R348_byte;
+  PR370_longint = ^R370_longint;
+  PR412_byte = ^R412_byte;
+  PR413_byte = ^R413_byte;
+  PR41_byte = ^R41_byte;
+  PR422_byte = ^R422_byte;
+  PR423_pointer = ^R423_pointer;
+  PR42_longint = ^R42_longint;
+  PR42_pointer = ^R42_pointer;
+  PR46_byte = ^R46_byte;
+  PR47_byte = ^R47_byte;
+  PR483_pointer = ^R483_pointer;
+  PR493_byte = ^R493_byte;
+  PR508_byte = ^R508_byte;
+  PR52_byte = ^R52_byte;
+  PR53_byte = ^R53_byte;
+  PR57_byte = ^R57_byte;
+  PR5_pointer = ^R5_pointer;
+  PRA0_byte = ^RA0_byte;
+  PRA16_byte = ^RA16_byte;
+  PRA178_byte = ^RA178_byte;
+  PRA17_byte = ^RA17_byte;
+  PW0_12_441E = ^W0_12_441E;
+  PW0_4_23CA = ^W0_4_23CA;
+  PW0_4_38C5 = ^W0_4_38C5;
+  PW101_285_3D36 = ^W101_285_3D36;
+  PW103_285_3D36 = ^W103_285_3D36;
+  PW105_285_3D36 = ^W105_285_3D36;
+  PW107_285_3D36 = ^W107_285_3D36;
+  PW109_285_3D36 = ^W109_285_3D36;
+  PW111_285_3D36 = ^W111_285_3D36;
+  PW113_285_3D36 = ^W113_285_3D36;
+  PW115_285_3D36 = ^W115_285_3D36;
+  PW117_285_3D36 = ^W117_285_3D36;
+  PW119_285_3D36 = ^W119_285_3D36;
+  PW11_285_3D36 = ^W11_285_3D36;
+  PW121_285_3D36 = ^W121_285_3D36;
+  PW123_285_3D36 = ^W123_285_3D36;
+  PW125_285_3D36 = ^W125_285_3D36;
+  PW127_285_3D36 = ^W127_285_3D36;
+  PW129_285_3D36 = ^W129_285_3D36;
+  PW131_285_3D36 = ^W131_285_3D36;
+  PW133_285_3D36 = ^W133_285_3D36;
+  PW135_285_3D36 = ^W135_285_3D36;
+  PW137_285_3D36 = ^W137_285_3D36;
+  PW139_285_3D36 = ^W139_285_3D36;
+  PW13_285_3D36 = ^W13_285_3D36;
+  PW141_285_3D36 = ^W141_285_3D36;
+  PW143_285_3D36 = ^W143_285_3D36;
+  PW145_285_3D36 = ^W145_285_3D36;
+  PW147_285_3D36 = ^W147_285_3D36;
+  PW149_285_3D36 = ^W149_285_3D36;
+  PW151_285_3D36 = ^W151_285_3D36;
+  PW153_285_3D36 = ^W153_285_3D36;
+  PW155_285_3D36 = ^W155_285_3D36;
+  PW157_285_3D36 = ^W157_285_3D36;
+  PW159_285_3D36 = ^W159_285_3D36;
+  PW15_285_3D36 = ^W15_285_3D36;
+  PW161_285_3D36 = ^W161_285_3D36;
+  PW163_285_3D36 = ^W163_285_3D36;
+  PW165_285_3D36 = ^W165_285_3D36;
+  PW167_285_3D36 = ^W167_285_3D36;
+  PW169_285_3D36 = ^W169_285_3D36;
+  PW171_285_3D36 = ^W171_285_3D36;
+  PW173_285_3D36 = ^W173_285_3D36;
+  PW175_285_3D36 = ^W175_285_3D36;
+  PW177_285_3D36 = ^W177_285_3D36;
+  PW179_285_3D36 = ^W179_285_3D36;
+  PW17_285_3D36 = ^W17_285_3D36;
+  PW181_285_3D36 = ^W181_285_3D36;
+  PW183_285_3D36 = ^W183_285_3D36;
+  PW185_285_3D36 = ^W185_285_3D36;
+  PW187_285_3D36 = ^W187_285_3D36;
+  PW189_285_3D36 = ^W189_285_3D36;
+  PW191_285_3D36 = ^W191_285_3D36;
+  PW193_285_3D36 = ^W193_285_3D36;
+  PW195_285_3D36 = ^W195_285_3D36;
+  PW197_285_3D36 = ^W197_285_3D36;
+  PW199_285_3D36 = ^W199_285_3D36;
+  PW19_285_3D36 = ^W19_285_3D36;
+  PW1_285_3D36 = ^W1_285_3D36;
+  PW201_285_3D36 = ^W201_285_3D36;
+  PW203_285_3D36 = ^W203_285_3D36;
+  PW205_285_3D36 = ^W205_285_3D36;
+  PW207_285_3D36 = ^W207_285_3D36;
+  PW209_285_3D36 = ^W209_285_3D36;
+  PW211_285_3D36 = ^W211_285_3D36;
+  PW213_285_3D36 = ^W213_285_3D36;
+  PW215_285_3D36 = ^W215_285_3D36;
+  PW217_285_3D36 = ^W217_285_3D36;
+  PW219_285_3D36 = ^W219_285_3D36;
+  PW21_285_3D36 = ^W21_285_3D36;
+  PW221_285_3D36 = ^W221_285_3D36;
+  PW223_285_3D36 = ^W223_285_3D36;
+  PW225_285_3D36 = ^W225_285_3D36;
+  PW227_285_3D36 = ^W227_285_3D36;
+  PW229_285_3D36 = ^W229_285_3D36;
+  PW231_285_3D36 = ^W231_285_3D36;
+  PW233_285_3D36 = ^W233_285_3D36;
+  PW235_285_3D36 = ^W235_285_3D36;
+  PW237_285_3D36 = ^W237_285_3D36;
+  PW239_285_3D36 = ^W239_285_3D36;
+  PW23_285_3D36 = ^W23_285_3D36;
+  PW241_285_3D36 = ^W241_285_3D36;
+  PW243_285_3D36 = ^W243_285_3D36;
+  PW245_285_3D36 = ^W245_285_3D36;
+  PW247_285_3D36 = ^W247_285_3D36;
+  PW249_285_3D36 = ^W249_285_3D36;
+  PW251_285_3D36 = ^W251_285_3D36;
+  PW253_285_3D36 = ^W253_285_3D36;
+  PW255_285_3D36 = ^W255_285_3D36;
+  PW257_281_3D36 = ^W257_281_3D36;
+  PW259_285_3D36 = ^W259_285_3D36;
+  PW25_285_3D36 = ^W25_285_3D36;
+  PW261_285_3D36 = ^W261_285_3D36;
+  PW263_285_3D36 = ^W263_285_3D36;
+  PW265_285_3D36 = ^W265_285_3D36;
+  PW267_285_3D36 = ^W267_285_3D36;
+  PW269_285_3D36 = ^W269_285_3D36;
+  PW271_285_3D36 = ^W271_285_3D36;
+  PW273_285_3D36 = ^W273_285_3D36;
+  PW275_285_3D36 = ^W275_285_3D36;
+  PW277_285_3D36 = ^W277_285_3D36;
+  PW279_285_3D36 = ^W279_285_3D36;
+  PW27_285_3D36 = ^W27_285_3D36;
+  PW27_69_2668 = ^W27_69_2668;
+  PW281_285_3D36 = ^W281_285_3D36;
+  PW283_285_3D36 = ^W283_285_3D36;
+  PW285_285_3D36 = ^W285_285_3D36;
+  PW287_285_3D36 = ^W287_285_3D36;
+  PW289_285_3D36 = ^W289_285_3D36;
+  PW291_285_3D36 = ^W291_285_3D36;
+  PW293_285_3D36 = ^W293_285_3D36;
+  PW295_285_3D36 = ^W295_285_3D36;
+  PW297_285_3D36 = ^W297_285_3D36;
+  PW299_285_3D36 = ^W299_285_3D36;
+  PW29_285_3D36 = ^W29_285_3D36;
+  PW29_69_2668 = ^W29_69_2668;
+  PW2_4_23CA = ^W2_4_23CA;
+  PW2_5_21EE = ^W2_5_21EE;
+  PW301_285_3D36 = ^W301_285_3D36;
+  PW303_285_3D36 = ^W303_285_3D36;
+  PW305_285_3D36 = ^W305_285_3D36;
+  PW307_285_3D36 = ^W307_285_3D36;
+  PW309_285_3D36 = ^W309_285_3D36;
+  PW311_285_3D36 = ^W311_285_3D36;
+  PW313_285_3D36 = ^W313_285_3D36;
+  PW315_285_3D36 = ^W315_285_3D36;
+  PW317_285_3D36 = ^W317_285_3D36;
+  PW319_285_3D36 = ^W319_285_3D36;
+  PW31_285_3D36 = ^W31_285_3D36;
+  PW321_285_3D36 = ^W321_285_3D36;
+  PW323_285_3D36 = ^W323_285_3D36;
+  PW325_285_3D36 = ^W325_285_3D36;
+  PW327_285_3D36 = ^W327_285_3D36;
+  PW329_285_3D36 = ^W329_285_3D36;
+  PW331_285_3D36 = ^W331_285_3D36;
+  PW333_285_3D36 = ^W333_285_3D36;
+  PW335_285_3D36 = ^W335_285_3D36;
+  PW337_285_3D36 = ^W337_285_3D36;
+  PW339_285_3D36 = ^W339_285_3D36;
+  PW33_285_3D36 = ^W33_285_3D36;
+  PW341_285_3D36 = ^W341_285_3D36;
+  PW343_285_3D36 = ^W343_285_3D36;
+  PW345_285_3D36 = ^W345_285_3D36;
+  PW347_285_3D36 = ^W347_285_3D36;
+  PW349_285_3D36 = ^W349_285_3D36;
+  PW351_285_3D36 = ^W351_285_3D36;
+  PW353_285_3D36 = ^W353_285_3D36;
+  PW355_285_3D36 = ^W355_285_3D36;
+  PW357_285_3D36 = ^W357_285_3D36;
+  PW359_285_3D36 = ^W359_285_3D36;
+  PW35_285_3D36 = ^W35_285_3D36;
+  PW361_285_3D36 = ^W361_285_3D36;
+  PW363_285_3D36 = ^W363_285_3D36;
+  PW365_285_3D36 = ^W365_285_3D36;
+  PW367_285_3D36 = ^W367_285_3D36;
+  PW369_285_3D36 = ^W369_285_3D36;
+  PW371_285_3D36 = ^W371_285_3D36;
+  PW373_285_3D36 = ^W373_285_3D36;
+  PW375_285_3D36 = ^W375_285_3D36;
+  PW377_285_3D36 = ^W377_285_3D36;
+  PW379_285_3D36 = ^W379_285_3D36;
+  PW37_285_3D36 = ^W37_285_3D36;
+  PW381_285_3D36 = ^W381_285_3D36;
+  PW383_285_3D36 = ^W383_285_3D36;
+  PW385_285_3D36 = ^W385_285_3D36;
+  PW387_285_3D36 = ^W387_285_3D36;
+  PW389_285_3D36 = ^W389_285_3D36;
+  PW391_285_3D36 = ^W391_285_3D36;
+  PW393_285_3D36 = ^W393_285_3D36;
+  PW395_285_3D36 = ^W395_285_3D36;
+  PW397_285_3D36 = ^W397_285_3D36;
+  PW399_285_3D36 = ^W399_285_3D36;
+  PW39_285_3D36 = ^W39_285_3D36;
+  PW3_285_3D36 = ^W3_285_3D36;
+  PW401_285_3D36 = ^W401_285_3D36;
+  PW403_285_3D36 = ^W403_285_3D36;
+  PW405_285_3D36 = ^W405_285_3D36;
+  PW407_285_3D36 = ^W407_285_3D36;
+  PW409_285_3D36 = ^W409_285_3D36;
+  PW411_285_3D36 = ^W411_285_3D36;
+  PW413_285_3D36 = ^W413_285_3D36;
+  PW415_285_3D36 = ^W415_285_3D36;
+  PW417_285_3D36 = ^W417_285_3D36;
+  PW419_285_3D36 = ^W419_285_3D36;
+  PW41_285_3D36 = ^W41_285_3D36;
+  PW421_285_3D36 = ^W421_285_3D36;
+  PW423_285_3D36 = ^W423_285_3D36;
+  PW425_285_3D36 = ^W425_285_3D36;
+  PW427_285_3D36 = ^W427_285_3D36;
+  PW429_285_3D36 = ^W429_285_3D36;
+  PW431_285_3D36 = ^W431_285_3D36;
+  PW433_285_3D36 = ^W433_285_3D36;
+  PW435_285_3D36 = ^W435_285_3D36;
+  PW437_285_3D36 = ^W437_285_3D36;
+  PW439_285_3D36 = ^W439_285_3D36;
+  PW43_285_3D36 = ^W43_285_3D36;
+  PW441_285_3D36 = ^W441_285_3D36;
+  PW443_285_3D36 = ^W443_285_3D36;
+  PW445_285_3D36 = ^W445_285_3D36;
+  PW447_285_3D36 = ^W447_285_3D36;
+  PW449_285_3D36 = ^W449_285_3D36;
+  PW451_285_3D36 = ^W451_285_3D36;
+  PW453_285_3D36 = ^W453_285_3D36;
+  PW455_285_3D36 = ^W455_285_3D36;
+  PW457_285_3D36 = ^W457_285_3D36;
+  PW459_285_3D36 = ^W459_285_3D36;
+  PW45_285_3D36 = ^W45_285_3D36;
+  PW461_285_3D36 = ^W461_285_3D36;
+  PW463_285_3D36 = ^W463_285_3D36;
+  PW465_285_3D36 = ^W465_285_3D36;
+  PW467_285_3D36 = ^W467_285_3D36;
+  PW469_285_3D36 = ^W469_285_3D36;
+  PW471_285_3D36 = ^W471_285_3D36;
+  PW473_285_3D36 = ^W473_285_3D36;
+  PW475_285_3D36 = ^W475_285_3D36;
+  PW477_285_3D36 = ^W477_285_3D36;
+  PW479_285_3D36 = ^W479_285_3D36;
+  PW47_285_3D36 = ^W47_285_3D36;
+  PW481_285_3D36 = ^W481_285_3D36;
+  PW483_285_3D36 = ^W483_285_3D36;
+  PW485_285_3D36 = ^W485_285_3D36;
+  PW487_285_3D36 = ^W487_285_3D36;
+  PW489_285_3D36 = ^W489_285_3D36;
+  PW491_285_3D36 = ^W491_285_3D36;
+  PW493_285_3D36 = ^W493_285_3D36;
+  PW495_285_3D36 = ^W495_285_3D36;
+  PW497_285_3D36 = ^W497_285_3D36;
+  PW499_285_3D36 = ^W499_285_3D36;
+  PW49_285_3D36 = ^W49_285_3D36;
+  PW501_285_3D36 = ^W501_285_3D36;
+  PW503_285_3D36 = ^W503_285_3D36;
+  PW505_285_3D36 = ^W505_285_3D36;
+  PW507_285_3D36 = ^W507_285_3D36;
+  PW509_285_3D36 = ^W509_285_3D36;
+  PW511_285_3D36 = ^W511_285_3D36;
+  PW513_285_3D36 = ^W513_285_3D36;
+  PW515_281_3D36 = ^W515_281_3D36;
+  PW51_285_3D36 = ^W51_285_3D36;
+  PW53_285_3D36 = ^W53_285_3D36;
+  PW55_285_3D36 = ^W55_285_3D36;
+  PW57_285_3D36 = ^W57_285_3D36;
+  PW59_285_3D36 = ^W59_285_3D36;
+  PW5_285_3D36 = ^W5_285_3D36;
+  PW61_285_3D36 = ^W61_285_3D36;
+  PW63_285_3D36 = ^W63_285_3D36;
+  PW65_285_3D36 = ^W65_285_3D36;
+  PW67_285_3D36 = ^W67_285_3D36;
+  PW69_285_3D36 = ^W69_285_3D36;
+  PW6_20_0015 = ^W6_20_0015;
+  PW6_44_4638 = ^W6_44_4638;
+  PW71_285_3D36 = ^W71_285_3D36;
+  PW73_285_3D36 = ^W73_285_3D36;
+  PW75_285_3D36 = ^W75_285_3D36;
+  PW77_285_3D36 = ^W77_285_3D36;
+  PW79_285_3D36 = ^W79_285_3D36;
+  PW7_285_3D36 = ^W7_285_3D36;
+  PW81_285_3D36 = ^W81_285_3D36;
+  PW83_285_3D36 = ^W83_285_3D36;
+  PW85_285_3D36 = ^W85_285_3D36;
+  PW87_285_3D36 = ^W87_285_3D36;
+  PW89_285_3D36 = ^W89_285_3D36;
+  PW91_285_3D36 = ^W91_285_3D36;
+  PW93_285_3D36 = ^W93_285_3D36;
+  PW95_285_3D36 = ^W95_285_3D36;
+  PW97_285_3D36 = ^W97_285_3D36;
+  PW99_285_3D36 = ^W99_285_3D36;
+  PW9_285_3D36 = ^W9_285_3D36;
+  PW9_40_3B04 = ^W9_40_3B04;
+var
+  a09B7_c768: array[0..5459, 0..5] of byte absolute d09B7;
+  a09B7_ec3f: array[0..32759] of byte absolute d09B7;
+  a0E57_b7cc: array[0..1212] of string[26] absolute d0E57;
+  a11B9_9ec9: array[0..779] of string[41] absolute d11B9;
+  a11E2_620f: array[0..779] of E42_byte absolute d11E2;
+  a3191_738a: array[0..711] of string[45] absolute d3191;
+  a5364_ec3f: array[0..32759] of byte absolute d5364;
+  a651A_3981: array[0..2046] of E16_byte absolute d651A;
+  a6DB9_ec3f: array[0..32759] of byte absolute d6DB9;
+  a6DC9_ec3f: array[0..32759] of byte absolute d6DC9;
+  a6DDD_ec3f: array[0..32759] of byte absolute d6DDD;
+  a6EF7_9d21: array[0..2046, 0..15] of byte absolute d6EF7;
+  a6EF9_9d21: array[0..2046, 0..15] of byte absolute d6EF9;
+  a6EFB_9d21: array[0..2046, 0..15] of byte absolute d6EFB;
+  a6EFD_3981: array[0..2046] of E16_byte absolute d6EFD;
+  a6EFE_3981: array[0..2046] of E16_byte absolute d6EFE;
+  a6EFF_3981: array[0..2046] of E16_byte absolute d6EFF;
+  a6F00_3981: array[0..2046] of E16_byte absolute d6F00;
+  a6F01_3981: array[0..2046] of E16_byte absolute d6F01;
+  a6F02_3981: array[0..2046] of E16_byte absolute d6F02;
+  a6F03_3981: array[0..2046] of E16_byte absolute d6F03;
+  a6F04_3981: array[0..2046] of E16_byte absolute d6F04;
+  a6F05_3981: array[0..2046] of E16_byte absolute d6F05;
+  a6F06_3981: array[0..2046] of E16_byte absolute d6F06;
+  a708F_07d2: array[0..5459] of E6_byte absolute d708F;
+  a7090_07d2: array[0..5459] of E6_byte absolute d7090;
+  a7091_07d2: array[0..5459] of E6_byte absolute d7091;
+  a7092_07d2: array[0..5459] of E6_byte absolute d7092;
+  a7093_07d2: array[0..5459] of E6_byte absolute d7093;
+  a7094_07d2: array[0..5459] of E6_byte absolute d7094;
+  a719C_ec3f: array[0..32759] of byte absolute d719C;
+  a9DC4_7c92: array[0..4094] of E8_pointer absolute d9DC4;
+  a9DC8_7c92: array[0..4094] of E8_pointer absolute d9DC8;
+  aAB0E_71c0: array[0..16379] of E2_byte absolute dAB0E;
+  b11E2: byte absolute d11E2;
+  b120C: byte absolute d120C;
+  b1236: byte absolute d1236;
+  b1260: byte absolute d1260;
+  b128A: byte absolute d128A;
+  b12B4: byte absolute d12B4;
+  b12DE: byte absolute d12DE;
+  b1308: byte absolute d1308;
+  b1332: byte absolute d1332;
+  b135C: byte absolute d135C;
+  b1386: byte absolute d1386;
+  b13B0: byte absolute d13B0;
+  b13DA: byte absolute d13DA;
+  b5362: byte absolute d5362;
+  b5363: byte absolute d5363;
+  b880C: byte absolute d880C;
+  b880D: byte absolute d880D;
+  b880E: byte absolute d880E;
+  b94D5: byte absolute d94D5;
+  b9CEE: byte absolute d9CEE;
+  bAAE6: byte absolute dAAE6;
+  bAB0C: byte absolute dAB0C;
+  bAB14: byte absolute dAB14;
+  bAB1C: byte absolute dAB1C;
+  bAE84: byte absolute dAE84;
+  bAE86: byte absolute dAE86;
+  bAE87: byte absolute dAE87;
+  bB16D: byte absolute dB16D;
+  bC594: byte absolute dC594;
+  bC5C3: byte absolute dC5C3;
+  bC5C5: byte absolute dC5C5;
+  bC60C: byte absolute dC60C;
+  g3DC0_87e6: B8 absolute d3DC0;
+  gD51E_9554: B768 absolute dD51E;
+  l9CF2: longint absolute d9CF2;
+  p87F8: pointer absolute d87F8;
+  p8836: pointer absolute d8836;
+  p9CEE: pointer absolute d9CEE;
+  p9CF2: pointer absolute d9CF2;
+  p9CFF: pointer absolute d9CFF;
+  s199F: string absolute d199F;
+  s19C8: string absolute d19C8;
+  s1C2F: string absolute d1C2F;
+  s1C58: string absolute d1C58;
+  s1C81: string absolute d1C81;
+  s1CD3: string absolute d1CD3;
+  s1CFC: string absolute d1CFC;
+  s1D25: string absolute d1D25;
+  s1D4E: string absolute d1D4E;
+  s278C: string absolute d278C;
+  s2882: string absolute d2882;
+  s2B8D: string absolute d2B8D;
+  s2DF2: string absolute d2DF2;
+  s2E1B: string absolute d2E1B;
+  s2E44: string absolute d2E44;
+  wC5D4: word absolute dC5D4;
+  wC5D6: word absolute dC5D6;
+  wC5D8: word absolute dC5D8;
+  wC5DA: word absolute dC5DA;
+  wC5DC: word absolute dC5DC;
+  wC5DE: word absolute dC5DE;
+  wC5E0: word absolute dC5E0;
+  wC5E2: word absolute dC5E2;
+  wC5E4: word absolute dC5E4;
+  wC5E6: word absolute dC5E6;
+  wC5E8: word absolute dC5E8;
+  wC5EA: word absolute dC5EA;
+  wC5EC: word absolute dC5EC;
+  wC5EE: word absolute dC5EE;
 
-procedure pO075_0015(a0: word; a1: word); far; forward;
+procedure pO075_0015(a0: pointer); far; forward;
 procedure pO075_06DF; far; forward;
-procedure pO075_21EE(a0: word; a1: word); far; forward;
+procedure pO075_21EE(a0: pointer); far; forward;
 procedure pO075_2668; far; forward;
 procedure pO075_34C0; far; forward;
 procedure pO075_38C5; far; forward;
-function pO075_439F(a0: word; a1: word; a2: word): byte; far; forward;
-function pO075_441E(a0: word; a1: word): byte; far; forward;
+function pO075_439F(a0: pointer; a1: byte): shortint; far; forward;
+function pO075_441E(a0: pointer): byte; far; forward;
 procedure pO075_4638; far; forward;
 procedure pO075_4E86; far; forward;
-procedure pO075_5478(a0: word; a1: word); far; forward;
+procedure pO075_5478(a0: pointer); far; forward;
 procedure pO075_5700; far; forward;
 
 { 0015 }
-procedure pO075_0015(a0: word; a1: word);
-var loc: array[1..38] of byte;
+procedure pO075_0015(a0: pointer);
+var
+  v4p: pointer;
+  v8p: pointer;
+  v12p: pointer;
+  v16p: pointer;
+  v4b: byte absolute v4p;
 begin
   if false then begin
     if LV = 'disposing a nil char' then;
   end;
-  asm
-    db 196,126,6,38,139,5,38,11,69,2,117,20,141,126,219,22,87,191,0,0,14,87,154,111,10,37,8
-    call pO0EC_1AAC
-    db 196,126,6,38,196,61,137,126,236,140,70,238,196,126,236,38,139,133,231,1,38,11,133,233,1,116,22,196
-    db 126,236,38,255,181,233,1,38,255,181,231,1,184,22,0,80,154,84,2,37,8,196,126,236,38,139,133,167
-    db 1,38,139,149,169,1,137,70,248,137,86,250,139,70,248,11,70,250,116,41,139,70,248,139,86,250,137,70
-    db 252,137,86,254,196,126,248,38,139,69,42,38,139,85,44,137,70,248,137,86,250,141,126,252,22,87
-    call pR670_03ED
-    db 235,207,196,126,236,38,139,133,67,1,38,139,149,69,1,137,70,240,137,86,242,139,70,240,11,70,242,116
-    db 46,139,70,240,139,86,242,137,70,244,137,86,246,196,126,240,38,139,69,5,38,139,85,7,137,70,240,137
-    db 86,242,255,118,246,255,118,244,184,9,0,80,154,84,2,37,8,235,202,196,126,6,38,255,117,2,38,255
-    db 53,184,254,1,80,154,84,2,37,8,196,126,6,49,192,38,137,5,38,137,69,2
+  {@001B-003B}
+  if PR0_pointer(a0)^.v = nil then
+    pO0EC_1AAC('disposing a nil char');
+  {@003B-006C}
+  with PW6_20_0015(PR0_pointer(a0)^.v)^ do
+  begin
+    if _w20_487pointer <> nil then
+      FreeMem(_w20_487pointer, 22);
+    {@006C-007F}
+    v8p := _w20_423pointer;
+    {@007F-00B0}
+    while v8p <> nil do
+    begin
+      {@0087-0093}
+      v4p := v8p;
+      {@0093-00A4}
+      v8p := PR42_pointer(v8p)^.v;
+      {@00A4-00AE}
+      pR670_03ED(@v4b);
+    end;
+    {@00B0-00C3}
+    v16p := _w20_323pointer;
   end;
+  {@00C3-00F9}
+  while v16p <> nil do
+  begin
+    {@00CB-00D7}
+    v12p := v16p;
+    {@00D7-00E8}
+    v16p := PR5_pointer(v16p)^.v;
+    {@00E8-00F7}
+    FreeMem(v12p, 9);
+  end;
+  {@00F9-010C}
+  FreeMem(PR0_pointer(a0)^.v, 510);
+  {@010C-0118}
+  PR0_pointer(a0)^.v := nil;
 end;
 
 { 011F }
 procedure pO075_011F;
-var loc: array[1..40] of byte;
+var
+  v1b: byte;
+  v2b: byte;
+  v3b: byte;
+  _f1: array[1..2] of byte;
+  v6b: byte;
+  _f2: array[1..9] of byte;
+  v16b: byte;
+  v17b: byte;
+  _f3: array[1..1] of byte;
+  v22p: pointer;
+  v26p: pointer;
+  v30p: pointer;
+  v32w: word;
+  v33b: byte;
+  v34b: byte;
+  v35b: byte;
+  _f4: array[1..3] of byte;
+  v39b: byte;
+  v32b: byte absolute v32w;
+  v26b: byte absolute v26p;
+  v22b: byte absolute v22p;
+  v16sb: shortint absolute v16b;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
+    LM1_0('');
   end;
-  asm
-    db 198,6,195,197,0,160,12,136,162,13,136,198,6,12,136,0,198,70,239,1,49,192,137,70,224,198,70,222
-    db 0,128,126,239,0,117,3,233,40,1,176,1,80
-    call pR142_00D4
-    db 161,238,156,11,6,240,156,116,78,255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    db 198,6,12,18,1,198,6,54,18,1,196,62,248,135,38,128,125,47,0,176,0,118,1,64,162,96,18,160
-    db 96,18,162,138,18,198,6,180,18,1,198,6,8,19,1,198,6,50,19,0,198,6,92,19,1,198,6,134
-    db 19,1,198,6,176,19,0,235,50,198,6,12,18,0,198,6,54,18,0,198,6,96,18,0,198,6,138,18
-    db 0,198,6,180,18,0,198,6,8,19,0,198,6,50,19,1,198,6,92,19,0,198,6,134,19,0,198,6
-    db 176,19,1,198,70,240,0,198,70,255,0,235,3,254,70,255,138,70,255,48,228,186,42,0,247,226,139,248
-    db 128,189,226,17,0,116,3,254,70,240,128,126,255,12,117,225,138,70,240,152,80,141,126,234,22,87
-    call pO108_22B0
-    db 139,70,234,139,86,236,137,70,226,137,86,228,198,70,255,0,235,3,254,70,255,138,70,255,48,228,186,42
-    db 0,247,226,139,248,128,189,226,17,0,116,49,138,70,255,48,228,186,42,0,247,226,139,248,129,199,185,17
-    db 30,87,196,126,226,6,87,184,40,0,80,154,137,10,37,8,196,126,226,38,139,69,42,38,139,85,44,137
-    db 70,226,137,86,228,128,126,255,12,117,179,198,70,250,1,176,0,80
-    call pO108_00CB
-    db 191,140,39,30,87,191,141,43,30,87,176,9,80,176,12,80,176,38,80,176,22,80,255,118,236,255,118,234
-    db 176,0,80,176,0,80,141,126,250,22,87,141,126,224,22,87,141,126,230,22,87
-    call pO108_1D45
-    db 136,70,253,198,70,254,0,198,70,223,0,128,126,254,13,115,53,128,126,223,0,117,47,138,70,254,48,228
-    db 186,42,0,247,226,139,248,129,199,185,17,30,87,196,126,230,6,87,154,116,11,37,8,176,0,117,1,64
-    db 136,70,223,128,126,223,0,117,3,254,70,254,235,197,128,126,239,0,116,10,141,126,234,22,87
-    call pO108_2363
-    db 128,126,254,9,116,11,128,126,254,12,116,5,198,6,213,148,0,138,70,254,60,0,117,14,128,62,226,17
-    db 0,116,4
-    push cs
-    call near ptr pO075_06DF
-    db 233,234,2,60,1,117,14,128,62,12,18,0,116,4
-    push cs
-    call near ptr pO075_23CA
-    db 233,216,2,60,2,117,14,128,62,54,18,0,116,4
-    push cs
-    call near ptr pO075_2668
-    db 233,198,2,60,3,117,14,128,62,96,18,0,116,4
-    push cs
-    call near ptr pO075_4638
-    db 233,180,2,60,4,116,3,233,207,0,128,62,138,18,0,117,3,233,194,0
-    call pO0AA_3594
-    db 8,192,117,3,233,182,0,255,54,240,156,255,54,238,156
-    call pO102_0E0C
-    db 136,70,221,128,126,221,17,117,3,233,157,0,255,54,240,156,255,54,238,156,176,8,80,141,126,217,22,87
-    call pO0EC_27C1
-    db 8,192,116,22,255,54,240,156,255,54,238,156,176,8,80,49,192,49,210,82,80
-    call pO0E2_0104
-    db 255,54,240,156,255,54,238,156,176,105,80,141,126,217,22,87
-    call pO0EC_27C1
-    db 8,192,116,22,255,54,240,156,255,54,238,156,176,105,80,49,192,49,210,82,80
-    call pO0E2_0104
-    db 138,70,221,60,3,117,27,255,54,240,156,255,54,238,156,176,8,80,49,192,80,176,255,80,176,0,80
-    call pO0E2_13E5
-    db 235,29,60,4,117,25,255,54,240,156,255,54,238,156,176,105,80,49,192,80,176,255,80,176,0,80
-    call pO0E2_13E5
-    db 233,222,1,60,5,117,29,128,62,180,18,0,116,19
-    call pO0AA_3594
-    db 8,192,116,10,141,126,250,22,87
-    call pO0AA_0C9D
-    db 233,189,1,60,6,117,14,128,62,222,18,0,116,4
-    push cs
-    call near ptr pO075_34C0
-    db 233,171,1,60,7,117,84,128,62,8,19,0,116,74,161,238,156,11,6,240,156,116,65
-    call pO0AA_3594
-    db 8,192,116,56,196,62,238,156,38,128,189,71,1,128,115,40,255,54,240,156,255,54,238,156,141,126,216,22
-    db 87,191,30,1,14,87,154,111,10,37,8
-    call pO06E_0AD8
-    db 176,0,80,176,1,80
-    push cs
-    call near ptr pO075_3770
-    db 235,4
-    push cs
-    call near ptr pO075_23CA
-    db 233,83,1,60,8,117,18,128,62,50,19,0,116,8,176,0,80
-    call pO06E_203E
-    db 233,61,1,60,9,117,30,128,62,92,19,0,116,20,161,242,156,11,6,244,156,116,11,176,0,80,176,0
-    db 80
-    call pO06E_2989
-    db 233,27,1,60,10,116,3,233,163,0,128,62,134,19,0,117,3,233,151,0,198,6,195,197,1,161,242,156
-    db 11,6,244,156,117,10,128,62,14,136,0,117,3,233,127,0,160,13,136,162,12,136,128,62,17,136,0,116
-    db 7,128,62,213,170,9,117,45,128,62,12,136,3,117,18,196,62,248,135,38,128,125,35,1,117,7
-    call pR142_0137
-    db 235,5
-    call pR142_011B
-    db 255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    db 235,40,160,12,136,60,0,116,4,60,4,117,20
-    call pR142_011B
-    db 255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    db 235,9,60,3,117,5
-    call pR142_0137
-    call pO108_167D
-    db 196,62,248,135,38,198,69,47,0
-    call pO0EC_301C
-    db 233,187,0,235,113,60,11,117,13,128,62,176,19,0,116,4
-    push cs
-    call near ptr pO075_4E86
-    db 235,96,60,12,117,92,128,62,218,19,0,116,85,191,159,25,30,87,160,99,83,80
-    call pO108_2254
-    db 58,6,98,83,117,65,161,242,156,11,6,244,156,116,48,128,62,213,148,0,117,41,191,200,25,30,87,160
-    db 99,83,80
-    call pO108_2254
-    db 58,6,99,83,117,13,176,0,80,176,0,80
-    call pO06E_2989
-    db 235,8,176,0,80
-    call pR670_0000
-    db 176,0,80
-    call pR670_0000
-    db 128,126,254,1,116,6,128,126,254,7,117,57,161,238,156,11,6,240,156,117,48,161,242,156,11,6,244,156
-    db 117,39
-    call pO079_08A7
-    db 198,6,195,197,0,160,12,136,162,13,136,198,6,12,136,0,198,70,239,1,49,192,137,70,224,198,70,222
-    db 1,198,6,148,197,1,233,223,250
+  {@0125-012A}
+  bC5C3 := 0;
+  {@012A-0130}
+  b880D := b880C;
+  {@0130-0135}
+  b880C := 0;
+  {@0135-0139}
+  v17b := 1;
+  {@0139-013E}
+  v32w := 0;
+  {@013E-0142}
+  v34b := 0;
+  {@0142-0663}
+  while true do
+  begin
+    {@0142-0273}
+    if v17b <> 0 then
+    begin
+      asm
+  db 176,1,80
+  call pR142_00D4
+  db 161,238,156,11,6,240,156,116,78,255,54,240,156,255,54,238,156
+  call pO0EC_07C0
+  db 198,6,12,18,1,198,6,54,18,1,196,62,248,135,38,128,125,47,0,176,0,118,1,64,162,96,18,160
+  db 96,18,162,138,18,198,6,180,18,1,198,6,8,19,1,198,6,50,19,0,198,6,92,19,1,198,6,134
+  db 19,1,198,6,176,19,0,235,50,198,6,12,18,0,198,6,54,18,0,198,6,96,18,0,198,6,138,18
+  db 0,198,6,180,18,0,198,6,8,19,0,198,6,50,19,1,198,6,92,19,0,198,6,134,19,0,198,6
+  db 176,19,1
+      end;
+      {@01DC-01E0}
+      v16b := 0;
+      for v1b := 0 to 12 do
+      begin
+        {@01E9-01FF}
+        if a11E2_620f[v1b].f <> 0 then
+          Inc(v16b);
+      end;
+      {@0205-0214}
+      pO108_22B0(v16sb, @v22b);
+      {@0214-0220}
+      v30p := v22p;
+      for v1b := 0 to 12 do
+      begin
+        {@0229-026D}
+        if a11E2_620f[v1b].f <> 0 then
+        begin
+          {@023C-025C}
+          PR0_string_40_(v30p)^.v := a11B9_9ec9[v1b];
+          {@025C-026D}
+          v30p := PR42_pointer(v30p)^.v;
+        end;
+      end;
+    end;
+    {@0273-0277}
+    v6b := 1;
+    {@0277-027F}
+    pO108_00CB(0);
+    {@027F-02B8}
+    v3b := pO108_1D45(s278C, s2B8D, 9, 12, 38, 22, v22p, 0, 0, @v6b, @v32b, @v26b);
+    {@02B8-02BC}
+    v2b := 0;
+    {@02BC-02C0}
+    v33b := 0;
+    {@02C0-02FB}
+    while (v2b < 13) and (v33b = 0) do
+    begin
+      {@02CC-02F0}
+      v33b := Ord(a11B9_9ec9[v2b] = PR0_string(v26p)^.v);
+      if v33b = 0 then
+        Inc(v2b);
+    end;
+    {@02FB-030B}
+    if v17b <> 0 then
+      pO108_2363(@v22b);
+    {@030B-031C}
+    if (v2b <> 9) and (v2b <> 12) then
+      b94D5 := 0;
+    {@031C-061B}
+    case v2b of
+      0: begin
+        {@0323-032E}
+        if b11E2 <> 0 then
+          pO075_06DF;
+      end;
+      1: begin
+        {@0335-0340}
+        if b120C <> 0 then
+          pO075_23CA;
+      end;
+      2: begin
+        {@0347-0352}
+        if b1236 <> 0 then
+          pO075_2668;
+      end;
+      3: begin
+        {@0359-0364}
+        if b1260 <> 0 then
+          pO075_4638;
+      end;
+      4: begin
+        {@036E-043A}
+        if (b128A <> 0) and (pO0AA_3594 <> 0) then
+        begin
+          {@0384-0394}
+          v35b := pO102_0E0C(p9CEE);
+          if v35b <> 17 then
+          begin
+            {@039D-03CC}
+            if pO0EC_27C1(p9CEE, 8, @v39b) <> 0 then
+              pO0E2_0104(p9CEE, 8, nil);
+            {@03CC-03FB}
+            if pO0EC_27C1(p9CEE, 105, @v39b) <> 0 then
+              pO0E2_0104(p9CEE, 105, nil);
+            {@03FB-043A}
+            case v35b of
+              3: pO0E2_13E5(p9CEE, 8, 0, 255, 0);
+              4: pO0E2_13E5(p9CEE, 105, 0, 255, 0);
+            end;
+          end;
+        end;
+      end;
+      5: begin
+        {@0441-045B}
+        if (b12B4 <> 0) and (pO0AA_3594 <> 0) then
+          pO0AA_0C9D(@v6b);
+      end;
+      6: begin
+        {@0462-046D}
+        if b12DE <> 0 then
+          pO075_34C0;
+      end;
+      7: begin
+        {@0474-04C5}
+        if (b1308 <> 0) and (p9CEE <> nil) and (pO0AA_3594 <> 0) then
+        begin
+          {@048D-04C5}
+          if PR327_byte(p9CEE)^.v < 128 then
+          begin
+            {@0499-04B5}
+            pO06E_0AD8(p9CEE, '');
+            {@04B5-04BF}
+            pO075_3770(0, 1);
+          end
+          else
+            pO075_23CA;
+        end;
+      end;
+      8: begin
+        {@04CC-04DB}
+        if b1332 <> 0 then
+          pO06E_203E(0);
+      end;
+      9: begin
+        {@04E2-04FD}
+        if (b135C <> 0) and (l9CF2 <> 0) then
+          pO06E_2989(0, 0);
+      end;
+      10: begin
+        {@0507-05A8}
+        if b1386 <> 0 then
+        begin
+          {@0511-0516}
+          bC5C3 := 1;
+          if (l9CF2 <> 0) or (b880E <> 0) then
+          begin
+            asm
+  db 160,13,136,162,12,136,128,62,17,136,0,116,7,128,62,213,170,9,117,45,128,62,12,136,3,117,18,196
+  db 62,248,135,38,128,125,35,1,117,7
+  call pR142_0137
+  db 235,5
+  call pR142_011B
+  db 255,54,240,156,255,54,238,156
+  call pO0EC_07C0
+  db 235,40,160,12,136,60,0,116,4,60,4,117,20
+  call pR142_011B
+  db 255,54,240,156,255,54,238,156
+  call pO0EC_07C0
+  db 235,9,60,3,117,5
+  call pR142_0137
+            end;
+            {@0592-0597}
+            pO108_167D;
+            {@0597-05A0}
+            PR47_byte(p87F8)^.v := 0;
+            {@05A0-05A5}
+            pO0EC_301C;
+            {@05A5-05A8}
+            Exit;
+          end;
+        end;
+      end;
+      11: begin
+        {@05AE-05B9}
+        if b13B0 <> 0 then
+          pO075_4E86;
+      end;
+      12: begin
+        {@05BF-061B}
+        if (b13DA <> 0) and (Byte(pO108_2254(s199F, b5363)) = b5362) then
+        begin
+          {@05DA-0613}
+          if (l9CF2 <> 0) and (b94D5 = 0) then
+          begin
+            {@05EA-0613}
+            if Byte(pO108_2254(s19C8, b5363)) = b5363 then
+              pO06E_2989(0, 0)
+            else
+              pR670_0000(0);
+          end;
+          {@0613-061B}
+          pR670_0000(0);
+        end;
+      end;
+    end;
+    {@061B-0660}
+    if ((v2b = 1) or (v2b = 7)) and (p9CEE = nil) and (l9CF2 = 0) then
+    begin
+      {@0639-063E}
+      pO079_08A7;
+      {@063E-0643}
+      bC5C3 := 0;
+      {@0643-0649}
+      b880D := b880C;
+      {@0649-064E}
+      b880C := 0;
+      {@064E-0652}
+      v17b := 1;
+      {@0652-0657}
+      v32w := 0;
+      {@0657-065B}
+      v34b := 1;
+      {@065B-0660}
+      bC594 := 1;
+    end;
   end;
 end;
 
@@ -536,29 +1496,87 @@ begin
 end;
 
 { 21EE }
-procedure pO075_21EE(a0: word; a1: word);
-var loc: array[1..10] of byte;
+procedure pO075_21EE(a0: pointer);
+var
+  _f1: array[1..1] of byte;
+  _fb: byte absolute a0;
+  _fw: word absolute a0;
 begin
+  if false then begin
+    with LPR^ do with LPR^ do for _fb := _fb to _fb do ;
+  end;
+  {@21F4-2202}
+  if PR342_byte(a0)^.v <= 0 then
+    Exit;
   asm
-    db 196,126,6,38,128,189,86,1,0,119,3,233,93,1,198,70,255,1,235,3,254,70,255,138,70,255,48,228
-    db 139,248,177,4,211,231,129,199,26,101,137,126,251,140,94,253,196,126,251,38,128,61,2,117,26,196,126,251
-    db 38,128,125,1,4,115,16,138,70,255,48,228,196,126,6,3,248,38,198,133,178,0,1,128,126,255,126,117
-    db 191,196,126,6,137,126,251,140,70,253,196,126,251,38,128,189,146,1,0,118,63,196,126,251,38,198,133,4
-    db 1,1,196,126,251,38,198,133,6,1,1,196,126,251,38,198,133,10,1,1,196,126,251,38,198,133,3,1
-    db 1,196,126,251,38,198,133,5,1,1,196,126,251,38,198,133,7,1,1,196,126,251,38,198,133,9,1,1
-    db 196,126,251,38,128,189,147,1,0,118,36,196,126,251,38,198,133,13,1,1,196,126,251,38,198,133,14,1
-    db 1,196,126,251,38,198,133,40,1,1,196,126,251,38,198,133,41,1,1,196,126,251,38,128,189,148,1,0
-    db 118,36,196,126,251,38,198,133,35,1,1,196,126,251,38,198,133,36,1,1,196,126,251,38,198,133,34,1
-    db 1,196,126,251,38,198,133,33,1,1,196,126,251,38,128,189,149,1,0,118,18,196,126,251,38,198,133,37
-    db 1,1,196,126,251,38,198,133,39,1,1,196,126,251,38,128,189,151,1,0,118,61,198,70,255,1,235,3
-    db 254,70,255,138,70,255,48,228,139,248,177,4,211,231,129,199,26,101,137,126,247,140,94,249,196,126,247,38
-    db 128,61,2,117,16,138,70,255,48,228,196,126,6,3,248,38,198,133,178,0,1,128,126,255,126,117,201
+  db 198,70,255,1,235,3,254,70,255,138,70,255,48,228,139,248,177,4,211,231,129,199,26,101,137,126,251,140
+  db 94,253,196,126,251,38,128,61,2,117,26,196,126,251,38,128,125,1,4,115,16,138,70,255,48,228,196,126
+  db 6,3,248,38,198,133,178,0,1,128,126,255,126,117,191
+  end;
+  {@2249-229C}
+  with PW2_5_21EE(a0)^ do
+  begin
+    if _w5_402byte > 0 then
+    begin
+      {@225D-2266}
+      _w5_260byte := 1;
+      {@2266-226F}
+      _w5_262byte := 1;
+      {@226F-2278}
+      _w5_266byte := 1;
+      {@2278-2281}
+      _w5_259byte := 1;
+      {@2281-228A}
+      _w5_261byte := 1;
+      {@228A-2293}
+      _w5_263byte := 1;
+      {@2293-229C}
+      _w5_265byte := 1;
+    end;
+    {@229C-22CB}
+    if _w5_403byte > 0 then
+    begin
+      {@22A7-22B0}
+      _w5_269byte := 1;
+      {@22B0-22B9}
+      _w5_270byte := 1;
+      {@22B9-22C2}
+      _w5_296byte := 1;
+      {@22C2-22CB}
+      _w5_297byte := 1;
+    end;
+    {@22CB-22FA}
+    if _w5_404byte > 0 then
+    begin
+      {@22D6-22DF}
+      _w5_291byte := 1;
+      {@22DF-22E8}
+      _w5_292byte := 1;
+      {@22E8-22F1}
+      _w5_290byte := 1;
+      {@22F1-22FA}
+      _w5_289byte := 1;
+    end;
+    {@22FA-2317}
+    if _w5_405byte > 0 then
+    begin
+      {@2305-230E}
+      _w5_293byte := 1;
+      {@230E-2317}
+      _w5_295byte := 1;
+    end;
+    {@2317-235F}
+    if _w5_407byte > 0 then
+      asm
+  db 198,70,255,1,235,3,254,70,255,138,70,255,48,228,139,248,177,4,211,231,129,199,26,101,137,126,247,140
+  db 94,249,196,126,247,38,128,61,2,117,16,138,70,255,48,228,196,126,6,3,248,38,198,133,178,0,1,128
+  db 126,255,126,117,201
+      end;
   end;
 end;
 
 { 23CA }
 procedure pO075_23CA;
-var loc: array[1..532] of byte;
 begin
   if false then begin
     if LV = 'Drop ' then;
@@ -568,71 +1586,102 @@ begin
     if LV = ' out back.' then;
     if LV = ' bids you farewell.' then;
     if LV = ' breathes a sigh of relief.' then;
+    LM4_6(FS, ' breathes a sigh of relief.', ' breathes a sigh of relief.',
+    ' breathes a sigh of relief.', [LB], [LB], [LB], [LB], [LB], [LB]);
+  end;
+  {@23D1-23DD}
+  if pO0AA_3594 = 0 then
+    Exit;
+  {@23DD-24D5}
+  if p9CEE <> nil then
+  begin
+    {@23E9-24D5}
+    with PW2_4_23CA(p9CEE)^ do
+    begin
+if (Byte(pO108_2254('Drop ' + _w4_0string + ' forever? ', b5363)) = b5362)
+          and (Byte(pO108_2254('Are you sure? ', b5363)) = b5362) then
+      begin
+        {@2448-249D}
+        if _w4_494byte = 0 then
+          pO0EC_1AAC('You dump ' + _w4_0string + ' out back.')
+        else
+          pO0EC_1AAC(_w4_0string + ' bids you farewell.');
+        {@249D-24AA}
+        pO06E_09F2(p9CEE);
+        {@24AA-24B4}
+        pO075_3770(0, 1);
+      end
+      else
+        pO0EC_1AAC(_w4_0string + ' breathes a sigh of relief.');
+    end;
   end;
   asm
-    call pO0AA_3594
-    db 8,192,117,3,233,5,1,161,238,156,11,6,240,156,117,3,233,236,0,196,62,238,156,137,126,252,140,70
-    db 254,141,190,252,254,22,87,191,101,35,14,87,154,111,10,37,8,196,126,252,6,87,154,252,10,37,8,191
-    db 107,35,14,87,154,252,10,37,8,160,99,83,80
-    call pO108_2254
-    db 58,6,98,83,116,3,233,141,0,141,190,237,254,22,87,191,118,35,14,87,154,111,10,37,8,160,99,83
-    db 80
-    call pO108_2254
-    db 58,6,98,83,117,110,196,126,252,38,128,189,238,1,0,117,43,141,190,237,253,22,87,191,133,35,14,87
-    db 154,111,10,37,8,196,126,252,6,87,154,252,10,37,8,191,143,35,14,87,154,252,10,37,8
-    call pO0EC_1AAC
-    db 235,31,141,190,237,253,22,87,196,126,252,6,87,154,111,10,37,8,191,154,35,14,87,154,252,10,37,8
-    call pO0EC_1AAC
-    db 255,54,240,156,255,54,238,156
-    call pO06E_09F2
-    db 176,0,80,176,1,80
-    push cs
-    call near ptr pO075_3770
-    db 235,31,141,190,237,253,22,87,196,126,252,6,87,154,111,10,37,8,191,174,35,14,87,154,252,10,37,8
-    call pO0EC_1AAC
-    db 255,54,240,156,255,54,238,156
-    call pO0EC_07C0
+  db 255,54,240,156,255,54,238,156
+  call pO0EC_07C0
   end;
 end;
 
 { 2668 }
 procedure pO075_2668;
-var loc: array[1..578] of byte;
+var
+c49: record case byte of 0: (v49a2: string[48]); 1: (v49a: string[40]); 2: (_p2: array[1..41] of byte;
+      v8b: byte); 3: (_p3: array[1..42] of byte; v7b: byte); 4: (_p4: array[1..43] of byte;
+      v6a: array[0..5] of byte) end;
+  _f1: array[1..1] of byte;
+  v51b: byte;
+  v52b: byte;
+  v53b: byte;
+  v54b: byte;
+  v55b: byte;
+  v56b: byte;
+  _f2: array[1..7] of byte;
+  v64b: byte;
+  v65b: byte;
+  v52sb: shortint absolute v52b;
+  v51sb: shortint absolute v51b;
   { 24E6 }
   procedure pO075_24E6;
-  var loc: array[1..2] of byte;
+  var
+    w1b: byte;
+    _f1: array[1..1] of byte;
   begin
-    asm
-      db 198,70,255,1,235,3,254,70,255,138,70,255,48,228,139,248,177,4,211,231,128,189,26,101,2,117,17,138
-      db 70,255,48,228,196,62,238,156,3,248,38,198,133,178,0,0,128,126,255,126,117,212
+    {@24EC-251E}
+    for w1b := 1 to 126 do
+    begin
+      {@24F5-2518}
+      if a651A_3981[w1b].f = 2 then
+        PRA178_byte(p9CEE)^.a[w1b] := 0;
     end;
   end;
 
   { 2526 }
-  procedure pO075_2526(b0: word);
-  var loc: array[1..256] of byte;
+  procedure pO075_2526(b0: byte);
   begin
     if false then begin
       if LV = '%' then;
     end;
-    asm
-      db 139,126,6,54,138,69,200,60,0,114,24,60,5,119,20,139,126,6,54,138,69,200,80,138,70,8,80
-      call pO0AA_0AE5
-      db 233,234,0,60,7,117,29,255,54,240,156,255,54,238,156,176,31,80,176,3,80,138,70,8,80,176,0,80
-      call pO0EC_0BAA
-      db 233,201,0,60,6,116,3,233,194,0,128,126,8,0,117,3,233,162,0,196,62,238,156,38,138,5,48,228
-      db 64,80,176,1,80,176,0,80,176,1,80
-      call pR47F_030B
-      db 176,1,80,176,1,80,176,13,80,176,0,80,196,62,238,156,6,87
-      call pR47F_0354
-      db 139,126,6,54,138,69,192,48,228,196,62,238,156,3,248,38,128,61,32,117,39,139,126,6,54,138,69,192
-      db 80,176,1,80,176,15,80,176,0,80,141,126,254,22,87,191,36,37,14,87,154,111,10,37,8
-      call pR47F_0354
-      db 235,52,139,126,6,54,138,69,192,80,176,1,80,176,15,80,176,0,80,141,190,0,255,22,87,139,126,6
-      db 54,138,69,192,48,228,196,62,238,156,3,248,38,138,5,80,154,159,11,37,8
-      call pR47F_0354
-      db 235,23,176,1,80,176,1,80,176,10,80,176,0,80,196,62,238,156,6,87
-      call pR47F_0354
+    {@252D-263A}
+    case v56b of
+      0..5: pO0AA_0AE5(v56b, b0);
+      7: pO0EC_0BAA(p9CEE, 31, 3, b0, 0);
+      6: begin
+        {@2578-2623}
+        if b0 <> 0 then
+        begin
+          {@2581-259A}
+          pR47F_030B(PR0_byte(p9CEE)^.v + 1, 1, 0, 1);
+          {@259A-25B1}
+          pR47F_0354(1, 1, 13, 0, PR0_string(p9CEE)^.v);
+          if PRA0_byte(p9CEE)^.a[v64b] = 32 then
+            pR47F_0354(v64b, 1, 15, 0, '%')
+          else
+            pR47F_0354(v64b, 1, 15, 0, Chr(PRA0_byte(p9CEE)^.a[v64b]));
+          {@2621-2623}
+          Exit;
+        end;
+        {@2623-263A}
+        pR47F_0354(1, 1, 10, 0, PR0_string(p9CEE)^.v);
+      end;
     end;
   end;
 
@@ -641,552 +1690,1233 @@ begin
     if LV = 'HALIBUT' then;
     if LSV = [49..57, 92] then;
   end;
-  asm
-    call pO0AA_3594
-    db 8,192,117,3,233,36,14,196,62,238,156,38,131,189,116,1,22,117,9,38,129,189,114,1,97,227,116,110
-    db 196,62,238,156,38,131,189,116,1,11,117,9,38,129,189,114,1,176,113,116,89,196,62,238,156,38,131,189
-    db 116,1,7,117,9,38,129,189,114,1,32,161,116,68,141,190,191,254,22,87,184,3,0,80,154,147,26,37
-    db 8,191,64,38,14,87,154,116,11,37,8,116,41,141,190,191,253,22,87,196,62,238,156,6,87,154,111,10
-    db 37,8,191,47,28,30,87,154,252,10,37,8,176,14,80,176,0,80
-    call pR47F_0CC0
-    db 233,161,13,198,6,12,171,255,198,6,134,174,1
-    call pO0AA_0041
-    db 198,70,204,0,235,3,254,70,204,138,70,204,152,209,224,196,62,238,156,3,248,38,138,85,17,138,70,204
-    db 152,139,248,136,83,250,128,126,204,5,117,222,196,62,238,156,38,138,69,28,136,70,249,196,62,238,156,38
-    db 138,133,178,0,136,70,248,196,62,238,156,6,87,141,126,207,22,87,184,40,0,80,154,137,10,37,8,198
-    db 70,192,1,198,70,200,7,176,0,80,85
-    push cs
-    call near ptr pO075_2526
-    db 198,70,200,0,176,1,80,85
-    push cs
-    call near ptr pO075_2526
-    db 196,62,238,156,137,126,187,140,70,189,128,126,200,6,116,3,233,38,1,198,70,201,0
-    call pR670_0277
-    db 8,192,116,247
-    call pR670_0187
-    db 136,70,202,138,70,202,80,191,72,38,14,87,154,36,13,37,8,116,33,128,126,202,92,117,6,198,70,202
-    db 55,235,17,138,70,202,48,228,45,49,0,139,248,138,133,100,83,136,70,202,198,70,201,1,128,126,202,0
-    db 117,12
-    call pR670_0187
-    db 136,70,202,198,70,201,1,128,126,202,27,117,4,198,70,202,0,128,126,201,0,116,3,233,185,0,138,70
-    db 202,60,8,117,100,128,126,192,1,118,92,196,62,238,156,38,138,5,136,70,186,138,70,192,58,70,186,119
-    db 45,136,70,191,235,3,254,70,191,138,70,191,48,228,196,62,238,156,3,248,38,138,21,138,70,191,48,228
-    db 72,196,62,238,156,3,248,38,136,21,138,70,191,58,70,186,117,216,196,62,238,156,38,254,13,138,70,192
-    db 196,62,238,156,38,58,5,118,10,196,62,238,156,38,138,5,136,70,192,235,78,60,32,114,74,60,122,119
-    db 70,128,126,192,15,119,64,138,86,202,138,70,192,48,228,196,62,238,156,3,248,38,136,21,254,70,192,128
-    db 126,192,15,118,4,198,70,192,15,138,70,192,196,62,238,156,38,58,5,118,22,196,62,238,156,38,254,5
-    db 138,70,192,48,228,196,62,238,156,3,248,38,198,5,32,235,50,176,3,80
-    call pO108_00CB
-    db 191,130,40,30,87,191,242,45,30,87,176,1,80,176,0,80
-    call pO108_1009
-    db 136,70,203,160,230,170,136,70,201,128,126,201,0,116,6,138,70,203,136,70,202,176,0,80,85
-    push cs
-    call near ptr pO075_2526
-    db 128,126,201,0,117,3,233,78,1,138,70,202,60,83,117,123,128,126,200,6,117,114,196,62,238,156,38,128
-    db 61,1,118,104,138,70,192,196,62,238,156,38,58,5,117,19,196,62,238,156,38,254,13,196,62,238,156,38
-    db 138,5,136,70,192,235,73,196,62,238,156,38,138,5,48,228,72,136,70,186,138,70,192,58,70,186,119,45
-    db 136,70,191,235,3,254,70,191,138,70,191,48,228,64,196,62,238,156,3,248,38,138,21,138,70,191,48,228
-    db 196,62,238,156,3,248,38,136,21,138,70,191,58,70,186,117,216,196,62,238,156,38,254,13,233,201,0,60
-    db 80,117,21,198,6,12,171,255,254,70,200,128,126,200,7,118,4,198,70,200,0,233,176,0,60,72,117,21
-    db 198,6,12,171,255,254,78,200,128,126,200,255,117,4,198,70,200,7,233,151,0,60,71,117,22,128,62,197
-    db 197,0,116,13,128,62,12,171,255,116,6,160,12,171,136,70,200,235,125,60,27,117,121,198,70,204,0,235
-    db 3,254,70,204,138,70,204,152,139,248,138,83,250,138,70,204,152,209,224,196,62,238,156,3,248,38,136,85
-    db 17,128,126,204,5,117,222,138,70,249,196,62,238,156,38,136,69,28,138,70,248,196,62,238,156,38,136,133
-    db 178,0,141,126,207,22,87,196,62,238,156,6,87,184,15,0,80,154,137,10,37,8,196,126,187,38,138,133
-    db 178,0,196,62,238,156,38,136,133,252,1,255,54,240,156,255,54,238,156
-    call pO0EC_0EBF
-    db 198,6,134,174,0,233,92,10,233,184,8,138,70,203,60,1,116,3,233,234,4,128,126,200,6,114,3,233
-    db 127,4,138,70,200,136,70,204,138,70,204,152,209,224,196,126,187,3,248,38,254,77,17,138,70,204,60,0
-    db 116,3,233,215,0,196,126,187,38,128,125,28,0,118,24,196,126,187,38,254,77,28,138,70,204,152,209,224
-    db 196,126,187,3,248,38,254,69,17,235,98,196,126,187,38,138,133,102,1,152,139,208,196,126,187,38,138,133
-    db 173,0,152,139,248,177,4,211,231,3,250,138,149,247,110,138,70,204,152,209,224,196,126,187,3,248,38,138
-    db 69,17,58,194,115,47,196,126,187,38,138,133,102,1,152,139,208,196,126,187,38,138,133,173,0,152,139,248
-    db 177,4,211,231,3,250,138,149,247,110,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,196,126,187
-    db 38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149,143,112,138,70,204,152,209,224,196,126
-    db 187,3,248,38,138,69,17,58,194,115,38,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231
-    db 1,247,138,149,143,112,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,233,135,3,60,1,116,3
-    db 233,155,0,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,253,110,138,70,204,152,209,224
-    db 196,126,187,3,248,38,138,69,17,58,194,115,34,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231
-    db 138,149,253,110,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,196,126,187,38,138,133,174,0,152
-    db 139,248,209,231,139,247,209,231,1,247,138,149,144,112,138,70,204,152,209,224,196,126,187,3,248,38,138,69
-    db 17,58,194,115,38,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149,144,112
-    db 138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,233,229,2,60,2,116,3,233,175,0,196,126,187
-    db 38,138,133,173,0,152,139,248,177,4,211,231,138,149,255,110,138,70,204,152,209,224,196,126,187,3,248,38
-    db 138,69,17,58,194,115,34,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,255,110,138,70
-    db 204,152,209,224,196,126,187,3,248,38,136,85,17,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247
-    db 209,231,1,247,138,149,145,112,138,70,204,152,209,224,196,126,187,3,248,38,138,69,17,58,194,115,38,196
-    db 126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149,145,112,138,70,204,152,209,224
-    db 196,126,187,3,248,38,136,85,17,196,126,187,38,128,189,125,1,0,118,9,196,126,187,38,198,133,125,1
-    db 1,233,47,2,60,3,116,3,233,155,0,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149
-    db 1,111,138,70,204,152,209,224,196,126,187,3,248,38,138,69,17,58,194,115,34,196,126,187,38,138,133,173
-    db 0,152,139,248,177,4,211,231,138,149,1,111,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,196
-    db 126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149,146,112,138,70,204,152,209,224
-    db 196,126,187,3,248,38,138,69,17,58,194,115,38,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247
-    db 209,231,1,247,138,149,146,112,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,233,141,1,60,4
-    db 116,3,233,231,0,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,3,111,138,70,204,152
-    db 209,224,196,126,187,3,248,38,138,69,17,58,194,115,34,196,126,187,38,138,133,173,0,152,139,248,177,4
-    db 211,231,138,149,3,111,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,196,126,187,38,138,133,174
-    db 0,152,139,248,209,231,139,247,209,231,1,247,138,149,147,112,138,70,204,152,209,224,196,126,187,3,248,38
-    db 138,69,17,58,194,115,38,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149
-    db 147,112,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,255,54,240,156,255,54,238,156
-    call pO0AA_3975
-    db 196,126,187,38,58,133,178,0,115,21,255,54,240,156,255,54,238,156
-    call pO0AA_3975
-    db 196,126,187,38,136,133,178,0,196,126,187,38,138,133,178,0,196,126,187,38,136,133,252,1,198,70,200,6
-    db 176,0,80,85
-    push cs
-    call near ptr pO075_2526
-    db 198,70,200,4,233,159,0,60,5,116,3,233,152,0,196,126,187,38,138,133,173,0,152,139,248,177,4,211
-    db 231,138,149,5,111,138,70,204,152,209,224,196,126,187,3,248,38,138,69,17,58,194,115,34,196,126,187,38
-    db 138,133,173,0,152,139,248,177,4,211,231,138,149,5,111,138,70,204,152,209,224,196,126,187,3,248,38,136
-    db 85,17,196,126,187,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,138,149,148,112,138,70,204
-    db 152,209,224,196,126,187,3,248,38,138,69,17,58,194,115,38,196,126,187,38,138,133,174,0,152,139,248,209
-    db 231,139,247,209,231,1,247,138,149,148,112,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,235,95
-    db 128,126,200,7,117,68,196,126,187,38,254,141,178,0,255,54,240,156,255,54,238,156
-    push cs
-    call near ptr pO075_441E
-    db 196,126,187,38,58,133,178,0,118,20,255,54,240,156,255,54,238,156
-    push cs
-    call near ptr pO075_441E
-    db 196,126,187,38,136,133,178,0,196,126,187,38,138,133,178,0,196,126,187,38,136,133,252,1,235,21,128,126
-    db 192,1,117,12,196,62,238,156,38,138,5,136,70,192,235,3,254,78,192,233,196,3,60,0,116,3,233,64
-    db 3,128,126,200,6,114,3,233,212,2,138,70,200,136,70,204,138,70,204,152,209,224,196,126,187,3,248,38
-    db 254,69,17,138,70,204,60,0,116,3,233,203,0,196,126,187,38,138,133,102,1,152,139,208,196,126,187,38
-    db 138,133,173,0,152,139,248,177,4,211,231,3,250,138,149,249,110,138,70,204,152,209,224,196,126,187,3,248
-    db 38,138,69,17,58,194,119,3,233,146,0,138,70,204,152,209,224,196,126,187,3,248,38,128,125,17,18,118
-    db 81,196,126,187,38,128,189,83,1,0,119,22,196,126,187,38,128,189,84,1,0,119,11,196,126,187,38,128
-    db 189,85,1,0,118,48,196,126,187,38,138,133,102,1,152,139,208,196,126,187,38,138,133,173,0,152,139,248
-    db 177,4,211,231,3,250,138,133,251,110,196,126,187,38,58,69,28,118,7,196,126,187,38,254,69,28,196,126
-    db 187,38,138,133,102,1,152,139,208,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,3,250,138,149
-    db 249,110,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,233,232,1,60,1,117,75,196,126,187,38
-    db 138,133,173,0,152,139,248,177,4,211,231,138,149,254,110,138,70,204,152,209,224,196,126,187,3,248,38,138
-    db 69,17,58,194,118,34,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,254,110,138,70,204
-    db 152,209,224,196,126,187,3,248,38,136,85,17,233,153,1,60,2,117,95,196,126,187,38,138,133,173,0,152
-    db 139,248,177,4,211,231,138,149,0,111,138,70,204,152,209,224,196,126,187,3,248,38,138,69,17,58,194,118
-    db 34,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,0,111,138,70,204,152,209,224,196,126
-    db 187,3,248,38,136,85,17,196,126,187,38,128,189,125,1,0,118,9,196,126,187,38,198,133,125,1,1,233
-    db 54,1,60,3,117,75,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,2,111,138,70,204
-    db 152,209,224,196,126,187,3,248,38,138,69,17,58,194,118,34,196,126,187,38,138,133,173,0,152,139,248,177
-    db 4,211,231,138,149,2,111,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,233,231,0,60,4,116
-    db 3,233,148,0,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,4,111,138,70,204,152,209
-    db 224,196,126,187,3,248,38,138,69,17,58,194,118,34,196,126,187,38,138,133,173,0,152,139,248,177,4,211
-    db 231,138,149,4,111,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,255,54,240,156,255,54,238,156
-    push cs
-    call near ptr pO075_441E
-    db 196,126,187,38,58,133,178,0,118,20,255,54,240,156,255,54,238,156
-    push cs
-    call near ptr pO075_441E
-    db 196,126,187,38,136,133,178,0,196,126,187,38,138,133,178,0,196,126,187,38,136,133,252,1,198,70,200,6
-    db 176,0,80,85
-    push cs
-    call near ptr pO075_2526
-    db 198,70,200,4,235,76,60,5,117,72,196,126,187,38,138,133,173,0,152,139,248,177,4,211,231,138,149,6
-    db 111,138,70,204,152,209,224,196,126,187,3,248,38,138,69,17,58,194,118,34,196,126,187,38,138,133,173,0
-    db 152,139,248,177,4,211,231,138,149,6,111,138,70,204,152,209,224,196,126,187,3,248,38,136,85,17,235,97
-    db 128,126,200,7,117,70,196,126,187,38,254,133,178,0,255,54,240,156,255,54,238,156
-    call pO0AA_3975
-    db 196,126,187,38,58,133,178,0,115,21,255,54,240,156,255,54,238,156
-    call pO0AA_3975
-    db 196,126,187,38,136,133,178,0,196,126,187,38,138,133,178,0,196,126,187,38,136,133,252,1,235,21,138,70
-    db 192,196,62,238,156,38,58,5,117,6,198,70,192,1,235,3,254,70,192,235,125,60,3,117,121,198,70,204
-    db 0,235,3,254,70,204,138,70,204,152,139,248,138,83,250,138,70,204,152,209,224,196,62,238,156,3,248,38
-    db 136,85,17,128,126,204,5,117,222,138,70,249,196,62,238,156,38,136,69,28,138,70,248,196,62,238,156,38
-    db 136,133,178,0,196,126,187,38,138,133,178,0,196,62,238,156,38,136,133,252,1,141,126,207,22,87,196,62
-    db 238,156,6,87,184,15,0,80,154,137,10,37,8,255,54,240,156,255,54,238,156
-    call pO0EC_0EBF
-    db 198,6,134,174,0,233,161,1,255,54,240,156,255,54,238,156
-    call pO0EC_0EBF
-    call pO0AA_0791
-    db 176,1,80,85
-    push cs
-    call near ptr pO075_2526
-    db 128,126,201,0,116,3,233,101,244,128,126,203,2,116,3,233,92,244,255,54,240,156,255,54,238,156
-    call pO102_0000
-    db 196,62,238,156,38,128,189,86,1,0,118,17,85
-    push cs
-    call near ptr pO075_24E6
-    db 255,54,240,156,255,54,238,156
-    push cs
-    call near ptr pO075_21EE
-    db 196,62,238,156,137,126,187,140,70,189,198,70,248,0,198,70,191,0,198,70,205,0,235,3,254,70,205,138
-    db 70,205,152,196,126,187,3,248,38,128,189,81,1,0,119,3,233,162,0,138,70,205,152,139,248,138,149,201
-    db 109,138,70,205,152,196,126,187,3,248,38,138,133,81,1,58,194,115,93,128,126,205,4,117,44,255,54,240
-    db 156,255,54,238,156,138,70,205,80
-    call pO0EC_3D89
-    db 152,139,208,138,70,205,152,196,126,187,3,248,38,138,133,81,1,48,228,64,247,226,0,70,248,235,41,255
-    db 54,240,156,255,54,238,156,138,70,205,80
-    call pO0EC_3D89
-    db 152,139,208,138,70,205,152,196,126,187,3,248,38,138,133,81,1,48,228,247,226,0,70,248,235,38,255,54
-    db 240,156,255,54,238,156,138,70,205,80
-    call pO0EC_3D89
-    db 152,139,208,138,70,205,152,139,248,138,133,201,109,48,228,72,247,226,0,70,248,254,70,191,128,126,205,6
-    db 116,3,233,62,255,138,70,191,48,228,139,200,138,70,248,48,228,153,247,241,136,70,248,138,70,248,48,228
-    db 139,208,196,126,187,38,138,133,178,0,48,228,43,194,196,126,187,38,136,133,124,1,198,70,204,0,235,3
-    db 254,70,204,138,70,204,152,209,224,196,62,238,156,3,248,38,138,85,17,138,70,204,152,209,224,196,62,238
-    db 156,3,248,38,136,85,16,128,126,204,5,117,215,196,62,238,156,38,138,69,28,196,62,238,156,38,136,69
-    db 29,198,6,134,174,0
+  {@266F-267B}
+  if pO0AA_3594 = 0 then
+    Exit;
+  {@267B-26FE}
+if (PR370_longint(p9CEE)^.v <> 1500001) and (PR370_longint(p9CEE)^.v <> 750000)
+      and (PR370_longint(p9CEE)^.v <> 500000) and (ParamStr(3) <> 'HALIBUT') then
+  begin
+    {@26D5-26FB}
+    pR47F_0CC0(PR0_string(p9CEE)^.v + s1C2F, 14, 0);
+    {@26FB-26FE}
+    Exit;
   end;
+  {@26FE-2703}
+  bAB0C := 255;
+  {@2703-2708}
+  bAE86 := 1;
+  {@2708-270D}
+  pO0AA_0041;
+  for v52b := 0 to 5 do
+    c49.v6a[v52sb] := PRA17_byte(p9CEE)^.a[v52sb * 2];
+  {@2735-2740}
+  c49.v7b := PR28_byte(p9CEE)^.v;
+  {@2740-274C}
+  c49.v8b := PR178_byte(p9CEE)^.v;
+  {@274C-2760}
+  c49.v49a := PR0_string(p9CEE)^.v;
+  {@2760-2764}
+  v64b := 1;
+  {@2764-2768}
+  v56b := 7;
+  {@2768-2770}
+  pO075_2526(0);
+  {@2770-2774}
+  v56b := 0;
+  {@2774-277C}
+  pO075_2526(1);
+  {@277C-2786}
+  with PW27_69_2668(p9CEE)^ do
+  begin
+    {@2786-332A}
+    repeat
+      {@2786-3321}
+      repeat
+        {@2786-28E7}
+        if v56b = 6 then
+        begin
+          {@278F-2793}
+          v55b := 0;
+          {@2793-279C}
+          repeat
+          until pR670_0277 <> 0;
+          {@279C-27A4}
+          v54b := pR670_0187;
+          if v54b in [49..57, 92] then
+          begin
+            {@27B4-27D1}
+            if v54b = 92 then
+              v54b := 55
+            else
+              v54b := a5364_ec3f[v54b - 49];
+            {@27D1-27D5}
+            v55b := 1;
+          end;
+          {@27D5-27E7}
+          if v54b = 0 then
+          begin
+            {@27DB-27E3}
+            v54b := pR670_0187;
+            {@27E3-27E7}
+            v55b := 1;
+          end;
+          {@27E7-27F1}
+          if v54b = 27 then
+            v54b := 0;
+          {@27F1-28B3}
+          if v55b = 0 then
+            case v54b of
+              8: begin
+                {@2801-2863}
+                if v64b > 1 then
+                begin
+                  {@2807-2846}
+                  for v65b := v64b to PR0_byte(p9CEE)^.v do
+                    PRA0_byte(p9CEE)^.a[v65b - 1] := PRA0_byte(p9CEE)^.a[v65b];
+                  {@2846-284D}
+                  Dec(PR0_byte(p9CEE)^.v);
+                  if v64b > PR0_byte(p9CEE)^.v then
+                    v64b := PR0_byte(p9CEE)^.v;
+                end;
+              end;
+              32..122: begin
+                {@286D-28B3}
+                if v64b <= 15 then
+                begin
+                  {@2873-2884}
+                  PRA0_byte(p9CEE)^.a[v64b] := v54b;
+                  {@2884-2887}
+                  Inc(v64b);
+                  if v64b > 15 then
+                    v64b := 15;
+                  {@2891-28B3}
+                  if v64b > PR0_byte(p9CEE)^.v then
+                  begin
+                    {@289D-28A4}
+                    Inc(PR0_byte(p9CEE)^.v);
+                    {@28A4-28B3}
+                    PRA0_byte(p9CEE)^.a[v64b] := 32;
+                  end;
+                end;
+              end;
+            end;
+        end
+        else
+        begin
+          {@28B5-28BD}
+          pO108_00CB(3);
+          {@28BD-28D5}
+          v53b := pO108_1009(s2882, s2DF2, 1, 0);
+          {@28D5-28DB}
+          v55b := bAAE6;
+          if v55b <> 0 then
+            v54b := v53b;
+        end;
+        {@28E7-28EF}
+        pO075_2526(0);
+        if v55b <> 0 then
+          case v54b of
+            83: begin
+              {@28FF-2977}
+              if (v56b = 6) and (PR0_byte(p9CEE)^.v > 1) then
+              begin
+                {@290F-2977}
+                if v64b = PR0_byte(p9CEE)^.v then
+                begin
+                  {@291B-2922}
+                  Dec(PR0_byte(p9CEE)^.v);
+                  {@2922-292C}
+                  v64b := PR0_byte(p9CEE)^.v;
+                end
+                else
+                begin
+                  {@292E-2970}
+                  for v65b := v64b to PR0_byte(p9CEE)^.v - 1 do
+                    PRA0_byte(p9CEE)^.a[v65b] := PRA0_byte(p9CEE)^.a[v65b + 1];
+                  {@2970-2977}
+                  Dec(PR0_byte(p9CEE)^.v);
+                end;
+              end;
+            end;
+            80: begin
+              {@297E-2983}
+              bAB0C := 255;
+              {@2983-2986}
+              Inc(v56b);
+              if v56b > 7 then
+                v56b := 0;
+            end;
+            72: begin
+              {@2997-299C}
+              bAB0C := 255;
+              {@299C-299F}
+              Dec(v56b);
+              if v56b = 255 then
+                v56b := 7;
+            end;
+            71: begin
+              {@29B0-29C4}
+              if (bC5C5 <> 0) and (bAB0C <> 255) then
+                v56b := bAB0C;
+            end;
+            27: begin
+              {@29CA-29F2}
+              for v52b := 0 to 5 do
+                PRA17_byte(p9CEE)^.a[v52sb * 2] := c49.v6a[v52sb];
+              {@29F2-29FD}
+              PR28_byte(p9CEE)^.v := c49.v7b;
+              {@29FD-2A09}
+              PR178_byte(p9CEE)^.v := c49.v8b;
+              {@2A09-2A1D}
+              PR0_string_15_(p9CEE)^.v := c49.v49a2;
+              {@2A1D-2A2E}
+              PR508_byte(p9CEE)^.v := _w69_178byte;
+              {@2A2E-2A3B}
+              pO0EC_0EBF(p9CEE);
+              {@2A3B-2A40}
+              bAE86 := 0;
+              {@2A40-2A43}
+              Exit;
+            end;
+          end
+        else
+          case v53b of
+            1: begin
+              {@2A50-2F37}
+              if v56b < 6 then
+              begin
+                {@2A59-2A5F}
+                v52b := v56b;
+                {@2A5F-2A6E}
+                Dec(_w69_17r2_0[v52sb].f);
+                case v52b of
+                  0: begin
+                    {@2A78-2AFC}
+                    if _w69_28byte > 0 then
+                    begin
+                      {@2A82-2A89}
+                      Dec(_w69_28byte);
+                      {@2A89-2A98}
+                      Inc(_w69_17r2_0[v52sb].f);
+                    end
+                    else
+                    begin
+                      {@2A9A-2AFC}
+                      if _w69_17r2_0[v52sb].f < a6EF7_9d21[_w69_173shortint, _w69_358shortint] then
+                        _w69_17r2_0[v52sb].f := a6EF7_9d21[_w69_173shortint, _w69_358shortint];
+                    end;
+                    {@2AFC-2B4C}
+                    if _w69_17r2_0[v52sb].f < a708F_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a708F_07d2[_w69_174shortint].f;
+                  end;
+                  1: begin
+                    {@2B56-2B9E}
+                    if _w69_17r2_0[v52sb].f < a6EFD_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6EFD_3981[_w69_173shortint].f;
+                    {@2B9E-2BEE}
+                    if _w69_17r2_0[v52sb].f < a7090_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a7090_07d2[_w69_174shortint].f;
+                  end;
+                  2: begin
+                    {@2BF8-2C40}
+                    if _w69_17r2_0[v52sb].f < a6EFF_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6EFF_3981[_w69_173shortint].f;
+                    {@2C40-2C90}
+                    if _w69_17r2_0[v52sb].f < a7091_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a7091_07d2[_w69_174shortint].f;
+                    {@2C90-2CA4}
+                    if _w69_381byte > 0 then
+                      _w69_381byte := 1;
+                  end;
+                  3: begin
+                    {@2CAE-2CF6}
+                    if _w69_17r2_0[v52sb].f < a6F01_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F01_3981[_w69_173shortint].f;
+                    {@2CF6-2D46}
+                    if _w69_17r2_0[v52sb].f < a7092_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a7092_07d2[_w69_174shortint].f;
+                  end;
+                  4: begin
+                    {@2D50-2D98}
+                    if _w69_17r2_0[v52sb].f < a6F03_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F03_3981[_w69_173shortint].f;
+                    {@2D98-2DE8}
+                    if _w69_17r2_0[v52sb].f < a7093_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a7093_07d2[_w69_174shortint].f;
+                    {@2DE8-2E14}
+                    if Byte(pO0AA_3975(p9CEE)) < _w69_178byte then
+                      _w69_178byte := pO0AA_3975(p9CEE);
+                    {@2E14-2E24}
+                    _w69_508byte := _w69_178byte;
+                    {@2E24-2E28}
+                    v56b := 6;
+                    {@2E28-2E30}
+                    pO075_2526(0);
+                    {@2E30-2E34}
+                    v56b := 4;
+                  end;
+                  5: begin
+                    {@2E3E-2E86}
+                    if _w69_17r2_0[v52sb].f < a6F05_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F05_3981[_w69_173shortint].f;
+                    {@2E86-2ED6}
+                    if _w69_17r2_0[v52sb].f < a7094_07d2[_w69_174shortint].f then
+                      _w69_17r2_0[v52sb].f := a7094_07d2[_w69_174shortint].f;
+                  end;
+                end;
+              end
+              else
+              begin
+                {@2ED8-2F37}
+                if v56b = 7 then
+                begin
+                  {@2EDE-2EE6}
+                  Dec(_w69_178byte);
+                  if Byte(pO075_441E(p9CEE)) > _w69_178byte then
+                    _w69_178byte := pO075_441E(p9CEE);
+                  {@2F10-2F20}
+                  _w69_508byte := _w69_178byte;
+                end
+                else
+                begin
+                  {@2F22-2F37}
+                  if v64b = 1 then
+                    v64b := PR0_byte(p9CEE)^.v
+                  else
+                    Dec(v64b);
+                end;
+              end;
+            end;
+            0: begin
+              {@2F41-327F}
+              if v56b < 6 then
+              begin
+                {@2F4A-2F50}
+                v52b := v56b;
+                {@2F50-2F5F}
+                Inc(_w69_17r2_0[v52sb].f);
+                case v52b of
+                  0: begin
+                    {@2F69-3031}
+                    if _w69_17r2_0[v52sb].f > a6EF9_9d21[_w69_173shortint, _w69_358shortint] then
+                    begin
+                      {@2F9F-3002}
+if (_w69_17r2_0[v52sb].f > 18) and ((_w69_339byte > 0) or ((_w69_340byte > 0)
+                          or (_w69_341byte > 0))) and (a6EFB_9d21[_w69_173shortint,
+                          _w69_358shortint] > _w69_28byte) then
+                        Inc(_w69_28byte);
+                      {@3002-3031}
+                      _w69_17r2_0[v52sb].f := a6EF9_9d21[_w69_173shortint, _w69_358shortint];
+                    end;
+                  end;
+                  1: begin
+                    {@3038-3080}
+                    if _w69_17r2_0[v52sb].f > a6EFE_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6EFE_3981[_w69_173shortint].f;
+                  end;
+                  2: begin
+                    {@3087-30CF}
+                    if _w69_17r2_0[v52sb].f > a6F00_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F00_3981[_w69_173shortint].f;
+                    {@30CF-30E3}
+                    if _w69_381byte > 0 then
+                      _w69_381byte := 1;
+                  end;
+                  3: begin
+                    {@30EA-3132}
+                    if _w69_17r2_0[v52sb].f > a6F02_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F02_3981[_w69_173shortint].f;
+                  end;
+                  4: begin
+                    {@313C-3184}
+                    if _w69_17r2_0[v52sb].f > a6F04_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F04_3981[_w69_173shortint].f;
+                    {@3184-31AE}
+                    if Byte(pO075_441E(p9CEE)) > _w69_178byte then
+                      _w69_178byte := pO075_441E(p9CEE);
+                    {@31AE-31BE}
+                    _w69_508byte := _w69_178byte;
+                    {@31BE-31C2}
+                    v56b := 6;
+                    {@31C2-31CA}
+                    pO075_2526(0);
+                    {@31CA-31CE}
+                    v56b := 4;
+                  end;
+                  5: begin
+                    {@31D4-321C}
+                    if _w69_17r2_0[v52sb].f > a6F06_3981[_w69_173shortint].f then
+                      _w69_17r2_0[v52sb].f := a6F06_3981[_w69_173shortint].f;
+                  end;
+                end;
+              end
+              else
+              begin
+                {@321E-327F}
+                if v56b = 7 then
+                begin
+                  {@3224-322C}
+                  Inc(_w69_178byte);
+                  if Byte(pO0AA_3975(p9CEE)) < _w69_178byte then
+                    _w69_178byte := pO0AA_3975(p9CEE);
+                  {@3258-3268}
+                  _w69_508byte := _w69_178byte;
+                end
+                else
+                begin
+                  {@326A-327F}
+                  if v64b = PR0_byte(p9CEE)^.v then
+                    v64b := 1
+                  else
+                    Inc(v64b);
+                end;
+              end;
+            end;
+            3: begin
+              {@3285-32AD}
+              for v52b := 0 to 5 do
+                PRA17_byte(p9CEE)^.a[v52sb * 2] := c49.v6a[v52sb];
+              {@32AD-32B8}
+              PR28_byte(p9CEE)^.v := c49.v7b;
+              {@32B8-32C4}
+              PR178_byte(p9CEE)^.v := c49.v8b;
+              {@32C4-32D5}
+              PR508_byte(p9CEE)^.v := _w69_178byte;
+              {@32D5-32E9}
+              PR0_string_15_(p9CEE)^.v := c49.v49a2;
+              {@32E9-32F6}
+              pO0EC_0EBF(p9CEE);
+              {@32F6-32FB}
+              bAE86 := 0;
+              {@32FB-32FE}
+              Exit;
+            end;
+          end;
+        {@32FE-330B}
+        pO0EC_0EBF(p9CEE);
+        {@330B-3310}
+        pO0AA_0791;
+        {@3310-3318}
+        pO075_2526(1);
+      until v55b = 0;
+    until v53b = 2;
+  end;
+  {@332A-3337}
+  pO102_0000(p9CEE);
+  if PR342_byte(p9CEE)^.v > 0 then
+  begin
+    {@3343-3348}
+    pO075_24E6;
+    {@3348-3354}
+    pO075_21EE(p9CEE);
+  end;
+  {@3354-342E}
+  with PW29_69_2668(p9CEE)^ do
+  begin
+    c49.v8b := 0;
+    v65b := 0;
+    for v51b := 0 to 6 do
+    begin
+      {@336F-3425}
+      if _w69_337abyte[v51sb] > 0 then
+      begin
+        {@3383-3422}
+        if _w69_337abyte[v51sb] < a6DC9_ec3f[v51sb] then
+        begin
+          {@339F-33FA}
+          if v51b = 4 then
+            Inc(c49.v8b, (_w69_337abyte[v51sb] + 1) * pO0EC_3D89(p9CEE, v51b))
+          else
+            Inc(c49.v8b, _w69_337abyte[v51sb] * pO0EC_3D89(p9CEE, v51b));
+        end
+        else
+          Inc(c49.v8b, (a6DC9_ec3f[v51sb] - 1) * pO0EC_3D89(p9CEE, v51b));
+        {@3422-3425}
+        Inc(v65b);
+      end;
+    end;
+    {@342E-3440}
+    c49.v8b := Byte(c49.v8b div v65b);
+    {@3440-345B}
+    _w69_380byte := _w69_178byte - c49.v8b;
+  end;
+  for v52b := 0 to 5 do
+    PRA16_byte(p9CEE)^.a[v52sb * 2] := PRA17_byte(p9CEE)^.a[v52sb * 2];
+  {@348A-349A}
+  PR29_byte(p9CEE)^.v := PR28_byte(p9CEE)^.v;
+  {@349A-349F}
+  bAE86 := 0;
 end;
 
 { 34C0 }
 procedure pO075_34C0;
-var loc: array[1..288] of byte;
+var
+  v4p: pointer;
+  v8p: pointer;
+  v12p: pointer;
+  v16p: pointer;
+  v20p: pointer;
+  v24p: pointer;
+  v26w: word;
+  v27b: byte;
+  _f1: array[1..1] of byte;
+  v29b: byte;
+  v30b: byte;
+  v31b: byte;
+  _f2: array[1..1] of byte;
+  v26b: byte absolute v26w;
+  v12b: byte absolute v12p;
+  v8b: byte absolute v8p;
+  v4b: byte absolute v4p;
 begin
   if false then begin
     if LV = '* ' then;
     if LV = 'too many rangers in party' then;
+    if LV = FS then;
   end;
+  {@34C7-34CB}
+  v31b := 0;
+  {@34CB-34DC}
+  pR142_0217(1, 1, 38, 22);
+  {@34DC-34E4}
+  pO108_00CB(2);
+  {@34E4-34FC}
+  v27b := pO108_1009(s1C58, s2E1B, 0, 0);
+  if (bAAE6 <> 0) and (v27b = 27) then
+    v27b := 2;
   asm
-    db 198,70,225,0,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,2,80
-    call pO108_00CB
-    db 191,88,28,30,87,191,27,46,30,87,176,0,80,176,0,80
-    call pO108_1009
-    db 136,70,229,128,62,230,170,0,116,10,128,126,229,27,117,4,198,70,229,2,138,70,229,60,0,117,7,198
-    db 6,131,174,1,235,18,60,1,117,7,198,6,131,174,0,235,7,60,2,117,3,233,63,2,141,126,252,22
-    db 87,141,126,248,22,87
-    call pO06E_033C
-    db 139,70,252,11,70,254,117,3,233,37,2,49,192,137,70,230,139,70,252,139,86,254,137,70,244,137,86,246
-    db 198,70,227,1,176,0,80
-    call pO108_00CB
-    db 191,129,28,30,87,191,68,46,30,87,176,1,80,176,2,80,176,38,80,176,22,80,255,118,254,255,118,252
-    db 176,1,80,176,0,80,141,126,227,22,87,141,126,230,22,87,141,126,244,22,87
-    call pO108_1D45
-    db 136,70,229,128,62,230,170,0,116,10,128,126,229,27,117,4,198,70,229,1,128,126,229,0,116,3,233,145
-    db 1,196,126,244,38,128,125,1,42,117,3,233,132,1
-    call pO108_167D
-    db 184,254,1,80,154,63,2,37,8,137,70,236,137,86,238,255,118,230,255,118,250,255,118,248
-    call pO108_0000
-    db 137,70,240,137,86,242,196,126,240,6,87,255,118,238,255,118,236,176,0,80,176,1,80
-    call pO06E_10BA
-    db 141,190,224,254,22,87,191,163,52,14,87,154,111,10,37,8,196,126,244,6,87,154,252,10,37,8,196,126
-    db 244,6,87,184,40,0,80,154,137,10,37,8,198,70,226,0,161,242,156,11,6,244,156,117,31,196,62,248
-    db 135,38,198,69,31,0,255,118,238,255,118,236
-    call pO06E_1EA6
-    db 176,1,80
-    call pO06E_07FF
-    db 233,242,0,161,242,156,139,22,244,156,137,70,232,137,86,234,198,70,225,0,139,70,232,11,70,234,116,66
-    db 196,126,232,6,87,196,126,236,6,87,154,116,11,37,8,116,49,196,126,232,38,128,189,71,1,128,115,3
-    db 254,70,226,196,126,232,38,128,189,85,1,0,118,3,254,70,225,196,126,232,38,139,133,227,1,38,139,149
-    db 229,1,137,70,232,137,86,234,235,182,139,70,232,11,70,234,117,91,196,126,236,38,128,189,71,1,128,115
-    db 6,128,126,226,6,114,22,196,126,236,38,128,189,71,1,127,118,63,196,62,248,135,38,128,125,31,8,115
-    db 52,196,126,236,38,128,189,85,1,0,116,6,128,126,225,3,115,35,255,118,238,255,118,236
-    call pO06E_1EA6
-    db 176,1,80
-    call pO06E_07FF
-    db 196,126,236,38,128,189,71,1,128,115,3,254,70,226,235,52,196,126,236,38,128,189,85,1,0,118,26,128
-    db 126,225,2,118,20,141,126,198,22,87,191,166,52,14,87,154,111,10,37,8
-    call pO0EC_1AAC
-    db 255,118,238,255,118,236,184,254,1,80,154,84,2,37,8,128,126,229,1,116,20,128,126,226,5,119,14,196
-    db 62,248,135,38,128,125,31,7,119,3,233,250,253,141,126,252,22,87
-    call pO108_2363
+  db 138,70,229,60,0,117,7,198,6,131,174,1,235,18,60,1,117,7,198,6,131,174,0,235,7,60,2,117
+  db 3,233,63,2
   end;
+  {@352D-353C}
+  pO06E_033C(@v4b, @v8b);
+  {@353C-3547}
+  if v4p = nil then
+    Exit;
+  {@3547-354C}
+  v26w := 0;
+  {@354C-3558}
+  v12p := v4p;
+  {@3558-355C}
+  v29b := 1;
+  {@355C-3762}
+  repeat
+    {@355C-3564}
+    pO108_00CB(0);
+    {@3564-359D}
+    v27b := pO108_1D45(s1C81, s2E44, 1, 2, 38, 22, v4p, 1, 0, @v29b, @v26b, @v12b);
+    if (bAAE6 <> 0) and (v27b = 27) then
+      v27b := 1;
+    {@35AE-3748}
+    if (v27b = 0) and (PR1_byte(v12p)^.v <> 42) then
+    begin
+      {@35C4-35C9}
+      pO108_167D;
+      {@35C9-35D8}
+      GetMem(v20p, 510);
+      {@35D8-35EC}
+      v16p := pO108_0000(v26w, v8p);
+      {@35EC-3602}
+      pO06E_10BA(PR0_string(v16p)^.v, v20p, 0, 1);
+      {@3602-362A}
+      PR0_string_40_(v12p)^.v := '* ' + PR0_string(v12p)^.v;
+      {@362A-362E}
+      v30b := 0;
+      if p9CF2 = nil then
+      begin
+        {@3637-3640}
+        PR31_byte(p87F8)^.v := 0;
+        {@3640-364B}
+        pO06E_1EA6(v20p);
+        {@364B-3653}
+        pO06E_07FF(1);
+      end
+      else
+      begin
+        {@3656-3663}
+        v24p := p9CF2;
+        {@3663-3667}
+        v31b := 0;
+        {@3667-36B1}
+        while (v24p <> nil) and (PR0_string(v24p)^.v <> PR0_string(v20p)^.v) do
+        begin
+          {@3680-368E}
+          if PR327_byte(v24p)^.v < 128 then
+            Inc(v30b);
+          {@368E-369C}
+          if PR341_byte(v24p)^.v > 0 then
+            Inc(v31b);
+          {@369C-36AF}
+          v24p := PR483_pointer(v24p)^.v;
+        end;
+        {@36B1-3748}
+if (v24p = nil) and ((PR327_byte(v20p)^.v < 128) and (v30b < 6) or (PR327_byte(v20p)^.v > 127)
+            and (PR31_byte(p87F8)^.v < 8)) and ((PR341_byte(v20p)^.v = 0) or (v31b < 3)) then
+        begin
+          {@36F1-36FC}
+          pO06E_1EA6(v20p);
+          {@36FC-3704}
+          pO06E_07FF(1);
+          if PR327_byte(v20p)^.v < 128 then
+            Inc(v30b);
+        end
+        else
+        begin
+          {@3714-3739}
+          if (PR341_byte(v20p)^.v > 0) and (v31b > 2) then
+            pO0EC_1AAC('too many rangers in party');
+          {@3739-3748}
+          FreeMem(v20p, 510);
+        end;
+      end;
+    end;
+  until (v27b = 1) or (v30b > 5) or (PR31_byte(p87F8)^.v > 7);
+  {@3762-376C}
+  pO108_2363(@v4b);
 end;
 
 { 3770 }
-procedure pO075_3770(a0: word; a1: word);
-var loc: array[1..4] of byte;
+procedure pO075_3770(a0: byte; a1: byte);
+var
+  v4p: pointer;
 begin
-  asm
-    db 161,242,156,11,6,244,156,117,3,233,61,1,161,242,156,139,22,244,156,137,70,252,137,86,254,139,70,252
-    db 139,86,254,59,22,240,156,117,9,59,6,238,156,117,3,233,162,0,196,126,252,38,139,133,227,1,38,139
-    db 149,229,1,59,22,240,156,117,6,59,6,238,156,116,36,196,126,252,38,139,133,227,1,38,11,133,229,1
-    db 116,21,196,126,252,38,139,133,227,1,38,139,149,229,1,137,70,252,137,86,254,235,195,196,126,252,38,139
-    db 133,227,1,38,11,133,229,1,116,84,128,126,6,0,116,15,196,62,238,156,38,138,133,156,1,80
-    call pO13E_0101
-    db 196,62,238,156,38,139,133,227,1,38,139,149,229,1,196,126,252,38,137,133,227,1,38,137,149,229,1,191
-    db 238,156,30,87
-    push cs
-    call near ptr pO075_0015
-    db 139,70,252,139,86,254,163,238,156,137,22,240,156,128,126,8,0,117,8,196,62,248,135,38,254,77,31,235
-    db 98,128,126,6,0,116,15,196,62,238,156,38,138,133,156,1,80
-    call pO13E_0101
-    db 196,62,238,156,38,139,133,227,1,38,139,149,229,1,163,242,156,137,22,244,156,196,62,238,156,38,139,133
-    db 227,1,38,139,149,229,1,137,70,252,137,86,254,191,238,156,30,87
-    push cs
-    call near ptr pO075_0015
-    db 139,70,252,139,86,254,163,238,156,137,22,240,156,128,126,8,0,117,8,196,62,248,135,38,254,77,31,161
-    db 238,156,11,6,240,156,117,14,161,242,156,139,22,244,156,163,238,156,137,22,240,156
+  {@3776-3782}
+  if p9CF2 = nil then
+    Exit;
+  {@3782-378F}
+  v4p := p9CF2;
+  if v4p <> p9CEE then
+  begin
+    {@37A4-37E1}
+    while (PR483_pointer(v4p)^.v <> p9CEE) and (PR483_pointer(v4p)^.v <> nil) do
+      v4p := PR483_pointer(v4p)^.v;
+    {@37E1-3844}
+    if PR483_pointer(v4p)^.v <> nil then
+    begin
+      {@37F0-3805}
+      if a1 <> 0 then
+        pO13E_0101(PR412_byte(p9CEE)^.v);
+      {@3805-3820}
+      PR483_pointer(v4p)^.v := PR483_pointer(p9CEE)^.v;
+      {@3820-3829}
+      pO075_0015(@b9CEE);
+      {@3829-3836}
+      p9CEE := v4p;
+      if a0 = 0 then
+        Dec(PR31_byte(p87F8)^.v);
+    end;
+  end
+  else
+  begin
+    {@3846-385B}
+    if a1 <> 0 then
+      pO13E_0101(PR412_byte(p9CEE)^.v);
+    {@385B-3870}
+    p9CF2 := PR483_pointer(p9CEE)^.v;
+    {@3870-3884}
+    v4p := PR483_pointer(p9CEE)^.v;
+    {@3884-388D}
+    pO075_0015(@b9CEE);
+    {@388D-389A}
+    p9CEE := v4p;
+    if a0 = 0 then
+      Dec(PR31_byte(p87F8)^.v);
   end;
+  {@38A8-38BF}
+  if p9CEE = nil then
+    p9CEE := p9CF2;
 end;
 
 { 38C5 }
 procedure pO075_38C5;
-var loc: array[1..4] of byte;
 begin
-  asm
-    db 196,62,238,156,137,126,252,140,70,254,196,126,252,38,128,189,173,0,4,117,11,196,126,252,38,198,133,154
-    db 1,3,235,75,196,126,252,38,128,189,102,1,1,117,33,196,126,252,38,128,189,157,1,2,117,11,196,126
-    db 252,38,198,133,154,1,9,235,9,196,126,252,38,198,133,154,1,7,235,31,196,126,252,38,128,189,157,1
-    db 2,117,11,196,126,252,38,198,133,154,1,5,235,9,196,126,252,38,198,133,154,1,0,196,126,252,38,128
-    db 189,81,1,0,118,11,196,126,252,38,198,133,155,1,23,235,86,196,126,252,38,128,189,85,1,0,118,11
-    db 196,126,252,38,198,133,155,1,1,235,64,196,126,252,38,128,189,84,1,0,119,11,196,126,252,38,128,189
-    db 83,1,0,118,11,196,126,252,38,198,133,155,1,24,235,31,196,126,252,38,128,189,86,1,0,118,11,196
-    db 126,252,38,198,133,155,1,29,235,9,196,126,252,38,198,133,155,1,5
+  {@38CB-3936}
+  with PW0_4_38C5(p9CEE)^ do
+  begin
+    if _w4_173byte = 4 then
+      _w4_410byte := 3
+    else
+    begin
+      {@38EB-3936}
+      if _w4_358byte = 1 then
+      begin
+        {@38F6-3915}
+        if _w4_413byte = 2 then
+          _w4_410byte := 9
+        else
+          _w4_410byte := 7;
+      end
+      else
+      begin
+        {@3917-3936}
+        if _w4_413byte = 2 then
+          _w4_410byte := 5
+        else
+          _w4_410byte := 0;
+      end;
+    end;
+    {@3936-394C}
+    if _w4_337byte > 0 then
+    begin
+      {@3941-394A}
+      _w4_411byte := 23;
+      {@394A-394C}
+      Exit;
+    end;
+    {@394C-3962}
+    if _w4_341byte > 0 then
+    begin
+      {@3957-3960}
+      _w4_411byte := 1;
+      {@3960-3962}
+      Exit;
+    end;
+    {@3962-3983}
+    if (_w4_340byte > 0) or (_w4_339byte > 0) then
+    begin
+      {@3978-3981}
+      _w4_411byte := 24;
+      {@3981-3983}
+      Exit;
+    end;
+    {@3983-3999}
+    if _w4_342byte > 0 then
+    begin
+      {@398E-3997}
+      _w4_411byte := 29;
+      {@3997-3999}
+      Exit;
+    end;
+    {@3999-39A2}
+    _w4_411byte := 5;
   end;
 end;
 
 { 3D36 }
 procedure pO075_3D36;
-var loc: array[1..286] of byte;
+var
+  _f1: array[1..1] of byte;
+  v2b: byte;
+  v3b: byte;
+  v4b: byte;
+  v5b: byte;
+  v6b: byte;
+  v7b: byte;
+  _f2: array[1..6] of byte;
+  _v14: byte;
+  v15b: byte;
+  v16b: byte;
+  v17b: byte;
+  v18b: byte;
+  v19b: byte;
+  v20b: byte;
+  v21b: byte;
+  _f3: array[1..256] of byte;
+  v14a: X6 absolute _v14;
   { 39A6 }
-  procedure pO075_39A6(b0: word);
-  var loc: array[1..2] of byte;
+  procedure pO075_39A6(b0: byte);
+  var
+    w1b: byte;
+    w2b: byte;
   begin
-    asm
-      db 138,70,8,139,126,6,54,136,69,249,138,70,8,48,228,139,248,138,133,183,9,80
-      call pO108_00CB
-      db 138,70,8,60,3,117,69,139,126,6,54,128,125,240,0,116,6,198,70,255,2,235,4,198,70,255,3,138
-      db 70,255,60,6,119,35,136,70,254,235,3,254,70,254,138,70,254,48,228,64,138,208,138,70,254,48,228,139
-      db 248,209,231,136,149,14,171,128,126,254,6,117,226,198,6,28,171,255,235,73,60,4,117,69,196,62,238,156
-      db 38,128,189,157,1,2,117,6,198,70,255,1,235,4,198,70,255,0,138,70,255,60,2,119,35,136,70,254
-      db 235,3,254,70,254,138,70,254,48,228,64,138,208,138,70,254,48,228,139,248,209,231,136,149,14,171,128,126
-      db 254,2,117,226,198,6,20,171,255
+    {@39AC-39B6}
+    v7b := b0;
+    {@39B6-39C7}
+    pO108_00CB(a09B7_ec3f[b0]);
+    case b0 of
+      3: begin
+        {@39CE-39E2}
+        if v16b <> 0 then
+          w1b := 2
+        else
+          w1b := 3;
+        {@39E2-3A0C}
+        for w2b := w1b to 6 do
+          aAB0E_71c0[w2b].f := w2b + 1;
+        {@3A0C-3A11}
+        bAB1C := 255;
+      end;
+      4: begin
+        {@3A17-3A2D}
+        if PR413_byte(p9CEE)^.v = 2 then
+          w1b := 1
+        else
+          w1b := 0;
+        {@3A2D-3A57}
+        for w2b := w1b to 2 do
+          aAB0E_71c0[w2b].f := w2b + 1;
+        {@3A57-3A5C}
+        bAB14 := 255;
+      end;
     end;
   end;
 
   { 3A62 }
-  procedure pO075_3A62(b0: word; b1: word);
+  procedure pO075_3A62(b0: byte; b1: byte);
   begin
-    asm
-      db 138,70,10,48,228,139,240,209,224,1,240,80,138,70,8,48,228,186,24,0,247,226,80,184,12,0,80,184
-      db 24,0,80,176,0,80,191,192,61,30,87,255,54,56,136,255,54,54,136
-      call pR1C3_1AF7
-      db 138,70,10,80,138,70,8,80,176,0,80,176,0,80,176,28,80
-      call pO13E_04B3
-      db 138,70,10,48,228,5,3,0,80,138,70,8,80,176,0,80,176,0,80,176,28,80
-      call pO13E_04B3
-      db 138,70,10,80,138,70,8,80,176,0,80,176,0,80,176,12,80
-      call pO13E_04B3
-      db 138,70,10,48,228,5,3,0,80,138,70,8,80,176,0,80,176,1,80,176,12,80
-      call pO13E_04B3
-      call pR1C3_10FD
-    end;
+    {@3A65-3A99}
+    pR1C3_1AF7(b0 * 3, b1 * 24, 12, 24, 0, g3DC0_87e6, p8836);
+    {@3A99-3AAF}
+    pO13E_04B3(b0, b1, 0, 0, 28);
+    {@3AAF-3ACA}
+    pO13E_04B3(b0 + 3, b1, 0, 0, 28);
+    {@3ACA-3AE0}
+    pO13E_04B3(b0, b1, 0, 0, 12);
+    {@3AE0-3AFB}
+    pO13E_04B3(b0 + 3, b1, 0, 1, 12);
+    {@3AFB-3B00}
+    pR1C3_10FD;
   end;
 
   { 3B04 }
-  procedure pO075_3B04(b0: word; b1: word; b2: word);
-  var loc: array[1..40] of byte;
+  procedure pO075_3B04(b0: byte; b1: byte; b2: byte);
+  var
+    w1b: byte;
+    w18a: array[0..16] of byte;
+    w34a: array[0..15] of byte;
+    w36w: word;
+    w18a2: B16 absolute w18a;
+    w34a2: B16 absolute w34a;
   begin
-    asm
-      db 138,70,10,48,228,139,248,177,3,211,231,196,189,196,157,38,139,69,18,137,70,220,138,70,12,48,228,139
-      db 248,177,3,211,231,196,189,196,157,129,199,27,0,6,87,138,70,10,48,228,139,248,177,3,211,231,196,189
-      db 196,157,129,199,27,0,6,87,138,70,10,48,228,139,248,177,3,211,231,196,189,196,157,38,255,117,18,154
-      db 92,26,37,8,138,70,12,48,228,139,248,177,3,211,231,196,189,200,157,129,199,27,0,6,87,138,70,10
-      db 48,228,139,248,177,3,211,231,196,189,200,157,129,199,27,0,6,87,138,70,10,48,228,139,248,177,3,211
-      db 231,196,189,200,157,38,255,117,18,154,92,26,37,8,138,70,12,48,228,139,248,177,3,211,231,196,189,196
-      db 157,38,139,69,23,38,11,69,25,116,50,138,70,12,48,228,139,248,177,3,211,231,196,189,196,157,38,196
-      db 125,23,6,87,138,70,10,48,228,139,248,177,3,211,231,196,189,196,157,38,196,125,23,6,87,255,118,220
-      db 154,92,26,37,8,138,70,12,48,228,139,248,177,3,211,231,196,189,200,157,38,139,69,23,38,11,69,25
-      db 116,50,138,70,12,48,228,139,248,177,3,211,231,196,189,200,157,38,196,125,23,6,87,138,70,10,48,228
-      db 139,248,177,3,211,231,196,189,200,157,38,196,125,23,6,87,255,118,220,154,92,26,37,8,128,126,8,0
-      db 117,3,233,230,0,196,62,238,156,137,126,216,140,70,218,198,70,255,0,235,3,254,70,255,138,86,255,138
-      db 70,255,48,228,139,248,136,83,238,138,86,255,138,70,255,48,228,139,248,136,83,222,128,126,255,15,117,221
-      db 198,70,255,1,235,3,254,70,255,138,70,255,48,228,196,126,216,3,248,38,138,133,157,1,36,15,138,208
-      db 138,70,255,48,228,139,248,138,133,221,109,48,228,139,248,136,83,222,138,70,255,48,228,196,126,216,3,248
-      db 38,138,133,157,1,36,240,48,228,185,4,0,211,232,138,208,138,70,255,48,228,139,248,138,133,221,109,48
-      db 228,5,8,0,139,248,136,83,222,128,126,255,6,117,163,141,126,238,22,87,141,126,222,22,87,49,192,80
-      db 176,0,80,138,70,10,48,228,139,248,177,3,211,231,255,181,198,157,255,181,196,157
-      call pR1C3_1421
-      db 141,126,238,22,87,141,126,222,22,87,49,192,80,176,0,80,138,70,10,48,228,139,248,177,3,211,231,255
-      db 181,202,157,255,181,200,157
-      call pR1C3_1421
+    {@3B0A-3B20}
+    w36w := PR18_word(a9DC4_7c92[b1].f)^.v;
+    {@3B20-3B62}
+    Move(PR27_byte(a9DC4_7c92[b0].f)^.v, PR27_byte(a9DC4_7c92[b1].f)^.v, PR18_word(a9DC4_7c92[b1].f)^.v);
+    {@3B62-3BA4}
+    Move(PR27_byte(a9DC8_7c92[b0].f)^.v, PR27_byte(a9DC8_7c92[b1].f)^.v, PR18_word(a9DC8_7c92[b1].f)^.v);
+    if PR23_pointer(a9DC4_7c92[b0].f)^.v <> nil then
+  Move(PR0_byte(PR23_pointer(a9DC4_7c92[b0].f)^.v)^.v, PR0_byte(PR23_pointer(a9DC4_7c92[b1].f)^.v)^.v,
+          w36w);
+    {@3BEF-3C3A}
+    if PR23_pointer(a9DC8_7c92[b0].f)^.v <> nil then
+  Move(PR0_byte(PR23_pointer(a9DC8_7c92[b0].f)^.v)^.v, PR0_byte(PR23_pointer(a9DC8_7c92[b1].f)^.v)^.v,
+          w36w);
+    {@3C3A-3C43}
+    if b2 = 0 then
+      Exit;
+    {@3C43-3C76}
+    with PW9_40_3B04(p9CEE)^ do
+    begin
+      for w1b := 0 to 15 do
+      begin
+        {@3C56-3C63}
+        w18a[w1b] := w1b;
+        {@3C63-3C70}
+        w34a[w1b] := w1b;
+      end;
+      {@3C76-3CD9}
+      for w1b := 1 to 6 do
+      begin
+        {@3C7F-3CA4}
+        w34a[a6DDD_ec3f[w1b]] := _w40_413abyte[w1b] and 15;
+        {@3CA4-3CD3}
+        w34a[a6DDD_ec3f[w1b] + 8] := _w40_413abyte[w1b] and 240 shr 4;
+      end;
     end;
+    {@3CD9-3D01}
+    pR1C3_1421(w18a2, w34a2, 0, 0, pointer(a9DC4_7c92[b1].f));
+    {@3D01-3D29}
+    pR1C3_1421(w18a2, w34a2, 0, 0, pointer(a9DC8_7c92[b1].f));
   end;
 
 begin
   if false then begin
     if LV = 'COMSPR' then;
   end;
-  asm
-    db 141,190,228,254,22,87,191,47,61,14,87,154,111,10,37,8,176,15,80,176,28,80
-    call pO13E_0182
-    db 184,64,0,80,184,32,0,80,191,30,213,30,87
-    call pR1C3_1F24
-    db 176,0,80
-    call pR142_00D4
-    db 176,0,80
-    call pO06E_07FF
-    db 196,62,238,156,137,190,231,254,140,134,233,254,176,1,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 196,190,231,254,129,199,158,1,6,87,141,126,242,22,87,184,6,0,80,154,163,9,37,8,196,190,231,254
-    db 38,138,133,156,1,136,70,250,196,190,231,254,38,198,133,156,1,12,176,0,80
-    call pO06E_07FF
-    db 138,70,250,196,190,231,254,38,136,133,156,1,196,190,231,254,38,138,133,154,1,136,70,253,196,190,231,254
-    db 38,138,133,155,1,136,70,252,196,190,231,254,38,138,133,157,1,136,70,251,196,190,231,254,38,138,133,156
-    db 1,80,176,12,80,176,1,80,85
-    push cs
-    call near ptr pO075_3B04
-    db 176,1,80,176,2,80,85
-    push cs
-    call near ptr pO075_3A62
-    db 176,8,80,176,6,80,176,15,80,176,0,80,191,37,29,30,87
-    call pR47F_0354
-    db 176,3,80,176,10,80,176,15,80,176,0,80,191,211,28,30,87
-    call pR47F_0354
-    db 176,8,80,176,12,80,176,15,80,176,0,80,191,252,28,30,87
-    call pR47F_0354
-    db 176,3,80,176,16,80,176,15,80,176,0,80,191,211,28,30,87
-    call pR47F_0354
-    db 198,70,235,0,176,1,80,176,4,80,85
-    push cs
-    call near ptr pO075_3A62
-    db 191,140,39,30,87,138,70,249,48,228,186,46,0,247,226,139,248,129,199,145,49,30,87,176,0,80,176,0
-    db 80
-    call pO108_1009
-    db 136,70,254,128,62,230,170,0,116,3,233,65,4,138,70,249,60,1,117,82,198,70,237,1,138,70,254,60
-    db 0,117,10,176,2,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,58,60,1,117,14,198,70,240,0,176,3,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,40,60,2,117,14,198,70,240,1,176,3,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,22,60,3,117,10,176,4,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,8,60,4,117,4,198,70,235,1,233,232,3,60,2,117,50,198,70,237,2,128,126,254,2,116,13,128
-    db 62,230,170,0,116,16,128,126,254,27,117,10,176,1,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,14,138,70,254,136,70,236,176,5,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 233,178,3,60,3,117,116,198,70,237,3,128,62,230,170,0,116,10,128,126,254,27,117,4,198,70,254,7
-    db 198,70,249,5,138,70,254,60,0,117,6,198,70,241,6,235,66,60,1,117,6,198,70,241,1,235,56,60
-    db 2,116,4,60,3,117,6,198,70,241,4,235,42,60,4,117,6,198,70,241,5,235,32,60,5,117,6,198
-    db 70,241,2,235,22,60,6,117,6,198,70,241,3,235,12,60,7,117,8,198,70,241,1,198,70,249,1,138
-    db 70,249,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 233,58,3,60,4,116,3,233,145,0,128,62,230,170,0,116,10,128,126,254,27,117,4,198,70,254,3,138
-    db 70,254,60,0,117,28,196,190,231,254,38,198,133,157,1,1,176,0,80
-    call pO06E_07FF
-    db 176,4,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,82,60,1,117,28,196,190,231,254,38,198,133,157,1,2,176,0,80
-    call pO06E_07FF
-    db 176,4,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,50,60,2,117,22,196,190,231,254,38,138,133,157,1,136,70,251,176,1,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,24,60,3,117,20,138,70,251,196,190,231,254,38,136,133,157,1,176,1,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 176,0,80
-    call pO06E_07FF
-    db 233,162,2,60,5,116,3,233,155,2,138,70,237,60,2,116,3,233,90,1,128,62,230,170,0,116,10,128
-    db 126,254,27,117,4,198,70,254,3,138,70,236,60,0,116,3,233,156,0,138,70,254,60,0,117,35,196,190
-    db 231,254,38,128,189,154,1,13,115,11,196,190,231,254,38,254,133,154,1,235,10,196,190,231,254,38,198,133
-    db 154,1,0,235,103,60,1,117,35,196,190,231,254,38,128,189,154,1,0,118,11,196,190,231,254,38,254,141
-    db 154,1,235,10,196,190,231,254,38,198,133,154,1,13,235,64,60,2,117,35,196,62,238,156,137,190,227,254
-    db 140,134,229,254,196,190,227,254,38,138,133,154,1,136,70,253,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,25,60,3,117,21,138,70,253,196,190,231,254,38,136,133,154,1,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 176,0,80
-    call pO06E_07FF
-    db 233,160,0,60,1,116,3,233,153,0,138,70,254,60,0,117,35,196,190,231,254,38,128,189,155,1,31,115
-    db 11,196,190,231,254,38,254,133,155,1,235,10,196,190,231,254,38,198,133,155,1,0,235,103,60,1,117,35
-    db 196,190,231,254,38,128,189,155,1,0,118,11,196,190,231,254,38,254,141,155,1,235,10,196,190,231,254,38
-    db 198,133,155,1,31,235,64,60,2,117,35,196,62,238,156,137,190,227,254,140,134,229,254,196,190,227,254,38
-    db 138,133,155,1,136,70,252,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,25,60,3,117,21,138,70,252,196,190,231,254,38,136,133,155,1,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 176,0,80
-    call pO06E_07FF
-    db 233,55,1,60,3,116,3,233,48,1,138,70,241,48,228,196,190,231,254,3,248,38,138,133,157,1,36,15
-    db 136,70,239,138,70,241,48,228,196,190,231,254,3,248,38,138,133,157,1,36,240,48,228,185,4,0,211,232
-    db 136,70,238,128,62,230,170,0,116,10,128,126,254,27,117,4,198,70,254,3,138,70,254,60,0,117,80,128
-    db 126,240,0,116,18,138,70,238,48,228,64,153,185,16,0,247,241,146,136,70,238,235,16,138,70,239,48,228
-    db 64,153,185,16,0,247,241,146,136,70,239,138,70,239,48,228,139,208,138,70,238,48,228,185,4,0,211,224
-    db 3,194,138,208,138,70,241,48,228,196,190,231,254,3,248,38,136,149,157,1,233,151,0,60,1,117,71,128
-    db 126,240,0,116,14,138,70,238,48,228,72,37,15,0,136,70,238,235,12,138,70,239,48,228,72,37,15,0
-    db 136,70,239,138,70,239,48,228,139,208,138,70,238,48,228,185,4,0,211,224,3,194,138,208,138,70,241,48
-    db 228,196,190,231,254,3,248,38,136,149,157,1,235,76,60,2,117,35,196,190,231,254,129,199,158,1,6,87
-    db 141,126,242,22,87,184,6,0,80,154,163,9,37,8,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 235,37,60,3,117,33,141,126,242,22,87,196,190,231,254,129,199,158,1,6,87,184,6,0,80,154,163,9
-    db 37,8,138,70,237,80,85
-    push cs
-    call near ptr pO075_39A6
-    db 196,190,231,254,38,138,133,156,1,80,176,12,80,176,1,80,85
-    push cs
-    call near ptr pO075_3B04
-    db 128,126,235,0,117,3,233,103,251,138,70,253,196,190,231,254,38,136,133,154,1,138,70,252,196,190,231,254
-    db 38,136,133,155,1,138,70,251,196,190,231,254,38,136,133,157,1,141,126,242,22,87,196,190,231,254,129,199
-    db 158,1,6,87,184,6,0,80,154,163,9,37,8,196,190,231,254,38,138,133,156,1,80,176,12,80,176,1
-    db 80,85
-    push cs
-    call near ptr pO075_3B04
-    db 176,12,80,196,190,231,254,38,138,133,156,1,80,176,0,80,85
-    push cs
-    call near ptr pO075_3B04
-    call pO108_167D
-    db 176,12,80
-    call pO13E_0101
-    db 191,78,29,30,87,160,98,83,80
-    call pO108_2254
-    db 58,6,98,83,116,3,233,223,249,176,28,80
-    call pO13E_0101
-  end;
+  {@3D3D-3D58}
+  pO13E_0182('COMSPR', 15, 28);
+  {@3D58-3D6A}
+  pR1C3_1F24(64, 32, gD51E_9554);
+  {@3D6A-3D72}
+  pR142_00D4(0);
+  {@3D72-4393}
+  repeat
+    {@3D72-3D7A}
+    pO06E_07FF(0);
+    {@3D7A-3E70}
+    with PW515_281_3D36(p9CEE)^ do
+    begin
+      pO075_39A6(1);
+      v14a := _w281_414X6;
+      v6b := _w281_412byte;
+      _w281_412byte := 12;
+      pO06E_07FF(0);
+      _w281_412byte := v6b;
+      v3b := _w281_410byte;
+      v4b := _w281_411byte;
+      v5b := _w281_413byte;
+      pO075_3B04(_w281_412byte, 12, 1);
+      pO075_3A62(1, 2);
+      pR47F_0354(8, 6, 15, 0, s1D25);
+      pR47F_0354(3, 10, 15, 0, s1CD3);
+      pR47F_0354(8, 12, 15, 0, s1CFC);
+      pR47F_0354(3, 16, 15, 0, s1CD3);
+      v21b := 0;
+      {@3E70-4309}
+      repeat
+        {@3E70-3E7B}
+        pO075_3A62(1, 4);
+        {@3E7B-3EA0}
+        v2b := pO108_1009(s278C, a3191_738a[v7b], 0, 0);
+        if bAAE6 = 0 then
+          case v7b of
+            1: begin
+              {@3EB1-3EB5}
+              v19b := 1;
+              case v2b of
+                0: pO075_39A6(2);
+                1: begin
+                  {@3ECA-3ECE}
+                  v16b := 0;
+                  {@3ECE-3ED6}
+                  pO075_39A6(3);
+                end;
+                2: begin
+                  {@3EDC-3EE0}
+                  v16b := 1;
+                  {@3EE0-3EE8}
+                  pO075_39A6(3);
+                end;
+                3: pO075_39A6(4);
+                4: v21b := 1;
+              end;
+            end;
+            2: begin
+              {@3F07-3F0B}
+              v19b := 2;
+              if (v2b = 2) or (bAAE6 <> 0) and (v2b = 27) then
+                pO075_39A6(1)
+              else
+              begin
+                {@3F28-3F2E}
+                v20b := v2b;
+                {@3F2E-3F36}
+                pO075_39A6(5);
+              end;
+            end;
+            3: begin
+              {@3F3D-3F41}
+              v19b := 3;
+              if (bAAE6 <> 0) and (v2b = 27) then
+                v2b := 7;
+              {@3F52-3F56}
+              v7b := 5;
+              case v2b of
+                0: v15b := 6;
+                1: v15b := 1;
+                2, 3: v15b := 4;
+                4: v15b := 5;
+                5: v15b := 2;
+                6: v15b := 3;
+                7: begin
+                  {@3F9D-3FA1}
+                  v15b := 1;
+                  {@3FA1-3FA5}
+                  v7b := 1;
+                end;
+              end;
+              {@3FA5-3FAE}
+              pO075_39A6(v7b);
+            end;
+            4: begin
+              {@3FB8-3FC9}
+              if (bAAE6 <> 0) and (v2b = 27) then
+                v2b := 3;
+              {@3FC9-403E}
+              case v2b of
+                0: begin
+                  {@3FD0-3FDA}
+                  _w281_413byte := 1;
+                  {@3FDA-3FE2}
+                  pO06E_07FF(0);
+                  {@3FE2-3FEA}
+                  pO075_39A6(4);
+                end;
+                1: begin
+                  {@3FF0-3FFA}
+                  _w281_413byte := 2;
+                  {@3FFA-4002}
+                  pO06E_07FF(0);
+                  {@4002-400A}
+                  pO075_39A6(4);
+                end;
+                2: begin
+                  {@4010-401C}
+                  v5b := _w281_413byte;
+                  {@401C-4024}
+                  pO075_39A6(1);
+                end;
+                3: begin
+                  {@402A-4036}
+                  _w281_413byte := v5b;
+                  {@4036-403E}
+                  pO075_39A6(1);
+                end;
+              end;
+              {@403E-4046}
+              pO06E_07FF(0);
+            end;
+            5: case v19b of
+                2: begin
+                  {@405A-406B}
+                  if (bAAE6 <> 0) and (v2b = 27) then
+                    v2b := 3;
+                  {@406B-41B1}
+                  case v20b of
+                    0: begin
+                      {@4075-4106}
+                      case v2b of
+                        0: begin
+                          {@407C-409D}
+                          if _w281_410byte < 13 then
+                            Inc(_w281_410byte)
+                          else
+                            _w281_410byte := 0;
+                        end;
+                        1: begin
+                          {@40A3-40C4}
+                          if _w281_410byte > 0 then
+                            Dec(_w281_410byte)
+                          else
+                            _w281_410byte := 13;
+                        end;
+                        2: begin
+                          {@40CA-40D6}
+                          with PW509_285_3D36(p9CEE)^ do
+                          begin
+                            {@40D6-40E2}
+                            v3b := _w285_410byte;
+                          end;
+                          {@40E2-40EB}
+                          pO075_39A6(v19b);
+                        end;
+                        3: begin
+                          {@40F1-40FD}
+                          _w281_410byte := v3b;
+                          {@40FD-4106}
+                          pO075_39A6(v19b);
+                        end;
+                      end;
+                      {@4106-410E}
+                      pO06E_07FF(0);
+                    end;
+                    1: begin
+                      {@4118-41A9}
+                      case v2b of
+                        0: begin
+                          {@411F-4140}
+                          if _w281_411byte < 31 then
+                            Inc(_w281_411byte)
+                          else
+                            _w281_411byte := 0;
+                        end;
+                        1: begin
+                          {@4146-4167}
+                          if _w281_411byte > 0 then
+                            Dec(_w281_411byte)
+                          else
+                            _w281_411byte := 31;
+                        end;
+                        2: begin
+                          {@416D-4179}
+                          with PW513_285_3D36(p9CEE)^ do
+                          begin
+                            {@4179-4185}
+                            v4b := _w285_411byte;
+                          end;
+                          {@4185-418E}
+                          pO075_39A6(v19b);
+                        end;
+                        3: begin
+                          {@4194-41A0}
+                          _w281_411byte := v4b;
+                          {@41A0-41A9}
+                          pO075_39A6(v19b);
+                        end;
+                      end;
+                      {@41A9-41B1}
+                      pO06E_07FF(0);
+                    end;
+                  end;
+                end;
+                3: begin
+                  {@41BB-41D0}
+                  v17b := _w281_413abyte[v15b] and 15;
+                  {@41D0-41EC}
+                  v18b := _w281_413abyte[v15b] and 240 shr 4;
+                  if (bAAE6 <> 0) and (v2b = 27) then
+                    v2b := 3;
+                  {@41FD-42EB}
+                  case v2b of
+                    0: begin
+                      {@4204-422C}
+                      if v16b <> 0 then
+                        v18b := Byte((v18b + 1) mod 16)
+                      else
+                        v17b := Byte((v17b + 1) mod 16);
+                      {@422C-4251}
+                      _w281_413abyte[v15b] := v18b shl 4 + v17b;
+                    end;
+                    1: begin
+                      {@4258-4278}
+                      if v16b <> 0 then
+                        v18b := (v18b - 1) and 15
+                      else
+                        v17b := (v17b - 1) and 15;
+                      {@4278-429D}
+                      _w281_413abyte[v15b] := v18b shl 4 + v17b;
+                    end;
+                    2: begin
+                      {@42A3-42BB}
+                      v14a := _w281_414X6;
+                      {@42BB-42C4}
+                      pO075_39A6(v19b);
+                    end;
+                    3: begin
+                      {@42CA-42E2}
+                      _w281_414X6 := v14a;
+                      {@42E2-42EB}
+                      pO075_39A6(v19b);
+                    end;
+                  end;
+                end;
+              end;
+          end;
+        {@42EB-4300}
+        pO075_3B04(_w281_412byte, 12, 1);
+      until v21b <> 0;
+      {@4309-4315}
+      _w281_410byte := v3b;
+      {@4315-4321}
+      _w281_411byte := v4b;
+      {@4321-432D}
+      _w281_413byte := v5b;
+      {@432D-4345}
+      _w281_414X6 := v14a;
+      {@4345-435A}
+      pO075_3B04(_w281_412byte, 12, 1);
+      {@435A-436F}
+      pO075_3B04(12, _w281_412byte, 0);
+    end;
+    {@436F-4374}
+    pO108_167D;
+    {@4374-437C}
+    pO13E_0101(12);
+  until Byte(pO108_2254(s1D4E, b5362)) = b5362;
+  {@4393-439B}
+  pO13E_0101(28);
 end;
 
 { 439F }
-function pO075_439F(a0: word; a1: word; a2: word): byte;
-var loc: array[1..3] of byte;
+function pO075_439F(a0: pointer; a1: byte): shortint;
+var
+  v2b: byte;
+  _f1: array[1..2] of byte;
+  v2sb: shortint absolute v2b;
 begin
-  asm
-    db 198,70,254,0,196,126,8,38,138,69,25,48,228,139,248,138,133,156,113,0,70,254,128,126,6,2,116,12
-    db 128,126,6,4,116,6,128,126,6,3,117,66,196,126,8,38,138,69,25,60,17,117,5,254,70,254,235,50
-    db 60,18,117,6,128,70,254,2,235,40,60,19,116,4,60,20,117,6,128,70,254,3,235,26,60,21,114,10
-    db 60,23,119,6,128,70,254,4,235,12,60,24,116,4,60,25,117,4,128,70,254,5,138,70,254,136,70,255
-  end;
+  {@43A5-43A9}
+  v2b := 0;
+  {@43A9-43BB}
+  Inc(v2b, a719C_ec3f[PR25_byte(a0)^.v]);
+  if (a1 = 2) or (a1 = 4) or (a1 = 3) then
+    case PR25_byte(a0)^.v of
+      17: Inc(v2b);
+      18: Inc(v2b, 2);
+      19, 20: Inc(v2b, 3);
+      21..23: Inc(v2b, 4);
+      24, 25: Inc(v2b, 5);
+    end;
+  {@440F-4415}
+  pO075_439F := v2sb;
 end;
 
 { 441E }
-function pO075_441E(a0: word; a1: word): byte;
-var loc: array[1..11] of byte;
+function pO075_441E(a0: pointer): byte;
+var
+  v2b: byte;
+  v4w: word;
+  v6w: word;
+  v7b: byte;
+  v8b: byte;
+  v7sb: shortint absolute v7b;
+  v6b: byte absolute v6w;
 begin
-  asm
-    db 196,126,6,137,126,244,140,70,246,49,192,137,70,252,198,70,254,0,49,192,137,70,250,198,70,249,0,235
-    db 3,254,70,249,138,70,249,152,196,126,244,3,248,38,128,189,81,1,0,119,3,233,20,1,138,70,249,152
-    db 139,248,138,149,201,109,138,70,249,152,196,126,244,3,248,38,138,133,81,1,58,194,115,72,138,70,249,152
-    db 196,126,244,3,248,38,138,133,81,1,48,228,1,70,250,254,70,254,128,126,249,4,117,3,255,70,250,255
-    db 118,8,255,118,6,138,70,249,80
-    push cs
-    call near ptr pO075_439F
-    db 152,139,208,138,70,249,152,196,126,244,3,248,38,138,133,81,1,48,228,247,226,1,70,252,233,176,0,254
-    db 70,254,138,70,249,152,139,248,138,133,201,109,48,228,139,208,138,70,249,152,196,126,244,3,248,38,138,133
-    db 81,1,48,228,43,194,64,136,70,248,138,70,249,60,0,117,15,138,70,248,48,228,209,224,5,9,0,1
-    db 70,250,235,80,60,2,116,4,60,3,117,19,138,70,248,48,228,139,240,209,224,1,240,5,9,0,1,70
-    db 250,235,53,60,4,117,15,138,70,248,48,228,209,224,5,11,0,1,70,250,235,34,60,5,117,13,138,70
-    db 248,48,228,5,11,0,1,70,250,235,17,60,6,117,13,138,70,248,48,228,209,224,5,10,0,1,70,250
-    db 255,118,8,255,118,6,138,70,249,80
-    push cs
-    call near ptr pO075_439F
-    db 152,139,208,138,70,249,152,139,248,138,133,201,109,48,228,72,247,226,1,70,252,128,126,249,6,116,3,233
-    db 204,254,131,126,252,0,126,21,138,70,254,48,228,139,200,139,70,250,3,70,252,153,247,249,137,70,250,235
-    db 16,138,70,254,48,228,139,200,139,70,250,153,247,249,137,70,250,138,70,250,136,70,255
+  {@4424-4575}
+  with PW0_12_441E(a0)^ do
+  begin
+    v4w := 0;
+    v2b := 0;
+    v6w := 0;
+    for v7b := 0 to 6 do
+    begin
+      {@4444-456C}
+      if _w12_337abyte[v7sb] > 0 then
+      begin
+        {@4458-456C}
+        if _w12_337abyte[v7sb] < a6DC9_ec3f[v7sb] then
+        begin
+          {@4474-4487}
+          Inc(v6w, _w12_337abyte[v7sb]);
+          {@4487-448A}
+          Inc(v2b);
+          if v7b = 4 then
+            Inc(v6w);
+          {@4493-44B9}
+          Inc(v4w, _w12_337abyte[v7sb] * pO075_439F(pointer(a0), v7b));
+        end
+        else
+        begin
+          {@44BC-44BF}
+          Inc(v2b);
+          {@44BF-44E3}
+          v8b := _w12_337abyte[v7sb] - a6DC9_ec3f[v7sb] + 1;
+          case v7b of
+            0: Inc(v6w, v8b * 2 + 9);
+            2, 3: Inc(v6w, v8b * 3 + 9);
+            4: Inc(v6w, v8b * 2 + 11);
+            5: Inc(v6w, v8b + 11);
+            6: Inc(v6w, v8b * 2 + 10);
+          end;
+          {@4549-456C}
+          Inc(v4w, (a6DC9_ec3f[v7sb] - 1) * pO075_439F(pointer(a0), v7b));
+        end;
+      end;
+    end;
   end;
+  asm
+  db 131,126,252,0,126,21,138,70,254,48,228,139,200,139,70,250,3,70,252,153,247,249,137,70,250,235,16,138
+  db 70,254,48,228,139,200,139,70,250,153,247,249,137,70,250
+  end;
+  {@45A0-45A6}
+  pO075_441E := v6b;
 end;
 
 { 4638 }
 procedure pO075_4638;
-var loc: array[1..556] of byte;
+var
+  v1b: byte;
+  v5l: longint;
+  v9l: longint;
+  v10b: byte;
+  v11b: byte;
+  v12b: byte;
+  _f1: array[1..5] of byte;
+  v18b: byte;
+  _f2: array[1..2] of byte;
+  v21b: byte;
+  v22b: byte;
+  v23b: byte;
+  v24b: byte;
+  v25b: byte;
+  v27w: word;
+  v28b: byte;
+  _f3: array[1..2] of byte;
+  v34l: longint;
+  _f4: array[1..5] of byte;
+  v40b: byte;
+  v27b: byte absolute v27w;
+  v18sb: shortint absolute v18b;
 begin
   if false then begin
     if LV = 'we only train conscious people' then;
@@ -1197,117 +2927,240 @@ begin
     if LV = 'and a level ' then;
     if LV = 'Do you wish to train? ' then;
     if LV = 'Congratulations...' then;
+    LM4_6(FS, ' will become:', 'Do you wish to train? ', 'we only train conscious people',
+    [LB], [LB], [LB], [LB], [LB], [LB]);
   end;
-  asm
-    db 128,62,135,174,0,117,12
-    call pO0AA_3594
-    db 8,192,117,3,233,231,7,196,62,238,156,38,128,189,237,1,0,116,29,141,126,185,22,87,191,175,69,14
-    db 87,154,111,10,37,8,176,14,80,176,0,80
-    call pR47F_0CC0
-    db 233,190,7,198,70,246,0,198,70,245,0,49,192,137,70,251,137,70,253,196,62,238,156,137,126,212,140,70
-    db 214,49,192,137,70,251,137,70,253,198,70,238,0,235,3,254,70,238,138,70,238,152,196,126,212,3,248,38
-    db 128,189,81,1,0,119,3,233,211,2,138,70,238,152,139,248,138,133,185,109,0,70,245,198,70,255,0,138
-    db 70,238,152,196,126,212,3,248,38,138,133,81,1,136,70,232,196,126,212,38,138,133,173,0,60,2,117,51
-    db 128,126,238,2,117,42,128,126,232,9,116,32,128,126,232,8,117,10,196,126,212,38,128,125,17,17,116,16
-    db 128,126,232,7,117,14,196,126,212,38,128,125,17,17,115,4,198,70,255,1,233,80,1,60,0,117,99,128
-    db 126,238,2,117,42,128,126,232,7,116,32,128,126,232,6,117,10,196,126,212,38,128,125,17,17,116,16,128
-    db 126,232,5,117,14,196,126,212,38,128,125,17,17,115,4,198,70,255,1,128,126,238,5,117,42,128,126,232
-    db 11,116,32,128,126,232,9,117,10,196,126,212,38,128,125,19,17,114,16,128,126,232,10,117,14,196,126,212
-    db 38,128,125,19,17,117,4,198,70,255,1,233,233,0,60,3,117,51,128,126,238,2,117,26,128,126,232,6
-    db 116,16,128,126,232,5,117,14,196,126,212,38,128,125,17,18,115,4,198,70,255,1,128,126,238,0,117,10
-    db 128,126,232,7,114,4,198,70,255,1,233,178,0,60,1,117,122,128,126,238,0,117,12,128,126,232,5,117
-    db 6,198,70,255,1,235,102,128,126,238,2,116,6,128,126,238,4,117,42,128,126,232,8,116,32,128,126,232
-    db 7,117,10,196,126,212,38,128,125,17,17,116,16,128,126,232,6,117,14,196,126,212,38,128,125,17,17,115
-    db 4,198,70,255,1,128,126,238,5,117,42,128,126,232,8,116,32,128,126,232,7,117,10,196,126,212,38,128
-    db 125,19,17,116,16,128,126,232,6,117,14,196,126,212,38,128,125,19,17,115,4,198,70,255,1,235,52,60
-    db 4,117,48,128,126,238,2,117,42,128,126,232,6,116,32,128,126,232,5,117,10,196,126,212,38,128,125,17
-    db 17,116,16,128,126,232,4,117,14,196,126,212,38,128,125,17,17,115,4,198,70,255,1,128,126,232,40,117
-    db 4,198,70,255,1,128,126,255,0,116,3,233,15,1,255,54,240,156,255,54,238,156,138,70,232,254,192,80
-    db 138,70,238,80
-    call pO102_12D1
-    db 196,126,212,38,59,149,116,1,124,15,126,3,233,233,0,38,59,133,114,1,118,3,233,223,0,138,70,238
-    db 152,139,248,138,133,185,109,0,70,246,255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70
-    db 238,80
-    call pO102_12D1
-    db 137,70,247,137,86,249,198,70,221,0,235,3,254,70,221,138,70,221,152,196,126,212,3,248,38,128,189,81
-    db 1,0,118,86,255,54,240,156,255,54,238,156,138,70,221,152,196,126,212,3,248,38,138,133,81,1,254,192
-    db 80,138,70,221,80
-    call pO102_12D1
-    db 59,86,249,127,7,124,45,59,70,247,118,40,255,54,240,156,255,54,238,156,138,70,221,152,196,126,212,3
-    db 248,38,138,133,81,1,254,192,80,138,70,221,80
-    call pO102_12D1
-    db 137,70,247,137,86,249,128,126,221,6,117,144,196,126,212,38,139,133,114,1,38,139,149,116,1,59,86,249
-    db 127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7,124,23,59,70,251,118,18,139
-    db 70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253,128,126,238,6,116,3,233,13,253,128,62
-    db 135,174,0,116,3,233,1,1,49,192,137,70,222,137,70,224,49,192,137,70,247,137,70,249,198,70,238,0
-    db 235,3,254,70,238,138,70,238,152,139,248,138,133,185,109,34,70,246,8,192,116,70,255,54,240,156,255,54
-    db 238,156,138,70,232,254,192,80,138,70,238,80
-    call pO102_12D1
-    db 59,86,224,127,7,124,40,59,70,222,118,35,255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70
-    db 238,80
-    call pO102_12D1
-    db 137,70,222,137,86,224,138,70,238,136,70,220,128,126,238,6,117,160,131,126,224,0,127,11,125,3,233,128
-    db 0,131,126,222,0,118,122,138,70,220,152,139,248,138,133,185,109,10,70,246,136,70,246,255,54,240,156,255
-    db 54,238,156,138,70,232,254,192,254,192,80,138,70,220,80
-    call pO102_12D1
-    db 137,70,247,137,86,249,131,126,249,0,127,8,124,67,131,126,247,0,118,61,196,126,212,38,139,133,114,1
-    db 38,139,149,116,1,59,86,249,127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7
-    db 124,23,59,70,251,118,18,139,70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253,131,126,253
-    db 0,127,8,124,32,131,126,251,0,118,26,128,62,135,174,0,117,19,139,70,251,139,86,253,196,126,212,38
-    db 137,133,114,1,38,137,149,116,1,128,126,246,0,117,41,198,6,132,174,1,128,62,135,174,0,117,26,141
-    db 126,190,22,87,191,206,69,14,87,154,111,10,37,8,176,14,80,176,0,80
-    call pR47F_0CC0
-    db 233,65,3,128,62,135,174,0,116,3,233,152,1,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 198,70,235,4,255,54,240,156,255,54,238,156,176,4,80,138,70,235,80,176,0,80
-    call pO0EC_1C22
-    db 196,126,212,38,138,5,48,228,5,4,0,80,138,70,235,80,176,10,80,176,0,80,141,126,198,22,87,191
-    db 228,69,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 198,70,238,0,235,3,254,70,238,138,70,238,152,196,126,212,3,248,38,128,189,81,1,0,119,3,233,231
-    db 0,138,70,238,152,139,248,138,133,185,109,34,70,246,8,192,119,3,233,211,0,254,70,235,128,126,235,5
-    db 117,102,176,6,80,138,70,235,80,176,10,80,176,0,80,141,190,212,253,22,87,191,242,69,14,87,154,111
-    db 10,37,8,141,190,212,254,22,87,138,70,238,152,196,126,212,3,248,38,138,133,81,1,48,228,64,80
-    call pR47F_0FB2
-    db 154,252,10,37,8,191,255,69,14,87,154,252,10,37,8,138,70,238,152,186,27,0,247,226,139,248,129,199
-    db 87,14,30,87,154,252,10,37,8
-    call pR47F_0354
-    db 235,100,176,6,80,138,70,235,80,176,10,80,176,0,80,141,190,212,253,22,87,191,1,70,14,87,154,111
-    db 10,37,8,141,190,212,254,22,87,138,70,238,152,196,126,212,3,248,38,138,133,81,1,48,228,64,80
-    call pR47F_0FB2
-    db 154,252,10,37,8,191,255,69,14,87,154,252,10,37,8,138,70,238,152,186,27,0,247,226,139,248,129,199
-    db 87,14,30,87,154,252,10,37,8
-    call pR47F_0354
-    db 128,126,238,6,116,3,233,249,254,141,126,189,22,87,191,14,70,14,87,154,111,10,37,8,160,98,83,80
-    call pO108_2254
-    db 58,6,98,83,116,3,233,179,1,141,126,193,22,87,191,37,70,14,87,154,111,10,37,8
-    call pO0EC_1AAC
-    db 198,70,244,0,196,126,212,38,138,133,86,1,136,70,234,196,126,212,38,138,133,85,1,136,70,233,196,126
-    db 212,38,198,133,123,1,0,198,70,238,0,235,3,254,70,238,138,70,238,152,196,126,212,3,248,38,128,189
-    db 81,1,0,118,34,254,70,244,138,70,238,152,139,248,138,133,185,109,34,70,246,8,192,118,14,138,70,238
-    db 152,196,126,212,3,248,38,254,133,81,1,128,126,238,6,117,196,255,54,240,156,255,54,238,156
-    call pO102_02F5
-    db 128,62,135,174,0,116,3,233,228,0,196,126,212,38,138,133,86,1,58,70,234,119,11,196,126,212,38,128
-    db 189,85,1,8,118,63,199,70,229,255,255,176,4,80,176,4,80,141,126,229,22,87,141,126,228,22,87
-    call pO0AA_30F3
-    db 136,70,231,128,126,231,0,119,6,128,126,228,0,117,220,128,126,231,0,118,16,138,70,231,48,228,196,126
-    db 212,3,248,38,198,133,178,0,1,255,54,240,156,255,54,238,156
-    call pO102_0C12
-    db 8,192,116,124,196,62,238,156,38,128,189,92,1,0,118,50,255,54,240,156,255,54,238,156,176,105,80,141
-    db 126,216,22,87
-    call pO0EC_27C1
-    db 8,192,117,25,255,54,240,156,255,54,238,156,176,105,80,49,192,80,176,255,80,176,0,80
-    call pO0E2_13E5
-    db 196,62,238,156,38,128,189,91,1,0,118,50,255,54,240,156,255,54,238,156,176,8,80,141,126,216,22,87
-    call pO0EC_27C1
-    db 8,192,117,25,255,54,240,156,255,54,238,156,176,8,80,49,192,80,176,255,80,176,0,80
-    call pO0E2_13E5
-    db 196,126,212,38,138,133,56,1,196,126,212,38,58,133,57,1,118,24,255,54,240,156,255,54,238,156,138,70
-    db 246,80,138,70,244,80,176,1,80
-    call pO0AA_36BA
-    db 255,54,240,156,255,54,238,156
-    call pO0EC_38FA
-    db 196,126,212,38,136,133,236,1
+  {@463F-4652}
+  if (bAE87 = 0) and (pO0AA_3594 = 0) then
+    Exit;
+  {@4652-467B}
+  if PR493_byte(p9CEE)^.v <> 0 then
+  begin
+    {@465E-4678}
+    pR47F_0CC0('we only train conscious people', 14, 0);
+    {@4678-467B}
+    Exit;
+  end;
+  {@467B-467F}
+  v10b := 0;
+  {@467F-4683}
+  v11b := 0;
+  {@4683-468B}
+  v5l := 0;
+  with PW6_44_4638(p9CEE)^ do
+  begin
+    v5l := 0;
+    for v18b := 0 to 6 do
+    begin
+      {@46A6-498D}
+      if _w44_337abyte[v18sb] > 0 then
+      begin
+        {@46BA-46C7}
+        Inc(v11b, a6DB9_ec3f[v18sb]);
+        {@46C7-46CB}
+        v1b := 0;
+        {@46CB-46DC}
+        v24b := _w44_337abyte[v18sb];
+        case _w44_173byte of
+          2: begin
+            {@46E8-4718}
+if (v18b = 2) and ((v24b = 9) or (v24b = 8) and (_w44_17byte = 17) or (v24b = 7)
+                and (_w44_17byte < 17)) then
+              v1b := 1;
+          end;
+          0: begin
+            {@471F-474F}
+if (v18b = 2) and ((v24b = 7) or (v24b = 6) and (_w44_17byte = 17) or (v24b = 5)
+                and (_w44_17byte < 17)) then
+              v1b := 1;
+            {@474F-477F}
+if (v18b = 5) and ((v24b = 11) or (v24b = 9) and (_w44_19byte < 17) or (v24b = 10)
+                and (_w44_19byte = 17)) then
+              v1b := 1;
+          end;
+          3: begin
+            {@4786-47A6}
+            if (v18b = 2) and ((v24b = 6) or (v24b = 5) and (_w44_17byte < 18)) then
+              v1b := 1;
+            {@47A6-47B6}
+            if (v18b = 0) and (v24b >= 7) then
+              v1b := 1;
+          end;
+          1: begin
+            {@47BD-4835}
+            if (v18b = 0) and (v24b = 5) then
+              v1b := 1
+            else
+            begin
+              {@47CF-4805}
+if ((v18b = 2) or (v18b = 4)) and ((v24b = 8) or (v24b = 7) and (_w44_17byte = 17)
+                  or (v24b = 6) and (_w44_17byte < 17)) then
+                v1b := 1;
+              {@4805-4835}
+if (v18b = 5) and ((v24b = 8) or (v24b = 7) and (_w44_19byte = 17) or (v24b = 6)
+                  and (_w44_19byte < 17)) then
+                v1b := 1;
+            end;
+          end;
+          4: begin
+            {@483B-486B}
+if (v18b = 2) and ((v24b = 6) or (v24b = 5) and (_w44_17byte = 17) or (v24b = 4)
+                and (_w44_17byte < 17)) then
+              v1b := 1;
+          end;
+        end;
+        {@486B-4875}
+        if v24b = 40 then
+          v1b := 1;
+        {@4875-498D}
+        if v1b = 0 then
+          asm
+  db 255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70,238,80
+  call pO102_12D1
+  db 196,126,212,38,59,149,116,1,124,15,126,3,233,233,0,38,59,133,114,1,118,3,233,223,0,138,70,238
+  db 152,139,248,138,133,185,109,0,70,246,255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70
+  db 238,80
+  call pO102_12D1
+  db 137,70,247,137,86,249,198,70,221,0,235,3,254,70,221,138,70,221,152,196,126,212,3,248,38,128,189,81
+  db 1,0,118,86,255,54,240,156,255,54,238,156,138,70,221,152,196,126,212,3,248,38,138,133,81,1,254,192
+  db 80,138,70,221,80
+  call pO102_12D1
+  db 59,86,249,127,7,124,45,59,70,247,118,40,255,54,240,156,255,54,238,156,138,70,221,152,196,126,212,3
+  db 248,38,138,133,81,1,254,192,80,138,70,221,80
+  call pO102_12D1
+  db 137,70,247,137,86,249,128,126,221,6,117,144,196,126,212,38,139,133,114,1,38,139,149,116,1,59,86,249
+  db 127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7,124,23,59,70,251,118,18,139
+  db 70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253
+          end;
+      end;
+    end;
+    {@4996-4AA1}
+    if bAE87 = 0 then
+    begin
+      {@49A0-49A8}
+      v34l := 0;
+      {@49A8-49B0}
+      v9l := 0;
+      for v18b := 0 to 6 do
+      begin
+        {@49B9-4A10}
+        if (a6DB9_ec3f[v18sb] and v10b) <> 0 then
+          asm
+  db 255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70,238,80
+  call pO102_12D1
+  db 59,86,224,127,7,124,40,59,70,222,118,35,255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70
+  db 238,80
+  call pO102_12D1
+  db 137,70,222,137,86,224,138,70,238,136,70,220
+          end;
+      end;
+      asm
+  db 131,126,224,0,127,11,125,3,233,128,0,131,126,222,0,118,122,138,70,220,152,139,248,138,133,185,109,10
+  db 70,246,136,70,246,255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70,220,80
+  call pO102_12D1
+  db 137,70,247,137,86,249,131,126,249,0,127,8,124,67,131,126,247,0,118,61,196,126,212,38,139,133,114,1
+  db 38,139,149,116,1,59,86,249,127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7
+  db 124,23,59,70,251,118,18,139,70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253
+      end;
+    end;
+    {@4AA1-4AC9}
+    if (v5l > 0) and (bAE87 = 0) then
+      _w44_370longint := v5l;
+    {@4AC9-4AF8}
+    if v10b = 0 then
+    begin
+      {@4ACF-4AD4}
+      bAE84 := 1;
+      if bAE87 = 0 then
+        pR47F_0CC0('Not Enough Experience', 14, 0);
+      {@4AF5-4AF8}
+      Exit;
+    end;
+    {@4AF8-4C9A}
+    if bAE87 = 0 then
+    begin
+      {@4B02-4B13}
+      pR142_0217(1, 1, 38, 22);
+      {@4B13-4B17}
+      v21b := 4;
+      {@4B17-4B2E}
+      pO0EC_1C22(p9CEE, 4, v21b, 0);
+      {@4B2E-4B58}
+      pR47F_0354(_w44_0byte + 4, v21b, 10, 0, ' will become:');
+      for v18b := 0 to 6 do
+      begin
+        {@4B61-4C5C}
+        if (_w44_337abyte[v18sb] > 0) and ((a6DB9_ec3f[v18sb] and v10b) > 0) then
+        begin
+          {@4B89-4B8C}
+          Inc(v21b);
+          if v21b = 5 then
+pR47F_0354(6, v21b, 10, 0, '    a level ' + pR47F_0FB2(_w44_337abyte[v18sb] + 1) + ' '
+                + a0E57_b7cc[v18sb])
+          else
+pR47F_0354(6, v21b, 10, 0, 'and a level ' + pR47F_0FB2(_w44_337abyte[v18sb] + 1) + ' '
+                + a0E57_b7cc[v18sb]);
+        end;
+      end;
+      {@4C65-4C86}
+      if Byte(pO108_2254('Do you wish to train? ', b5362)) <> b5362 then
+        Exit;
+      {@4C86-4C9A}
+      pO0EC_1AAC('Congratulations...');
+    end;
+    {@4C9A-4C9E}
+    v12b := 0;
+    {@4C9E-4CA9}
+    v22b := _w44_342byte;
+    {@4CA9-4CB4}
+    v23b := _w44_341byte;
+    {@4CB4-4CBD}
+    _w44_379byte := 0;
+    for v18b := 0 to 6 do
+    begin
+      {@4CC6-4CF9}
+      if _w44_337abyte[v18sb] > 0 then
+      begin
+        {@4CD7-4CDA}
+        Inc(v12b);
+        if (a6DB9_ec3f[v18sb] and v10b) > 0 then
+          Inc(_w44_337abyte[v18sb]);
+      end;
+    end;
+    {@4CFF-4D0C}
+    pO102_02F5(p9CEE);
+    if bAE87 = 0 then
+    begin
+      {@4D16-4D6D}
+      if (_w44_342byte > v22b) or (_w44_341byte > 8) then
+      begin
+        {@4D2E-4D33}
+        v27w := 65535;
+        {@4D33-4D57}
+        repeat
+          {@4D33-4D4B}
+          v25b := pO0AA_30F3(4, 4, @v27b, @v28b);
+        until (v25b > 0) or (v28b = 0);
+        {@4D57-4D6D}
+        if v25b > 0 then
+          _w44_178abyte[v25b] := 1;
+      end;
+      {@4D6D-4DFA}
+      if pO102_0C12(p9CEE) <> 0 then
+      begin
+        {@4D7E-4DBC}
+        if (PR348_byte(p9CEE)^.v > 0) and (pO0EC_27C1(p9CEE, 105, @v40b) = 0) then
+          pO0E2_13E5(p9CEE, 105, 0, 255, 0);
+        {@4DBC-4DFA}
+        if (PR347_byte(p9CEE)^.v > 0) and (pO0EC_27C1(p9CEE, 8, @v40b) = 0) then
+          pO0E2_13E5(p9CEE, 8, 0, 255, 0);
+      end;
+    end;
+    {@4DFA-4E24}
+    if _w44_312byte > _w44_313byte then
+      pO0AA_36BA(p9CEE, v10b, v12b, 1);
+    {@4E24-4E39}
+    _w44_492byte := pO0EC_38FA(p9CEE);
   end;
 end;
 
@@ -1402,36 +3255,87 @@ begin
 end;
 
 { 5478 }
-procedure pO075_5478(a0: word; a1: word);
-var loc: array[1..12] of byte;
+procedure pO075_5478(a0: pointer);
+var
+  v4p: pointer;
+  v8p: pointer;
+  v9b: byte;
+  v10b: byte;
+  v11b: byte;
+  _f1: array[1..1] of byte;
 begin
-  asm
-    db 196,126,6,38,128,189,83,1,0,119,22,196,126,6,38,128,189,85,1,0,119,11,196,126,6,38,128,189
-    db 84,1,0,118,6,198,70,247,1,235,38,196,126,6,38,128,189,87,1,0,118,6,198,70,247,2,235,21
-    db 196,126,6,38,128,189,81,1,0,118,6,198,70,247,3,235,4,198,70,247,4,196,126,6,38,198,133,166
-    db 1,0,198,70,245,1,235,3,254,70,245
-    call pR670_037F
-    db 137,70,248,137,86,250,196,126,248,6,87,184,63,0,80,176,0,80,154,127,26,37,8,138,70,245,48,228
-    db 139,208,138,70,247,48,228,139,248,209,231,139,247,209,231,1,247,3,250,138,133,183,9,136,70,246,128,126
-    db 246,0,117,3,233,17,1,138,70,246,48,228,186,17,0,247,226,196,62,255,156,3,248,38,128,125,239,255
-    db 117,3,233,247,0,196,126,6,38,254,133,166,1,138,70,246,48,228,186,17,0,247,226,196,62,255,156,3
-    db 248,129,199,239,255,6,87,196,126,248,129,199,46,0,6,87,184,17,0,80,154,92,26,37,8,196,126,248
-    db 49,192,38,137,69,42,38,137,69,44,196,126,248,38,198,69,41,0,196,126,6,38,139,133,167,1,38,11
-    db 133,169,1,117,21,139,70,248,139,86,250,196,126,6,38,137,133,167,1,38,137,149,169,1,235,60,196,126
-    db 6,38,139,133,167,1,38,139,149,169,1,137,70,252,137,86,254,139,70,248,139,86,250,196,126,6,38,137
-    db 133,167,1,38,137,149,169,1,139,70,252,139,86,254,196,126,6,38,196,189,167,1,38,137,69,42,38,137
-    db 85,44,196,126,6,38,196,189,167,1,38,138,69,53,36,248,196,126,6,38,196,189,167,1,38,136,69,53
-    db 128,126,245,5,117,6,128,126,247,1,116,12,128,126,245,4,117,19,128,126,247,4,117,13,196,126,6,38
-    db 196,189,167,1,38,198,69,57,50,128,126,245,4,116,13,196,126,6,38,196,189,167,1,38,198,69,52,1
-    db 128,126,245,6,116,3,233,159,254,255,118,8,255,118,6
-    call pO0EC_0EBF
-    db 196,126,6,38,198,133,166,1,3
+  {@547E-54CB}
+  if (PR339_byte(a0)^.v > 0) or (PR341_byte(a0)^.v > 0) or (PR340_byte(a0)^.v > 0) then
+    v9b := 1
+  else
+  begin
+    {@54A5-54CB}
+    if PR343_byte(a0)^.v > 0 then
+      v9b := 2
+    else
+    begin
+      {@54B6-54CB}
+      if PR337_byte(a0)^.v > 0 then
+        v9b := 3
+      else
+        v9b := 4;
+    end;
   end;
+  {@54CB-54D4}
+  PR422_byte(a0)^.v := 0;
+  for v11b := 1 to 6 do
+  begin
+    {@54DD-54E8}
+    v8p := pR670_037F;
+    {@54E8-54F9}
+    FillChar(PR0_byte(v8p)^.v, 63, 0);
+    {@54F9-5518}
+    v10b := a09B7_c768[v9b, v11b];
+    if (v10b <> 0) and (PAL17_byte(p9CFF)^[v10b * 17] <> 255) then
+    begin
+      {@553B-5543}
+      Inc(PR422_byte(a0)^.v);
+      {@5543-556B}
+      Move(PAL17_byte(p9CFF)^[v10b * 17], PR46_byte(v8p)^.v, 17);
+      {@556B-5578}
+      PR42_longint(v8p)^.v := 0;
+      {@5578-5580}
+      PR41_byte(v8p)^.v := 0;
+      if PR423_pointer(a0)^.v = nil then
+        PR423_pointer(a0)^.v := v8p
+      else
+      begin
+        {@55A4-55B7}
+        v4p := PR423_pointer(a0)^.v;
+        {@55B7-55CA}
+        PR423_pointer(a0)^.v := v8p;
+        {@55CA-55E0}
+        PR42_pointer(PR423_pointer(a0)^.v)^.v := v4p;
+      end;
+      {@55E0-55FA}
+      PR53_byte(PR423_pointer(a0)^.v)^.v := PR53_byte(PR423_pointer(a0)^.v)^.v and 248;
+      if (v11b = 5) and (v9b = 1) or (v11b = 4) and (v9b = 4) then
+        PR57_byte(PR423_pointer(a0)^.v)^.v := 50;
+      {@561F-5632}
+      if v11b <> 4 then
+        PR52_byte(PR423_pointer(a0)^.v)^.v := 1;
+    end;
+  end;
+  {@563B-5646}
+  pO0EC_0EBF(pointer(a0));
+  {@5646-564F}
+  PR422_byte(a0)^.v := 3;
 end;
 
 { 5700 }
 procedure pO075_5700;
-var loc: array[1..52] of byte;
+var
+  v2w: word;
+  v4w: word;
+  v5b: byte;
+  _f1: array[1..5] of byte;
+  v12w: word;
+  _f2: array[1..1] of byte;
 begin
   if false then begin
     if LV = 'Push JOYSTICK #1 to the extreme upper' then;
@@ -1439,81 +3343,146 @@ begin
     if LV = 'Unable to read joystick' then;
     if LV = 'Push JOYSTICK #1 to the extreme lower' then;
     if LV = 'right position and press button #1.' then;
+    with LPR^ do LM1_0('left position and press button #1.');
   end;
+  {@5706-570B}
+  pR716_0000;
+  {@570B-5715}
+  if bC60C = 0 then
+    Exit;
   asm
-    call pR716_0000
-    db 128,62,12,198,0,117,3,233,29,4,49,192,137,70,254,49,192,137,70,252,199,70,244,1,0,235,3,255
-    db 70,244,176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
-    call XR716_01DC
-    db 136,70,251,139,70,249,1,70,254,139,70,247,1,70,252,131,126,244,20,117,209,139,70,254,49,210,185,20
-    db 0,247,241,163,218,197,139,70,252,49,210,185,20,0,247,241,163,232,197,176,1,80,176,1,80,176,38,80
-    db 176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,205,22,87,191,85,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 176,1,80,176,5,80,176,13,80,176,0,80,141,126,208,22,87,191,123,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 49,192,137,70,244,176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
-    call XR716_01DC
-    db 136,70,251,255,70,244,129,126,244,32,78,119,15,128,126,251,0,116,214,138,70,243,36,1,8,192,116,205
-    db 129,126,244,32,78,118,61,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 184,208,7,80
-    call Delay
-    db 233,246,2,199,70,254,255,255,199,70,252,255,255,198,6,109,177,1,235,4,254,6,109,177,176,1,80,141
-    db 126,249,22,87,141,126,247,22,87,141,126,243,22,87
-    call XR716_01DC
-    db 8,192,116,39,138,70,243,36,1,8,192,116,28,139,70,249,59,70,254,115,6,139,70,249,137,70,254,139
-    db 70,247,59,70,252,115,6,139,70,247,137,70,252,235,61,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 184,208,7,80
-    call Delay
-    db 233,98,2,128,62,109,177,20,116,3,233,115,255,128,126,251,0,117,3,233,140,254,139,70,254,163,212,197
-    db 161,218,197,43,6,212,197,49,210,185,3,0,247,241,3,6,212,197,163,214,197,161,218,197,43,6,212,197
-    db 209,224,49,210,185,3,0,247,241,3,6,212,197,163,216,197,139,70,252,163,226,197,161,232,197,43,6,226
-    db 197,49,210,185,3,0,247,241,3,6,226,197,163,228,197,161,232,197,43,6,226,197,209,224,49,210,185,3
-    db 0,247,241,3,6,226,197,163,230,197,176,1,80,176,1,80
-    call pR716_0107
-    db 8,192,117,241,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,205,22,87,191,182,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 176,1,80,176,5,80,176,13,80,176,0,80,141,126,207,22,87,191,220,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 49,192,137,70,244,176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
-    call XR716_01DC
-    db 136,70,251,255,70,244,129,126,244,32,78,119,15,128,126,251,0,116,214,138,70,243,36,1,8,192,116,205
-    db 129,126,244,32,78,118,61,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 184,208,7,80
-    call Delay
-    db 233,15,1,49,192,137,70,254,49,192,137,70,252,198,6,109,177,1,235,4,254,6,109,177,176,1,80,141
-    db 126,249,22,87,141,126,247,22,87,141,126,243,22,87
-    call XR716_01DC
-    db 8,192,116,39,138,70,243,36,1,8,192,116,28,139,70,249,59,70,254,118,6,139,70,249,137,70,254,139
-    db 70,247,59,70,252,118,6,139,70,247,137,70,252,235,60,176,1,80,176,1,80,176,38,80,176,22,80
-    call pR142_0217
-    db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
-    call pR47F_0354
-    db 184,208,7,80
-    call Delay
-    db 235,124,128,62,109,177,20,116,3,233,116,255,128,126,251,0,117,3,233,141,254,139,70,254,163,224,197,161
-    db 224,197,43,6,218,197,49,210,185,3,0,247,241,3,6,218,197,163,220,197,161,224,197,43,6,218,197,209
-    db 224,49,210,185,3,0,247,241,3,6,218,197,163,222,197,139,70,252,163,238,197,161,238,197,43,6,232,197
-    db 49,210,185,3,0,247,241,3,6,232,197,163,234,197,161,238,197,43,6,232,197,209,224,49,210,185,3,0
-    db 247,241,3,6,232,197,163,236,197,198,6,12,198,1
+  db 49,192,137,70,254,49,192,137,70,252,199,70,244,1,0,235,3,255,70,244,176,1,80,141,126,249,22,87
+  db 141,126,247,22,87,141,126,243,22,87
+  call XR716_01DC
+  db 136,70,251,139,70,249,1,70,254,139,70,247,1,70,252,131,126,244,20,117,209
   end;
+  {@5755-5762}
+  wC5DA := v2w div 20;
+  {@5762-576F}
+  wC5E8 := v4w div 20;
+  {@576F-58E3}
+  repeat
+    {@576F-5780}
+    pR142_0217(1, 1, 38, 22);
+    {@5780-57A0}
+    pR47F_0354(1, 3, 13, 0, 'Push JOYSTICK #1 to the extreme upper');
+    {@57A0-57C0}
+    pR47F_0354(1, 5, 13, 0, 'left position and press button #1.');
+    {@57C0-57C5}
+    v12w := 0;
+    asm
+  db 176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
+  call XR716_01DC
+  db 136,70,251,255,70,244,129,126,244,32,78,119,15,128,126,251,0,116,214,138,70,243,36,1,8,192,116,205
+    end;
+    {@57F8-583C}
+    if v12w > 20000 then
+    begin
+      {@57FF-5810}
+      pR142_0217(1, 1, 38, 22);
+      {@5810-5830}
+      pR47F_0354(1, 3, 13, 0, 'Unable to read joystick');
+      {@5830-5839}
+      Delay(2000);
+      {@5839-583C}
+      Exit;
+    end;
+    {@583C-5841}
+    v2w := 65535;
+    asm
+  db 199,70,252,255,255
+    end;
+    for bB16D := 1 to 20 do
+      asm
+  db 176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
+  call XR716_01DC
+  db 8,192,116,39,138,70,243,36,1,8,192,116,28,139,70,249,59,70,254,115,6,139,70,249,137,70,254,139
+  db 70,247,59,70,252,115,6,139,70,247,137,70,252,235,61,176,1,80,176,1,80,176,38,80,176,22,80
+  call pR142_0217
+  db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
+  call pR47F_0354
+  db 184,208,7,80
+  call Delay
+  db 233,98,2
+      end;
+  until v5b <> 0;
+  {@58E3-58E9}
+  wC5D4 := v2w;
+  {@58E9-58FE}
+  wC5D6 := (wC5DA - wC5D4) div 3 + wC5D4;
+  {@58FE-5915}
+  wC5D8 := (wC5DA - wC5D4) * 2 div 3 + wC5D4;
+  {@5915-591B}
+  wC5E2 := v4w;
+  {@591B-5930}
+  wC5E4 := (wC5E8 - wC5E2) div 3 + wC5E2;
+  {@5930-5947}
+  wC5E6 := (wC5E8 - wC5E2) * 2 div 3 + wC5E2;
+  {@5947-5956}
+  repeat
+  until pR716_0107(1, 1) = 0;
+  {@5956-5AC9}
+  repeat
+    {@5956-5967}
+    pR142_0217(1, 1, 38, 22);
+    {@5967-5987}
+    pR47F_0354(1, 3, 13, 0, 'Push JOYSTICK #1 to the extreme lower');
+    {@5987-59A7}
+    pR47F_0354(1, 5, 13, 0, 'right position and press button #1.');
+    {@59A7-59AC}
+    v12w := 0;
+    asm
+  db 176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
+  call XR716_01DC
+  db 136,70,251,255,70,244,129,126,244,32,78,119,15,128,126,251,0,116,214,138,70,243,36,1,8,192,116,205
+    end;
+    {@59DF-5A23}
+    if v12w > 20000 then
+    begin
+      {@59E6-59F7}
+      pR142_0217(1, 1, 38, 22);
+      {@59F7-5A17}
+      pR47F_0354(1, 3, 13, 0, 'Unable to read joystick');
+      {@5A17-5A20}
+      Delay(2000);
+      {@5A20-5A23}
+      Exit;
+    end;
+    {@5A23-5A28}
+    v2w := 0;
+    {@5A28-5A2D}
+    v4w := 0;
+    for bB16D := 1 to 20 do
+      asm
+  db 176,1,80,141,126,249,22,87,141,126,247,22,87,141,126,243,22,87
+  call XR716_01DC
+  db 8,192,116,39,138,70,243,36,1,8,192,116,28,139,70,249,59,70,254,118,6,139,70,249,137,70,254,139
+  db 70,247,59,70,252,118,6,139,70,247,137,70,252,235,60,176,1,80,176,1,80,176,38,80,176,22,80
+  call pR142_0217
+  db 176,1,80,176,3,80,176,13,80,176,0,80,141,126,219,22,87,191,158,86,14,87,154,111,10,37,8
+  call pR47F_0354
+  db 184,208,7,80
+  call Delay
+  db 235,124
+      end;
+  until v5b <> 0;
+  {@5AC9-5ACF}
+  wC5E0 := v2w;
+  {@5ACF-5AE4}
+  wC5DC := (wC5E0 - wC5DA) div 3 + wC5DA;
+  {@5AE4-5AFB}
+  wC5DE := (wC5E0 - wC5DA) * 2 div 3 + wC5DA;
+  {@5AFB-5B01}
+  wC5EE := v4w;
+  {@5B01-5B16}
+  wC5EA := (wC5EE - wC5E8) div 3 + wC5E8;
+  {@5B16-5B2D}
+  wC5EC := (wC5EE - wC5E8) * 2 div 3 + wC5E8;
+  {@5B2D-5B32}
+  bC60C := 1;
 end;
 
 { 5B36 }
 begin
-  asm
-  end;
 end.
 

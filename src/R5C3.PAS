@@ -8,125 +8,180 @@ uses GAMEDATA;
 
 procedure pR5C3_0000;
 procedure pR5C3_0020;
-procedure pR5C3_0037(a0: word; a1: word; a2: word; a3: word; a4: word);
-procedure pR5C3_008C(a0: word; a1: word; a2: word; a3: string);
-procedure pR5C3_00FC(a0: word; a1: word; a2: word; a3: word);
-procedure pR5C3_011A(a0: word; a1: S40);
+procedure pR5C3_0037(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte);
+procedure pR5C3_008C(a0: byte; a1: byte; a2: byte; a3: string);
+procedure pR5C3_00FC(a0: byte; a1: byte; a2: byte; a3: byte);
+procedure pR5C3_011A(a0: byte; a1: S40);
 procedure pR5C3_0174(a0: S80);
 procedure pR5C3_01C3(a0: S80; a1: S80);
 procedure pR5C3_0252;
-procedure pR5C3_02A3(a0: S2);
-function pR5C3_0336(a0: S80; a1: S80; a2: word; a3: word; a4: word): byte;
+function pR5C3_02A3(a0: S2): string;
+function pR5C3_0336(a0: S80; a1: S80; a2: byte; a3: pointer): byte;
 function pR5C3_055E(a0: S80): byte;
-procedure pR5C3_05A8(a0: string; a1: string);
-procedure pR5C3_0677(a0: string);
-procedure pR5C3_0761(a0: word; a1: word; a2: word; a3: word; a4: word; a5: word);
-function pR5C3_0821(a0: S20; a1: S20; a2: word; a3: word; a4: word; a5: word; a6: word; a7: word): byte;
-procedure pR5C3_08FA(a0: word; a1: word; a2: word; a3: word);
-procedure pR5C3_0915(a0: S80; a1: S80; a2: word; a3: word; a4: word; a5: word; a6: word);
+function pR5C3_05A8(a0: string; a1: string): string;
+function pR5C3_0677(a0: string): S80;
+procedure pR5C3_0761(a0: pointer; a1: pointer; a2: pointer);
+function pR5C3_0821(a0: S20; a1: S20; a2: pointer; a3: pointer; a4: pointer): byte;
+procedure pR5C3_08FA(a0: pointer; a1: pointer);
+procedure pR5C3_0915(a0: S80; a1: S80; a2: byte; a3: pointer; a4: pointer);
 
 implementation
 
 uses LIT, Dos, R670, R6C9;
 
+type
+  R0_byte = record v: byte end;
+  R0_file = record v: file end;
+  R0_pointer = record v: pointer end;
+  R0_word = record v: word end;
+  RA0_byte = record a: array[0..32000] of byte end;
+  PR0_byte = ^R0_byte;
+  PR0_file = ^R0_file;
+  PR0_pointer = ^R0_pointer;
+  PR0_word = ^R0_word;
+  PRA0_byte = ^RA0_byte;
+var
+  a0E07_ec3f: array[0..32759] of byte absolute d0E07;
+  b8818: byte absolute d8818;
+  b8819: byte absolute d8819;
+  b881A: byte absolute d881A;
+  b881B: byte absolute d881B;
+  b881E: byte absolute d881E;
+  b881F: byte absolute d881F;
+  b92BF: byte absolute d92BF;
+  b92C0: byte absolute d92C0;
+  b94D4: byte absolute d94D4;
+  g8750_45dd: string[79] absolute d8750;
+  g87A0_45dd: string[79] absolute d87A0;
+  g87F0_579f: char absolute d87F0;
+  g8818_6095: Registers absolute d8818;
+  g9D03_3610: file absolute d9D03;
+  s3E0A: string absolute d3E0A;
+  s8750: string absolute d8750;
+  s87A0: string absolute d87A0;
+  w3DE8: word absolute d3DE8;
+  w881C: word absolute d881C;
 
 
 { 0000 }
 procedure pR5C3_0000;
 begin
-  asm
-    db 160,192,146,162,191,146,128,62,192,146,1,117,14,255,54,232,61
-    call pR6C9_0000
-    db 198,6,192,146,0
+  {@0003-0009}
+  b92BF := b92C0;
+  if b92C0 = 1 then
+  begin
+    {@0010-0019}
+    pR6C9_0000(w3DE8);
+    {@0019-001E}
+    b92C0 := 0;
   end;
 end;
 
 { 0020 }
 procedure pR5C3_0020;
 begin
-  asm
-    db 160,191,146,162,192,146,128,62,192,146,1,117,5
-    call pR6C9_00CC
-  end;
+  {@0023-0029}
+  b92C0 := b92BF;
+  if b92C0 = 1 then
+    pR6C9_00CC;
 end;
 
 { 0037 }
-procedure pR5C3_0037(a0: word; a1: word; a2: word; a3: word; a4: word);
+procedure pR5C3_0037(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte);
 begin
-  asm
-    db 198,6,25,136,2,198,6,27,136,0,138,70,12,162,31,136,138,70,14,162,30,136,176,16,80,191,24,136
-    db 30,87
-    call Intr
-    db 198,6,25,136,9,138,70,6,162,24,136,198,6,27,136,0,138,70,10,162,26,136,138,70,8,48,228,163
-    db 28,136,176,16,80,191,24,136,30,87
-    call Intr
-  end;
+  {@003A-003F}
+  b8819 := 2;
+  {@003F-0044}
+  b881B := 0;
+  {@0044-004A}
+  b881F := a1;
+  {@004A-0050}
+  b881E := a0;
+  {@0050-005D}
+  Intr(16, g8818_6095);
+  {@005D-0062}
+  b8819 := 9;
+  {@0062-0068}
+  b8818 := a4;
+  {@0068-006D}
+  b881B := 0;
+  {@006D-0073}
+  b881A := a2;
+  {@0073-007B}
+  w881C := a3;
+  {@007B-0088}
+  Intr(16, g8818_6095);
 end;
 
 { 008C }
-procedure pR5C3_008C(a0: word; a1: word; a2: word; a3: string);
-var loc: array[1..4] of byte;
+procedure pR5C3_008C(a0: byte; a1: byte; a2: byte; a3: string);
+var
+  v257b: byte;
+  v258b: byte;
 begin
-  asm
-    db 138,134,0,255,136,134,255,254,138,134,255,254,136,134,253,254,176,1,58,134,253,254,119,55,136,134,254,254
-    db 235,4,254,134,254,254,138,70,14,80,138,70,12,80,138,70,10,80,176,1,80,138,134,254,254,48,228,139
-    db 248,138,131,0,255,80
-    push cs
-    call near ptr pR5C3_0037
-    db 254,70,14,138,134,254,254,58,134,253,254,117,207
+  {@00A7-00AF}
+  v257b := Length(a3);
+  for v258b := 1 to v257b do
+  begin
+    {@00C9-00E9}
+    pR5C3_0037(a0, a1, a2, 1, Ord(a3[v258b]));
+    {@00E9-00EC}
+    Inc(a0);
   end;
 end;
 
 { 00FC }
-procedure pR5C3_00FC(a0: word; a1: word; a2: word; a3: word);
+procedure pR5C3_00FC(a0: byte; a1: byte; a2: byte; a3: byte);
 begin
-  asm
-    db 138,70,12,80,138,70,10,80,138,70,8,80,138,70,6,80,176,219,80
-    push cs
-    call near ptr pR5C3_0037
-  end;
+  {@00FF-0116}
+  pR5C3_0037(a0, a1, a2, a3, 219);
 end;
 
 { 011A }
-procedure pR5C3_011A(a0: word; a1: S40);
-var loc: array[1..1] of byte;
+procedure pR5C3_011A(a0: byte; a1: S40);
+var
+  v42b: byte;
 begin
-  asm
-    db 176,0,80,176,24,80,176,0,80,176,40,80
-    push cs
-    call near ptr pR5C3_00FC
-    db 176,0,80,176,24,80,138,70,10,80,141,126,215,22,87
-    push cs
-    call near ptr pR5C3_008C
-    call pR670_0187
-    db 136,70,214,176,0,80,176,24,80,176,0,80,176,40,80
-    push cs
-    call near ptr pR5C3_00FC
-  end;
+  {@0133-0143}
+  pR5C3_00FC(0, 24, 0, 40);
+  {@0143-0156}
+  pR5C3_008C(0, 24, a0, a1);
+  {@0156-015E}
+  v42b := pR670_0187;
+  {@015E-016E}
+  pR5C3_00FC(0, 24, 0, 40);
 end;
 
 { 0174 }
 procedure pR5C3_0174(a0: S80);
-var loc: array[1..1] of byte;
+var
+  _f1: array[1..1] of byte;
 begin
-  asm
-    db 141,126,175,22,87
-    push cs
-    call near ptr pR5C3_055E
-    db 8,192,116,35,191,3,157,30,87,141,126,175,22,87,154,185,23,37,8,191,3,157,30,87,154,104,24,37
-    db 8,191,3,157,30,87,154,246,25,37,8
+  {@018D-01BD}
+  if pR5C3_055E(a0) <> 0 then
+  begin
+    {@019A-01A9}
+    Assign(g9D03_3610, a0);
+    {@01A9-01B3}
+    Close(g9D03_3610);
+    {@01B3-01BD}
+    Erase(g9D03_3610);
   end;
 end;
 
 { 01C3 }
 procedure pR5C3_01C3(a0: S80; a1: S80);
 begin
-  asm
-    db 141,126,175,22,87
-    push cs
-    call near ptr pR5C3_055E
-    db 8,192,116,41,191,3,157,30,87,141,126,175,22,87,154,185,23,37,8,191,3,157,30,87,154,104,24,37
-    db 8,191,3,157,30,87,141,190,94,255,22,87,154,13,26,37,8
+  {@01F1-0227}
+  if pR5C3_055E(a0) <> 0 then
+  begin
+    {@01FE-020D}
+    Assign(g9D03_3610, a0);
+    {@020D-0217}
+    Close(g9D03_3610);
+    asm
+  db 191,3,157,30,87,141,190,94,255,22,87,154,13,26,37,8
+    end;
   end;
 end;
 
@@ -150,7 +205,7 @@ begin
 end;
 
 { 02A3 }
-procedure pR5C3_02A3(a0: S2);
+function pR5C3_02A3(a0: S2): string;
 var loc: array[1..299] of byte;
 begin
   if false then begin
@@ -167,176 +222,268 @@ begin
 end;
 
 { 0336 }
-function pR5C3_0336(a0: S80; a1: S80; a2: word; a3: word; a4: word): byte;
-var loc: array[1..675] of byte;
+function pR5C3_0336(a0: S80; a1: S80; a2: byte; a3: pointer): byte;
+var
+c326: record case byte of 0: (v326a2: string[162]); 1: (_p1: array[1..5] of byte; v321a2: string[157]);
+      2: (_p2: array[1..14] of byte; v312a3: string[148]); 3: (_p3: array[1..14] of byte;
+      v312a2: string[67]); 4: (_p4: array[1..14] of byte; v312b: byte); 5: (_p5: array[1..15] of byte;
+      v311b: byte); 6: (_p6: array[1..82] of byte; v244a2: string[80]); 7: (_p7: array[1..82] of byte;
+      v244a: string[79]); 8: (_p8: array[1..162] of byte; v164b: byte); 9: (_p9: array[1..14] of byte;
+      v312a: DirStr); 10: (_p10: array[1..5] of byte; v321a: NameStr); 11: (v326a: ExtStr) end;
 begin
   if false then begin
     if LV = ': <ENTER>' then;
     if LV = 'Couldn''t find ' then;
     if LV = '. Check install.' then;
   end;
-  asm
-    db 141,126,174,22,87,141,190,200,254,22,87,141,190,191,254,22,87,141,190,186,254,22,87
-    call FSplit
-    db 128,190,200,254,0,117,20,191,80,135,30,87,141,190,200,254,22,87,184,67,0,80,154,137,10,37,8,141
-    db 190,186,253,22,87,141,190,200,254,22,87,154,111,10,37,8,141,190,191,254,22,87,154,252,10,37,8,141
-    db 190,186,254,22,87,154,252,10,37,8
-    push cs
-    call near ptr pR5C3_055E
-    db 136,134,92,255,128,190,92,255,0,116,3,233,147,0,141,190,200,254,22,87,191,80,135,30,87,154,116,11
-    db 37,8,116,3,233,126,0,191,80,135,30,87,141,190,12,255,22,87,184,79,0,80,154,137,10,37,8,191
-    db 160,135,30,87,191,80,135,30,87,184,79,0,80,154,137,10,37,8,141,190,12,255,22,87,191,160,135,30
-    db 87,184,79,0,80,154,137,10,37,8,191,80,135,30,87,141,190,200,254,22,87,184,67,0,80,154,137,10
-    db 37,8,141,190,186,253,22,87,141,190,200,254,22,87,154,111,10,37,8,141,190,191,254,22,87,154,252,10
-    db 37,8,141,190,186,254,22,87,154,252,10,37,8
-    push cs
-    call near ptr pR5C3_055E
-    db 136,134,92,255,128,190,92,255,0,116,3,233,135,0,128,126,10,0,116,3,233,126,0,128,190,201,254,67
-    db 115,56,176,14,80,141,190,186,252,22,87,141,190,93,255,22,87,154,111,10,37,8,141,190,186,253,22,87
-    db 160,240,135,80,154,159,11,37,8,154,252,10,37,8,191,12,3,14,87,154,252,10,37,8
-    push cs
-    call near ptr pR5C3_011A
-    db 235,63,176,14,80,141,190,186,253,22,87,191,22,3,14,87,154,111,10,37,8,141,190,191,254,22,87,154
-    db 252,10,37,8,141,190,186,254,22,87,154,252,10,37,8,191,37,3,14,87,154,252,10,37,8
-    push cs
-    call near ptr pR5C3_011A
-    db 176,0,80
-    call pR670_0000
-    db 128,190,92,255,0,117,9,128,126,10,0,117,3,233,147,254,128,190,92,255,0,116,63,196,126,6,6,87
-    db 141,190,186,253,22,87,141,190,200,254,22,87,154,111,10,37,8,141,190,191,254,22,87,154,252,10,37,8
-    db 141,190,186,254,22,87,154,252,10,37,8,154,185,23,37,8,196,126,6,6,87,184,1,0,80,154,231,23
-    db 37,8,138,134,92,255,136,70,255
+  {@0364-0380}
+  FSplit(a0, c326.v312a, c326.v321a, c326.v326a);
+  if c326.v312b = 0 then
+    c326.v312a2 := s8750;
+  {@039B-0508}
+  repeat
+    {@039B-03CA}
+    c326.v164b := pR5C3_055E(c326.v312a3 + c326.v321a2 + c326.v326a2);
+    if (c326.v164b = 0) and (c326.v312a3 = s8750) then
+    begin
+      {@03E9-03FD}
+      c326.v244a := s8750;
+      {@03FD-0410}
+      g8750_45dd := s87A0;
+      {@0410-0424}
+      g87A0_45dd := c326.v244a2;
+      {@0424-0438}
+      c326.v312a2 := s8750;
+      {@0438-0467}
+      c326.v164b := pR5C3_055E(c326.v312a3 + c326.v321a2 + c326.v326a2);
+    end;
+    {@0467-04F8}
+    if (c326.v164b = 0) and (a2 = 0) then
+    begin
+      {@047A-04F8}
+      if c326.v311b < 67 then
+        pR5C3_011A(14, a1 + g87F0_579f + ': <ENTER>')
+      else
+      begin
+        {@04B9-04F0}
+        pR5C3_011A(14, 'Couldn''t find ' + c326.v321a2 + c326.v326a2 + '. Check install.');
+        {@04F0-04F8}
+        pR670_0000(0);
+      end;
+    end;
+  until (c326.v164b <> 0) or (a2 <> 0);
+  {@0508-054E}
+  if c326.v164b <> 0 then
+  begin
+    {@050F-0540}
+    Assign(PR0_file(a3)^.v, c326.v312a3 + c326.v321a2 + c326.v326a2);
+    {@0540-054E}
+    Reset(PR0_file(a3)^.v, 1);
   end;
+  {@054E-0555}
+  pR5C3_0336 := c326.v164b;
 end;
 
 { 055E }
 function pR5C3_055E(a0: S80): byte;
-var loc: array[1..44] of byte;
+var
+  v125a: SearchRec;
+  _f1: array[1..1] of byte;
 begin
-  asm
-    db 141,126,174,22,87,49,192,80,141,126,131,22,87
-    call FindFirst
-    db 131,62,138,251,0,117,6,128,126,174,0,117,4,176,0,235,2,176,1,136,70,255
-  end;
+  {@0577-0589}
+  FindFirst(a0, 0, v125a);
+  {@0589-059F}
+  pR5C3_055E := Ord((word(Doserror) = 0) and (Length(a0) <> 0));
 end;
 
 { 05A8 }
-procedure pR5C3_05A8(a0: string; a1: string);
-var loc: array[1..260] of byte;
+function pR5C3_05A8(a0: string; a1: string): string;
+var
+  v513b: byte;
+  v514b: byte;
+  v515b: byte;
 begin
-  asm
-    db 138,134,0,254,136,134,254,253,138,134,254,253,48,228,139,208,138,134,0,255,48,228,43,194,64,136,134,255
-    db 253,138,134,255,253,136,134,252,253,176,1,58,134,252,253,119,89,136,134,253,253,235,4,254,134,253,253,141
-    db 190,252,252,22,87,141,190,0,255,22,87,138,134,253,253,48,228,80,138,134,254,253,48,228,80,154,187,10
-    db 37,8,141,190,0,254,22,87,154,116,11,37,8,117,25,141,190,0,255,22,87,138,134,253,253,48,228,80
-    db 138,134,254,253,48,228,80,154,32,12,37,8,138,134,253,253,58,134,252,253,117,173,141,190,0,255,22,87
-    db 196,126,14,6,87,184,255,0,80,154,137,10,37,8
+  {@05D7-05DF}
+  v514b := Length(a1);
+  {@05DF-05F4}
+  v513b := Length(a0) - v514b + 1;
+  for v515b := 1 to v513b do
+  begin
+    {@060E-0653}
+    if Copy(a0, v515b, v514b) = a1 then
+      Delete(a0, v515b, v514b);
   end;
+  {@065D-0671}
+  pR5C3_05A8 := a0;
 end;
 
 { 0677 }
-procedure pR5C3_0677(a0: string);
-var loc: array[1..514] of byte;
+function pR5C3_0677(a0: string): S80;
+var
+  v257b: byte;
 begin
-  asm
-    db 198,134,255,254,1,235,4,254,134,255,254,141,190,255,252,22,87,141,190,0,255,22,87,141,190,255,253,22
-    db 87,138,134,255,254,48,228,139,248,138,133,7,14,80,154,159,11,37,8
-    push cs
-    call near ptr pR5C3_05A8
-    db 141,190,0,255,22,87,184,255,0,80,154,137,10,37,8,128,190,255,254,10,117,190,141,190,255,253,22,87
-    db 141,190,0,255,22,87,184,1,0,80,184,8,0,80,154,187,10,37,8,141,190,0,255,22,87,184,255,0
-    db 80,154,137,10,37,8,138,134,0,255,136,134,254,254,176,1,58,134,254,254,119,52,136,134,255,254,235,4
-    db 254,134,255,254,138,134,255,254,48,228,139,248,138,131,0,255,80,154,1,28,37,8,138,208,138,134,255,254
-    db 48,228,139,248,136,147,0,255,138,134,255,254,58,134,254,254,117,210,141,190,0,255,22,87,196,126,10,6
-    db 87,184,80,0,80,154,137,10,37,8
-  end;
+  {@0692-06DB}
+  for v257b := 1 to 10 do
+    a0 := pR5C3_05A8(a0, Chr(a0E07_ec3f[v257b]));
+  {@06DB-0703}
+  a0 := Copy(a0, 1, 8);
+  for v257b := 1 to Length(a0) do
+    a0[v257b] := Chr(Ord(UpCase(Chr(Ord(a0[v257b])))));
+  {@0747-075B}
+  pR5C3_0677 := a0;
 end;
 
 { 0761 }
-procedure pR5C3_0761(a0: word; a1: word; a2: word; a3: word; a4: word; a5: word);
-var loc: array[1..520] of byte;
+procedure pR5C3_0761(a0: pointer; a1: pointer; a2: pointer);
+var
+  v2w: word;
+  v4w: word;
+  v5b: byte;
+  v6b: byte;
+  _f1: array[1..512] of byte;
+  v520w: word;
+  v5sb: shortint absolute v5b;
 begin
-  asm
-    db 49,192,137,70,254,49,192,137,70,252,196,126,6,6,87,141,126,251,22,87,184,1,0,80,49,192,80,80
-    db 154,210,24,37,8,138,70,251,60,0,124,49,60,126,127,45,196,126,6,6,87,139,70,252,196,126,14,38
-    db 196,61,3,248,6,87,138,70,251,152,64,80,141,190,248,253,22,87,154,210,24,37,8,138,70,251,152,64
-    db 1,70,252,235,76,60,129,124,72,60,255,127,68,138,70,251,152,247,216,136,70,251,196,126,6,6,87,141
-    db 126,250,22,87,184,1,0,80,141,190,248,253,22,87,154,210,24,37,8,139,70,252,196,126,14,38,196,61
-    db 3,248,6,87,138,70,251,152,80,138,70,250,80,154,127,26,37,8,138,70,251,152,1,70,252,139,70,252
-    db 196,126,10,38,59,5,115,3,233,87,255
-  end;
+  {@0768-076D}
+  v2w := 0;
+  {@076D-0772}
+  v4w := 0;
+  {@0772-081B}
+  repeat
+    {@0772-0789}
+    BlockRead(PR0_file(a2)^.v, v5b, 1);
+    case v5sb of
+      0..126: begin
+        {@0794-07B7}
+        BlockRead(PR0_file(a2)^.v, PRA0_byte(PR0_pointer(a0)^.v)^.a[v4w], v5sb + 1, v520w);
+        {@07B7-07BF}
+        Inc(v4w, v5sb + 1);
+      end;
+      -127..-1: begin
+        {@07C9-07D2}
+        v5b := -v5sb;
+        {@07D2-07EB}
+        BlockRead(PR0_file(a2)^.v, v6b, 1, v520w);
+        {@07EB-0806}
+        FillChar(PRA0_byte(PR0_pointer(a0)^.v)^.a[v4w], v5sb, v6b);
+        {@0806-080D}
+        Inc(v4w, v5sb);
+      end;
+    end;
+  until v4w >= PR0_word(a1)^.v;
 end;
 
 { 0821 }
-function pR5C3_0821(a0: S20; a1: S20; a2: word; a3: word; a4: word; a5: word; a6: word; a7: word): byte;
-var loc: array[1..517] of byte;
+function pR5C3_0821(a0: S20; a1: S20; a2: pointer; a3: pointer; a4: pointer): byte;
+var
+  v45w: word;
+  _f1: array[1..2] of byte;
 begin
-  asm
-    db 141,190,209,254,22,87,141,126,234,22,87,154,111,10,37,8,141,126,213,22,87,154,252,10,37,8,191,10
-    db 62,30,87,160,212,148,80,196,126,10,6,87
-    push cs
-    call near ptr pR5C3_0336
-    db 8,192,116,111,141,190,209,253,22,87,141,126,234,22,87,154,111,10,37,8,141,126,213,22,87,154,252,10
-    db 37,8,191,10,62,30,87,160,212,148,80,196,126,6,6,87
-    push cs
-    call near ptr pR5C3_0336
-    db 8,192,117,6,198,70,255,0,235,61,196,126,6,6,87,196,126,14,6,87,184,2,0,80,141,126,211,22
-    db 87,154,210,24,37,8,196,126,14,38,131,5,2,196,126,10,6,87,196,126,14,38,139,5,49,210,82,80
-    db 154,58,25,37,8,198,70,255,1,235,4,198,70,255,0
+  {@084E-08ED}
+  if pR5C3_0336(a0 + a1, s3E0A, b94D4, @PR0_byte(a3)^.v) <> 0 then
+  begin
+    {@087E-08B4}
+    if pR5C3_0336(a0 + a1, s3E0A, b94D4, @PR0_byte(a4)^.v) = 0 then
+    begin
+      {@08AE-08B2}
+      pR5C3_0821 := 0;
+      {@08B2-08B4}
+      Exit;
+    end;
+    {@08B4-08CC}
+    BlockRead(PR0_file(a4)^.v, PR0_byte(a2)^.v, 2, v45w);
+    {@08CC-08D3}
+    Inc(PR0_word(a2)^.v, 2);
+    {@08D3-08E7}
+    Seek(PR0_file(a3)^.v, PR0_word(a2)^.v);
+    {@08E7-08EB}
+    pR5C3_0821 := 1;
+    {@08EB-08ED}
+    Exit;
   end;
+  {@08ED-08F1}
+  pR5C3_0821 := 0;
 end;
 
 { 08FA }
-procedure pR5C3_08FA(a0: word; a1: word; a2: word; a3: word);
+procedure pR5C3_08FA(a0: pointer; a1: pointer);
 begin
-  asm
-    db 196,126,10,6,87,154,104,24,37,8,196,126,6,6,87,154,104,24,37,8
-  end;
+  {@08FD-0907}
+  Close(PR0_file(a0)^.v);
+  {@0907-0911}
+  Close(PR0_file(a1)^.v);
 end;
 
 { 0915 }
-procedure pR5C3_0915(a0: S80; a1: S80; a2: word; a3: word; a4: word; a5: word; a6: word);
-var loc: array[1..276] of byte;
+procedure pR5C3_0915(a0: S80; a1: S80; a2: byte; a3: pointer; a4: pointer);
+var
+  _f1: array[1..1] of byte;
+  v164b: byte;
+  v168l: longint;
+  v169b: byte;
+  v171w: word;
+  v299a: file;
+  v427a: file;
+  v429w: word;
+  _f2: array[1..9] of byte;
+  v429b: byte absolute v429w;
+  v427b: byte absolute v427a;
+  v299b: byte absolute v299a;
+  v168b: byte absolute v168l;
 begin
-  asm
-    push cs
-    call near ptr pR5C3_0000
-    db 141,126,175,22,87,141,190,94,255,22,87,141,190,83,254,22,87,141,190,213,254,22,87,141,190,85,254,22
-    db 87
-    push cs
-    call near ptr pR5C3_0821
-    db 8,192,117,27,196,126,10,49,192,38,137,5,196,126,6,49,192,38,137,5,38,137,69,2
-    push cs
-    call near ptr pR5C3_0020
-    db 233,58,1,141,190,85,254,22,87,141,190,87,255,22,87,184,1,0,80,141,190,85,255,22,87,154,210,24
-    db 37,8,141,190,85,254,22,87,141,190,88,255,22,87,184,4,0,80,141,190,85,255,22,87,154,210,24,37
-    db 8,141,190,85,254,22,87,196,126,10,6,87,184,2,0,80,141,190,85,255,22,87,154,210,24,37,8,141
-    db 190,85,254,22,87,141,190,92,255,22,87,184,2,0,80,141,190,85,255,22,87,154,210,24,37,8,138,134
-    db 87,255,58,70,14,116,37,141,190,85,254,22,87,154,106,25,37,8,139,200,139,218,139,134,83,254,49,210
-    db 59,211,124,12,126,3,233,110,255,59,193,118,3,233,103,255,138,134,87,255,58,70,14,116,42,196,126,10
-    db 49,192,38,137,5,196,126,6,49,192,38,137,5,38,137,69,2,141,190,213,254,22,87,141,190,85,254,22
-    db 87
-    push cs
-    call near ptr pR5C3_08FA
-    push cs
-    call near ptr pR5C3_0020
-    db 235,110,196,126,10,38,255,53,154,63,2,37,8,196,126,6,38,137,5,38,137,85,2,196,126,6,38,196
-    db 61,6,87,196,126,10,38,255,53,176,0,80,154,127,26,37,8,141,190,213,254,22,87,139,134,83,254,49
-    db 210,3,134,88,255,19,150,90,255,82,80,154,58,25,37,8,196,126,6,6,87,196,126,10,6,87,141,190
-    db 213,254,22,87
-    push cs
-    call near ptr pR5C3_0761
-    db 141,190,213,254,22,87,141,190,85,254,22,87
-    push cs
-    call near ptr pR5C3_08FA
-    push cs
-    call near ptr pR5C3_0020
+  {@0943-0947}
+  pR5C3_0000;
+  if pR5C3_0821(a0, a1, @v429b, @v299b, @v427b) = 0 then
+  begin
+    {@096C-0974}
+    PR0_word(a3)^.v := 0;
+    {@0974-0980}
+    PR0_pointer(a4)^.v := nil;
+    {@0980-0984}
+    pR5C3_0020;
+    {@0984-0987}
+    Exit;
   end;
+  {@0987-0A20}
+  repeat
+    {@0987-09A2}
+    BlockRead(v427a, v169b, 1, v171w);
+    {@09A2-09BD}
+    BlockRead(v427a, v168b, 4, v171w);
+    {@09BD-09D7}
+    BlockRead(v427a, PR0_byte(a3)^.v, 2, v171w);
+    {@09D7-09F2}
+    BlockRead(v427a, v164b, 2, v171w);
+  until (v169b = a2) or (v429w <= FilePos(v427a));
+  {@0A20-0A53}
+  if v169b <> a2 then
+  begin
+    {@0A29-0A31}
+    PR0_word(a3)^.v := 0;
+    {@0A31-0A3D}
+    PR0_pointer(a4)^.v := nil;
+    {@0A3D-0A4D}
+    pR5C3_08FA(@v299b, @v427b);
+    {@0A4D-0A51}
+    pR5C3_0020;
+    {@0A51-0A53}
+    Exit;
+  end;
+  {@0A53-0A68}
+  GetMem(PR0_pointer(a4)^.v, PR0_word(a3)^.v);
+  {@0A68-0A7E}
+  FillChar(PR0_byte(PR0_pointer(a4)^.v)^.v, PR0_word(a3)^.v, 0);
+  {@0A7E-0A99}
+  Seek(v299a, LongInt(v429w) + v168l);
+  {@0A99-0AAD}
+  pR5C3_0761(@PR0_byte(a4)^.v, @PR0_byte(a3)^.v, @v299b);
+  {@0AAD-0ABD}
+  pR5C3_08FA(@v299b, @v427b);
+  {@0ABD-0AC1}
+  pR5C3_0020;
 end;
 
 { 0AC7 }
 begin
-  asm
-  end;
 end.
 

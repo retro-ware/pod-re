@@ -11,12 +11,14 @@ implementation
 
 uses LIT;
 
+var
+  gC5A6_3c7f: string[20] absolute dC5A6;
+  s3D41: string absolute d3D41;
 
 
 { 0000 }
 begin
-  asm
-    db 191,65,61,30,87,191,166,197,30,87,184,20,0,80,154,137,10,37,8
-  end;
+  {@0003-0016}
+  gC5A6_3c7f := s3D41;
 end.
 

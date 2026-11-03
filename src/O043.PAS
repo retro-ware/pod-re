@@ -17,17 +17,13 @@ uses LIT, O06E, R670;
 { 0000 }
 procedure pO043_0000;
 begin
-  asm
-    db 176,0,80,176,1,80
-    call pO06E_2989
-    db 176,23,80
-    call pR670_0000
-  end;
+  {@0003-000E}
+  pO06E_2989(0, 1);
+  {@000E-0016}
+  pR670_0000(23);
 end;
 
 { 0018 }
 begin
-  asm
-  end;
 end.
 

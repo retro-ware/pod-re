@@ -427,11 +427,11 @@ def tpl_call(sim, name):
         kill(sim)
         sim.r['al'] = Builtin(name, [], 1)
         return
-    if name == 'ClrScr':
+    if name in ('ClrScr', 'NoSound'):
         kill(sim)
         stmt(sim, name, [])
         return
-    if name == 'Delay':
+    if name in ('Delay', 'Sound'):
         need(sim, 1)
         a = pop(sim)
         kill(sim)

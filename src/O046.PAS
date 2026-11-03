@@ -85,7 +85,5 @@ end;
 
 { 027B }
 begin
-  asm
-  end;
 end.
 

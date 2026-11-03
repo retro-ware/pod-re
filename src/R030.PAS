@@ -38,10 +38,7 @@ end;
 
 { 00BB }
 begin
-  asm
-    mov ax, offset pR030_0042
-    mov dx, seg pR030_0042
-    db 163,196,125,137,22,198,125
-  end;
+  {@00BE-00CB}
+  Heaperror := Pointer(@pR030_0042);
 end.
 

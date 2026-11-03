@@ -11,110 +11,149 @@ procedure pR5A0_001B;
 procedure pR5A0_0031(a0: word);
 procedure pR5A0_0098;
 procedure pR5A0_00CC;
-procedure pR5A0_018F(a0: word);
+procedure pR5A0_018F(a0: byte);
 
 implementation
 
 uses LIT, R5C0, R5C3, R670, R6B9, R6C9;
 
+type
+  R0_byte = record v: byte end;
+  PR0_byte = ^R0_byte;
+var
+  b92A8: byte absolute d92A8;
+  b92B7: byte absolute d92B7;
+  b92BD: byte absolute d92BD;
+  b92C0: byte absolute d92C0;
+  b92C1: byte absolute d92C1;
+  b92CA: byte absolute d92CA;
+  p92B3: pointer absolute d92B3;
+  w3DE8: word absolute d3DE8;
+  w92B7: word absolute d92B7;
 
 
 { 0000 }
 procedure pR5A0_0000(a0: word);
 begin
-  asm
-    db 128,62,192,146,2,117,5
-    call pR6B9_00D6
-    db 255,118,6
-    call pR6C9_0000
-  end;
+  {@0003-000F}
+  if b92C0 = 2 then
+    pR6B9_00D6;
+  {@000F-0017}
+  pR6C9_0000(a0);
 end;
 
 { 001B }
 procedure pR5A0_001B;
 begin
-  asm
-    db 128,62,192,146,2,117,5
-    call pR6B9_00D6
-    call pR6C9_00CC
-  end;
+  {@001E-002A}
+  if b92C0 = 2 then
+    pR6B9_00D6;
+  {@002A-002F}
+  pR6C9_00CC;
 end;
 
 { 0031 }
 procedure pR5A0_0031(a0: word);
 begin
-  asm
-    db 128,62,168,146,5,117,2,235,87,128,62,192,146,1,117,9,255,54,232,61
-    call pR6C9_0000
-    db 160,202,146,48,228,59,70,6,116,12,128,62,192,146,2,117,5
-    call pR6B9_00D6
-    db 128,62,192,146,0,117,34,138,70,6,162,202,146,255,118,6
-    push cs
-    call near ptr pR5A0_018F
-    db 255,54,181,146,255,54,179,146,255,54,187,146,255,54,185,146
-    call pR6B9_001F
-    db 49,192,80
-    call pR6B9_00B6
+  {@0034-003D}
+  if b92A8 = 5 then
+    Exit;
+  {@003D-004D}
+  if b92C0 = 1 then
+    pR6C9_0000(w3DE8);
+  {@004D-0063}
+  if (b92CA <> a0) and (b92C0 = 2) then
+    pR6B9_00D6;
+  {@0063-008C}
+  if b92C0 = 0 then
+  begin
+    {@006A-0070}
+    b92CA := a0;
+    asm
+  db 255,118,6
+  push cs
+  call near ptr pR5A0_018F
+    end;
+    asm
+  db 255,54,181,146,255,54,179,146,255,54,187,146,255,54,185,146
+  call pR6B9_001F
+    end;
   end;
+  {@008C-0094}
+  pR6B9_00B6(0);
 end;
 
 { 0098 }
 procedure pR5A0_0098;
 begin
-  asm
-    db 128,62,192,146,2,117,5
-    call pR6B9_00D6
-  end;
+  {@009B-00A7}
+  if b92C0 = 2 then
+    pR6B9_00D6;
 end;
 
 { 00CC }
 procedure pR5A0_00CC;
-var loc: array[1..132] of byte;
+var
+  v4p: pointer;
+  _f1: array[1..128] of byte;
+  v4b: byte absolute v4p;
 begin
   if false then begin
     if LV = 'MUSIC' then;
     if LV = '.dax' then;
     if LV = 'unable to load com file' then;
   end;
-  asm
-    db 49,192,137,70,252,137,70,254,191,169,0,14,87,191,175,0,14,87,176,0,80,191,183,146,30,87,141,126
-    db 252,22,87
-    call pR5C3_0915
-    db 131,62,183,146,0,117,31,191,144,252,30,87,191,180,0,14,87,49,192,80,154,196,8,37,8,154,245,7
-    db 37,8,176,0,80
-    call pR670_0000
-    db 196,62,194,146,6,87,184,200,50,80
-    call XR670_046E
-    db 161,194,146,139,22,196,146,163,179,146,137,22,181,146,161,179,146,139,22,181,146,37,15,0,129,226,0,0
-    db 8,192,116,12,131,6,179,146,1,131,22,181,146,0,235,226,196,126,252,6,87,196,62,179,146,6,87,255
-    db 54,183,146,154,92,26,37,8,255,118,254,255,118,252,255,54,183,146
-    call pR5C0_0000
-    db 198,6,193,146,1
+  {@00D3-00DB}
+  v4p := nil;
+  {@00DB-00F7}
+  pR5C3_0915('MUSIC', '.dax', 0, @b92B7, @v4b);
+  if w92B7 = 0 then
+  begin
+    {@00FE-0115}
+    WriteLn(Output, 'unable to load com file');
+    {@0115-011D}
+    pR670_0000(0);
   end;
+  asm
+  db 196,62,194,146,6,87,184,200,50,80
+  call XR670_046E
+  db 161,194,146,139,22,196,146,163,179,146,137,22,181,146
+  end;
+  asm
+  db 161,179,146,139,22,181,146,37,15,0,129,226,0,0,8,192,116,12,131,6,179,146,1,131,22,181,146,0
+  db 235,226
+  end;
+  {@0158-016C}
+  Move(PR0_byte(v4p)^.v, PR0_byte(p92B3)^.v, w92B7);
+  {@016C-017B}
+  pR5C0_0000(v4p, w92B7);
+  {@017B-0180}
+  b92C1 := 1;
 end;
 
 { 018F }
-procedure pR5A0_018F(a0: word);
-var loc: array[1..134] of byte;
+procedure pR5A0_018F(a0: byte);
+var
+  _f1: array[1..3] of byte;
+  v4b: byte;
+  _f2: array[1..130] of byte;
 begin
   if false then begin
     if LV = 'MUSIC' then;
     if LV = '.dax' then;
   end;
+  {@0196-01B3}
+  pR5C3_0915('MUSIC', '.dax', a0, @b92BD, @v4b);
   asm
-    db 191,132,1,14,87,191,138,1,14,87,138,70,6,80,191,189,146,30,87,141,126,252,22,87
-    call pR5C3_0915
-    db 196,62,198,146,6,87,184,0,24,80
-    call XR670_046E
-    db 161,198,146,139,22,200,146,163,185,146,137,22,187,146,196,126,252,6,87,196,62,185,146,6,87,255,54,189
-    db 146,154,92,26,37,8,255,118,254,255,118,252,255,54,189,146
-    call pR5C0_0000
+  db 196,62,198,146,6,87,184,0,24,80
+  call XR670_046E
+  db 161,198,146,139,22,200,146,163,185,146,137,22,187,146,196,126,252,6,87,196,62,185,146,6,87,255,54,189
+  db 146,154,92,26,37,8,255,118,254,255,118,252,255,54,189,146
+  call pR5C0_0000
   end;
 end;
 
 { 01F9 }
 begin
-  asm
-  end;
 end.
 
