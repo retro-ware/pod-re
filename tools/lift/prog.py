@@ -63,6 +63,52 @@ for k, v in P.items():
             PROCS[(k, p['entry'])] = Proc(k, p)
 
 
+def tail_proc(key, t, far):
+    """Proc-like view of an entry into a unit's {$L} asm tail: parameter slots from its own [bp+X] / [bx+X]
+    accesses (les/lds = pointer), parameter bytes from its ret n."""
+    code = code_of(key)
+    L = []
+    for ins in md.disasm(code[t:t + 0x400], t):
+        L.append(ins)
+        if ins.mnemonic in ('ret', 'retf'):
+            break
+    retn = L[-1].operands[0].imm if L[-1].operands else 0
+    base = (6 if far else 4) if L[0].mnemonic == 'push' and L[0].op_str == 'bp' else (4 if far else 2)
+    acc = {}
+    for ins in L:
+        for o in ins.operands:
+            if o.type == x86.X86_OP_MEM and R.get(o.mem.base) in ('bp', 'bx') and o.mem.disp >= base:
+                acc[o.mem.disp] = max(acc.get(o.mem.disp, 0), 4 if ins.mnemonic in ('les', 'lds') else 2)
+    p = {'entry': t, 'far': far, 'retn': retn, 'result': None}
+    pr = Proc(key, p)
+    pr.name = skel.tail_labels(key)[t][0]
+    pr.external = True
+    slots, o = [], base
+    while o < base + retn:
+        sz = 4 if acc.get(o) == 4 and o + 4 <= base + retn else 2
+        s_ = Param(o, sz)
+        if sz == 4:
+            s_.access.add('les')
+        slots.append(s_)
+        o += sz
+    pr.params = list(reversed(slots))
+    pr.link = None
+    return pr
+
+
+TAILS = {}
+
+
+def tail(key, t):
+    """The tail entry key:t as a Proc, or None."""
+    lab = skel.tail_labels(key) if skel.P.get(key, {}).get('obj') else {}
+    if t not in lab:
+        return None
+    if (key, t) not in TAILS:
+        TAILS[(key, t)] = tail_proc(key, t, lab[t][1])
+    return TAILS[(key, t)]
+
+
 def code_of(key, _cache={}):
     if key not in _cache:
         _cache[key] = open('out/u/%s.bin' % key, 'rb').read()
@@ -84,7 +130,7 @@ def far_target(key, at):
         return ('tpl', skel.TPLNAMES[(k, ofs)], None)
     if 'entries' in U[k]:
         ofs = U[k]['entries'][(ofs - 0x20) // 5]
-    p = PROCS.get((k, ofs))
+    p = PROCS.get((k, ofs)) or tail(k, ofs)
     if p is None:
         raise LiftError('far target %s:%04X' % (k, ofs))
     return ('proc', p, None)

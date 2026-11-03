@@ -15,7 +15,7 @@ procedure pR5C3_011A(a0: byte; a1: S40);
 procedure pR5C3_0174(a0: S80);
 procedure pR5C3_01C3(a0: S80; a1: S80);
 procedure pR5C3_0252;
-function pR5C3_02A3(a0: S2): string;
+function pR5C3_02A3(a0: S2): S40;
 function pR5C3_0336(a0: S80; a1: S80; a2: byte; a3: pointer): byte;
 function pR5C3_055E(a0: S80): byte;
 function pR5C3_05A8(a0: string; a1: string): string;
@@ -205,20 +205,22 @@ begin
 end;
 
 { 02A3 }
-function pR5C3_02A3(a0: S2): string;
-var loc: array[1..299] of byte;
+function pR5C3_02A3(a0: S2): S40;
+var
+  c46: record case byte of 0: (v46a: SearchRec); 1: (_p1: array[1..30] of byte; v16a: string[12]) end;
 begin
   if false then begin
     if LV = ':\*.*' then;
+    if LV = FS then;
   end;
   asm
-    db 141,126,240,22,87,184,13,0,80
-    call XR670_046E
-    db 141,190,210,254,22,87,141,126,253,22,87,154,111,10,37,8,191,157,2,14,87,154,252,10,37,8,184,8
-    db 0,80,141,126,210,22,87
-    call FindFirst
-    db 141,126,240,22,87,196,126,10,6,87,184,40,0,80,154,137,10,37,8
+  db 141,126,240,22,87,184,13,0,80
+  call XR670_046E
   end;
+  {@02CB-02F3}
+  FindFirst(a0 + ':\*.*', 8, c46.v46a);
+  {@02F3-0306}
+  pR5C3_02A3 := c46.v16a;
 end;
 
 { 0336 }

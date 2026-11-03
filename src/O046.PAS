@@ -27,6 +27,7 @@ var
   b880C: byte absolute d880C;
   bAAE5: byte absolute dAAE5;
   bAAE6: byte absolute dAAE6;
+  bAB0E: byte absolute dAB0E;
   bAE62: byte absolute dAE62;
   bC578: byte absolute dC578;
   p9CEE: pointer absolute d9CEE;
@@ -54,7 +55,6 @@ begin
   if false then begin
     if Pos('', LV) = 0 then;
     if LV = 'tmpvault.dat' then;
-    if LV = FS then;
   end;
   {@0015-001A}
   b880C := 10;
@@ -95,16 +95,16 @@ begin
   v12b := 1;
   {@00A0-0253}
   repeat
-    asm
-  db 191,14,171,30,87,184,40,0,80
-  call XR670_046E
-  db 198,70,246,0,176,0,80,141,126,246,22,87
-  call pO108_00AB
-  db 141,126,250,22,87,141,126,249,22,87
-  call pO0B5_0E45
-  db 128,126,250,0,117,6,128,126,249,0,116,13,176,1,80,141,126,246,22,87
-  call pO108_00AB
-    end;
+    {@00A0-00AE}
+    XR670_046E(@bAB0E, 40);
+    {@00AE-00B2}
+    v10b := 0;
+    {@00B2-00BF}
+    pO108_00AB(0, @v10b);
+    {@00BF-00CE}
+    pO0B5_0E45(@v6b, @v7b);
+    if (v6b <> 0) or (v7b <> 0) then
+      pO108_00AB(1, @v10b);
     {@00E7-00F4}
     pO108_00AB(2, @v10b);
     if (PR331_word(p9CEE)^.v > 0) or (PR333_word(p9CEE)^.v > 0) or (PR335_word(p9CEE)^.v > 0) then

@@ -40,6 +40,7 @@ uses LIT, O06E, O0AA, O0E2, O0EC, O108, O10E, O111, O12A, O13E, O17E, R1C3, R47F
 type
   AL1_byte = array[1..32001] of byte;
   AL32768_byte = array[32768..64768] of byte;
+  E16_byte = record f: byte; _r: array[1..15] of byte end;
   E256_byte = record f: byte; _r: array[1..255] of byte end;
   PV2_0_byte = record v: byte; _r: array[1..1] of byte end;
   PV4_0_byte = record v: byte; _r: array[1..3] of byte end;
@@ -57,6 +58,7 @@ type
   R0_string = record v: string end;
   R0_string_40_ = record v: string[40] end;
   R0_word = record v: word end;
+  R150_byte = record _p: array[1..150] of byte; v: byte end;
   R1_byte = record _p: array[1..1] of byte; v: byte end;
   R2_byte = record _p: array[1..2] of byte; v: byte end;
   R2_pointer = record _p: array[1..2] of byte; v: pointer end;
@@ -70,7 +72,9 @@ type
   R412_byte = record _p: array[1..412] of byte; v: byte end;
   R423_longint = record _p: array[1..423] of byte; v: longint end;
   R423_pointer = record _p: array[1..423] of byte; v: pointer end;
+  R42_byte = record _p: array[1..42] of byte; v: byte end;
   R42_pointer = record _p: array[1..42] of byte; v: pointer end;
+  R43_byte = record _p: array[1..43] of byte; v: byte end;
   R483_pointer = record _p: array[1..483] of byte; v: pointer end;
   R493_byte = record _p: array[1..493] of byte; v: byte end;
   R494_byte = record _p: array[1..494] of byte; v: byte end;
@@ -81,6 +85,11 @@ type
   R57_byte = record _p: array[1..57] of byte; v: byte end;
   R5_pointer = record _p: array[1..5] of byte; v: pointer end;
   RA0_byte = record a: array[0..32000] of byte end;
+W3_6_1ABE = record case byte of 0: (_w6_0byte: byte); 1: (_p1: array[1..1] of byte; _w6_1byte: byte);
+      2: (_p2: array[1..2] of byte; _w6_2byte: byte); 3: (_p3: array[1..3] of byte; _w6_3byte: byte);
+      4: (_p4: array[1..4] of byte; _w6_4byte: byte); 5: (_p5: array[1..9] of byte; _w6_9word: word);
+      6: (_p6: array[1..12] of byte; _w6_12word: word); 7: (_p7: array[1..13] of byte;
+      _w6_13abyte: array[0..32000] of byte) end;
   WE2_word = record f: word end;
 W4_5_0654 = record case byte of 0: (_p0: array[1..30] of byte; _w5_30abyte: array[0..32000] of byte);
       1: (_p1: array[1..176] of byte; _w5_176word: word); 2: (_p2: array[1..311] of byte; _w5_311byte: byte);
@@ -100,6 +109,7 @@ W4_5_0654 = record case byte of 0: (_p0: array[1..30] of byte; _w5_30abyte: arra
   PR0_string = ^R0_string;
   PR0_string_40_ = ^R0_string_40_;
   PR0_word = ^R0_word;
+  PR150_byte = ^R150_byte;
   PR1_byte = ^R1_byte;
   PR2_byte = ^R2_byte;
   PR2_pointer = ^R2_pointer;
@@ -113,7 +123,9 @@ W4_5_0654 = record case byte of 0: (_p0: array[1..30] of byte; _w5_30abyte: arra
   PR412_byte = ^R412_byte;
   PR423_longint = ^R423_longint;
   PR423_pointer = ^R423_pointer;
+  PR42_byte = ^R42_byte;
   PR42_pointer = ^R42_pointer;
+  PR43_byte = ^R43_byte;
   PR483_pointer = ^R483_pointer;
   PR493_byte = ^R493_byte;
   PR494_byte = ^R494_byte;
@@ -124,10 +136,12 @@ W4_5_0654 = record case byte of 0: (_p0: array[1..30] of byte; _w5_30abyte: arra
   PR57_byte = ^R57_byte;
   PR5_pointer = ^R5_pointer;
   PRA0_byte = ^RA0_byte;
+  PW3_6_1ABE = ^W3_6_1ABE;
   PW4_5_0654 = ^W4_5_0654;
 var
   a08D8_ec3f: array[0..32759] of byte absolute d08D8;
   a08DD_ec3f: array[0..32759] of byte absolute d08DD;
+  a651A_3981: array[0..2046] of E16_byte absolute d651A;
   aB06E_475b: array[0..126] of E256_byte absolute dB06E;
   aB06E_e1c0: array[0..126] of string[255] absolute dB06E;
   aB0AB_ec3f: array[0..32759] of byte absolute dB0AB;
@@ -135,6 +149,8 @@ var
   aB12B_ec3f: array[0..32759] of byte absolute dB12B;
   b880C: byte absolute d880C;
   b880D: byte absolute d880D;
+  b8811: byte absolute d8811;
+  b94D4: byte absolute d94D4;
   b9D92: byte absolute d9D92;
   b9D93: byte absolute d9D93;
   bA9F2: byte absolute dA9F2;
@@ -145,6 +161,7 @@ var
   bA9F7: byte absolute dA9F7;
   bAAE6: byte absolute dAAE6;
   bAE7E: byte absolute dAE7E;
+  bB01E: byte absolute dB01E;
   bB01F: byte absolute dB01F;
   bB020: byte absolute dB020;
   bB021: byte absolute dB021;
@@ -152,6 +169,11 @@ var
   bB023: byte absolute dB023;
   bB025: byte absolute dB025;
   bB029: byte absolute dB029;
+  bB0EC: byte absolute dB0EC;
+  bB12C: byte absolute dB12C;
+  bB16C: byte absolute dB16C;
+  bB16D: byte absolute dB16D;
+  bC56E: byte absolute dC56E;
   bC584: byte absolute dC584;
   bC586: byte absolute dC586;
   bC588: byte absolute dC588;
@@ -162,6 +184,7 @@ var
   bD91E: byte absolute dD91E;
   gD51E_9554: B768 absolute dD51E;
   l9CEE: longint absolute d9CEE;
+  lB01A: longint absolute dB01A;
   p87F8: pointer absolute d87F8;
   p87FC: pointer absolute d87FC;
   p9CEE: pointer absolute d9CEE;
@@ -171,6 +194,12 @@ var
   s2B8D: string absolute d2B8D;
   sbA9F3: shortint absolute dA9F3;
   sbA9F4: shortint absolute dA9F4;
+  sbB16D: shortint absolute dB16D;
+  w8800: word absolute d8800;
+  w8802: word absolute d8802;
+  w8804: word absolute d8804;
+  w8806: word absolute d8806;
+  w8808: word absolute d8808;
   w880A: word absolute d880A;
   wA9F8: word absolute dA9F8;
 
@@ -261,48 +290,44 @@ begin
   bC584 := 0;
   {@01C9-01CE}
   bC588 := 1;
-  asm
-  db 191,110,197,30,87,184,2,0,80
-  call XR670_046E
-  db 198,6,41,176,8,199,6,10,136,0,128,198,6,108,177,0,49,192,163,26,176,163,28,176,191,30,176,30
-  db 87,184,6,0,80
-  call XR670_046E
-  db 196,62,248,135,38,198,69,42,0,196,62,248,135,38,198,69,43,0,176,1,80
-  push cs
-  call near ptr pO055_0000
-  db 160,44,177,80,160,236,176,80
-  push cs
-  call near ptr pO055_0567
-  db 163,0,136,176,1,80
-  push cs
-  call near ptr pO055_0000
-  db 160,44,177,80,160,236,176,80
-  push cs
-  call near ptr pO055_0567
-  db 163,2,136,176,1,80
-  push cs
-  call near ptr pO055_0000
-  db 160,44,177,80,160,236,176,80
-  push cs
-  call near ptr pO055_0567
-  db 163,4,136,176,1,80
-  push cs
-  call near ptr pO055_0000
-  db 160,44,177,80,160,236,176,80
-  push cs
-  call near ptr pO055_0567
-  db 163,6,136,176,1,80
-  push cs
-  call near ptr pO055_0000
-  db 160,44,177,80,160,236,176,80
-  push cs
-  call near ptr pO055_0567
-  db 163,8,136,128,62,17,136,0,117,19
-  end;
-  asm
-  db 196,62,248,135,129,199,150,0,6,87,184,50,0,80
-  call XR670_046E
-  end;
+  {@01CE-01DC}
+  XR670_046E(@bC56E, 2);
+  {@01DC-01E1}
+  bB029 := 8;
+  {@01E1-01E7}
+  w880A := 32768;
+  {@01E7-01EC}
+  bB16C := 0;
+  {@01EC-01F4}
+  lB01A := 0;
+  {@01F4-0202}
+  XR670_046E(@bB01E, 6);
+  {@0202-020B}
+  PR42_byte(p87F8)^.v := 0;
+  {@020B-0214}
+  PR43_byte(p87F8)^.v := 0;
+  {@0214-021B}
+  pO055_0000(1);
+  {@021B-022A}
+  w8800 := pO055_0567(bB12C, bB0EC);
+  {@022A-0231}
+  pO055_0000(1);
+  {@0231-0240}
+  w8802 := pO055_0567(bB12C, bB0EC);
+  {@0240-0247}
+  pO055_0000(1);
+  {@0247-0256}
+  w8804 := pO055_0567(bB12C, bB0EC);
+  {@0256-025D}
+  pO055_0000(1);
+  {@025D-026C}
+  w8806 := pO055_0567(bB12C, bB0EC);
+  {@026C-0273}
+  pO055_0000(1);
+  {@0273-0282}
+  w8808 := pO055_0567(bB12C, bB0EC);
+  if b8811 = 0 then
+    XR670_046E(@PR150_byte(p87F8)^.v, 50);
 end;
 
 { 02BE }
@@ -317,13 +342,11 @@ begin
     if LV = 'Loading...Please Wait' then;
     if LV = 'ECL1' then;
     if LV = '.dax' then;
-    LP1('Loading...Please Wait');
   end;
-  asm
-  db 196,62,252,135,6,87,184,0,30,80
-  call XR670_046E
-  db 198,6,212,148,0
-  end;
+  {@02C4-02D3}
+  XR670_046E(@PR0_byte(p87FC)^.v, 7680);
+  {@02D3-02D8}
+  b94D4 := 0;
   {@02D8-0334}
   repeat
     {@02D8-02DD}
@@ -460,8 +483,10 @@ begin
     pO111_01F1('PIC', a1, 0);
     {@0541-0549}
     PR1_byte(a3)^.v := 1;
-    {@0549-055C}
-    pO111_00A8(3, 3, 1, 0);
+    asm
+  db 184,3,0,80,184,3,0,80,176,1,80,176,0,80
+  call pO111_00A8
+    end;
     {@055C-0561}
     bD91E := 1;
   end;
@@ -966,11 +991,10 @@ end;
 { 10C2 }
 procedure pO055_10C2(a0: string; a1: string);
 begin
-  asm
-  db 191,30,176,30,87,184,6,0,80
-  call XR670_046E
-  db 141,190,0,255,22,87,141,190,0,254,22,87,154,116,11,37,8,117,5,198,6,30,176,1
-  end;
+  {@10F1-10FF}
+  XR670_046E(@bB01E, 6);
+  if a0 = a1 then
+    bB01E := 1;
   {@1117-112F}
   if a0 <> a1 then
     bB01F := 1;
@@ -991,11 +1015,10 @@ end;
 { 1195 }
 procedure pO055_1195(a0: longint);
 begin
-  asm
-  db 191,30,176,30,87,184,6,0,80
-  call XR670_046E
-  db 139,70,8,59,70,6,117,5,198,6,30,176,1
-  end;
+  {@1198-11A6}
+  XR670_046E(@bB01E, 6);
+  if PV4_2_word(a0).v = PV4_0_word(a0).v then
+    bB01E := 1;
   {@11B3-11C0}
   if PV4_2_word(a0).v <> PV4_0_word(a0).v then
     bB01F := 1;
@@ -1217,17 +1240,28 @@ begin
   {@16BC-16CC}
   bA9F7 := pO12A_06BC(bA9F3, bA9F4);
   if (bC584 <> 0) or (bC586 <> 0) or (bC588 <> 0) or (bC589 <> 0) or (bC58B <> 0) then
-    asm
-  db 191,110,197,30,87,184,2,0,80
-  call XR670_046E
-  db 198,6,126,174,1
-  call pO10E_0000
-  call pO0EC_301C
-  db 198,6,139,197,0,198,6,136,197,0,198,6,137,197,0,198,6,132,197,0,198,6,134,197,0,160,243,169
-  db 80,160,244,169,80,160,245,169,80
-  call pO12A_05B9
-  db 162,246,169
-    end;
+  begin
+    {@16EF-16FD}
+    XR670_046E(@bC56E, 2);
+    {@16FD-1702}
+    bAE7E := 1;
+    {@1702-1707}
+    pO10E_0000;
+    {@1707-170C}
+    pO0EC_301C;
+    {@170C-1711}
+    bC58B := 0;
+    {@1711-1716}
+    bC588 := 0;
+    {@1716-171B}
+    bC589 := 0;
+    {@171B-1720}
+    bC584 := 0;
+    {@1720-1725}
+    bC586 := 0;
+    {@1725-1739}
+    bA9F6 := pO12A_05B9(bA9F3, bA9F4, bA9F5);
+  end;
 end;
 
 { 1740 }
@@ -1386,18 +1420,34 @@ end;
 { 1ABE }
 procedure pO055_1ABE(a0: pointer);
 var
-  _f1: array[1..6] of byte;
+  v1b: byte;
+  v2b: byte;
 begin
-  asm
-  db 196,126,6,6,87,184,17,0,80
-  call XR670_046E
-  db 196,126,6,137,126,250,140,70,252,196,126,250,38,198,5,39,196,126,250,38,198,69,3,40,196,126,250,38
-  db 198,69,2,39,196,126,250,38,198,69,1,102,196,126,250,38,198,69,4,1,196,126,250,38,199,69,9,1
-  db 0,196,126,250,38,199,69,12,184,11,198,6,109,177,1,235,4,254,6,109,177,198,70,254,0,176,1,80
-  db 176,126,80
-  call pO0E2_1374
-  db 136,70,255,138,70,255,48,228,139,248,177,4,211,231,128,189,26,101,2,117,4,198,70,254,1,128,126,254
-  db 0,116,214,138,86,255,160,109,177,152,196,126,250,3,248,38,136,85,13,128,62,109,177,3,117,183
+  {@1AC4-1AD2}
+  XR670_046E(@PR0_byte(a0)^.v, 17);
+  with PW3_6_1ABE(a0)^ do
+  begin
+    _w6_0byte := 39;
+    _w6_3byte := 40;
+    _w6_2byte := 39;
+    _w6_1byte := 102;
+    _w6_4byte := 1;
+    _w6_9word := 1;
+    _w6_12word := 3000;
+    for bB16D := 1 to 3 do
+    begin
+      {@1B1F-1B23}
+      v2b := 0;
+      {@1B23-1B4D}
+      repeat
+        {@1B23-1B31}
+        v1b := pO0E2_1374(1, 126);
+        if a651A_3981[v1b].f = 2 then
+          v2b := 1;
+      until v2b <> 0;
+      {@1B4D-1B5D}
+      _w6_13abyte[sbB16D] := v1b;
+    end;
   end;
 end;
 

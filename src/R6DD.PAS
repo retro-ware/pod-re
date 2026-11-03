@@ -13,15 +13,12 @@ procedure pR6DD_0072(a0: pointer; a1: pointer; a2: pointer);
 procedure pR6DD_00C9(a0: word; a1: word);
 procedure pR6DD_0107(a0: word; a1: word; a2: pointer);
 procedure pR6DD_0146;
-function pR6DD_0167(a0: longint; a1: longint): byte;
+function pR6DD_0167(a0: integer; a1: integer; a2: integer; a3: integer): byte;
 
 implementation
 
 uses LIT, Dos;
 
-type
-  PV4_0_integer = record v: integer; _r: array[1..2] of byte end;
-  PV4_2_integer = record _p: array[1..2] of byte; v: integer end;
 var
   b881A: byte absolute d881A;
   bC5C2: byte absolute dC5C2;
@@ -138,7 +135,7 @@ begin
 end;
 
 { 0167 }
-function pR6DD_0167(a0: longint; a1: longint): byte;
+function pR6DD_0167(a0: integer; a1: integer; a2: integer; a3: integer): byte;
 var
   v2b: byte;
   v3b: byte;
@@ -163,57 +160,49 @@ begin
     case v2b of
       0: begin
         {@01A1-01C3}
-        v3b := Ord((PV4_0_integer(a1).v <= PV4_0_integer(a0).v) and ((618 * v6i div 256) <= v8i));
+        v3b := Ord((a3 <= a1) and ((618 * v6i div 256) <= v8i));
         {@01C3-01C7}
         v4b := 72;
       end;
       2: begin
         {@01CE-01F0}
-        v3b := Ord((PV4_2_integer(a1).v >= PV4_2_integer(a0).v) and ((106 * v6i div 256) >= v8i));
+        v3b := Ord((a2 >= a0) and ((106 * v6i div 256) >= v8i));
         {@01F0-01F4}
         v4b := 77;
       end;
       4: begin
         {@01FB-021D}
-        v3b := Ord((PV4_0_integer(a1).v >= PV4_0_integer(a0).v) and ((618 * v6i div 256) <= v8i));
+        v3b := Ord((a3 >= a1) and ((618 * v6i div 256) <= v8i));
         {@021D-0221}
         v4b := 80;
       end;
       6: begin
         {@0228-024A}
-        v3b := Ord((PV4_2_integer(a1).v <= PV4_2_integer(a0).v) and ((106 * v6i div 256) >= v8i));
+        v3b := Ord((a2 <= a0) and ((106 * v6i div 256) >= v8i));
         {@024A-024E}
         v4b := 75;
       end;
       1: begin
         {@0255-0290}
-v3b := Ord((PV4_0_integer(a1).v < PV4_0_integer(a0).v)
-            and (PV4_2_integer(a1).v > PV4_2_integer(a0).v) and ((618 * v6i div 256) >= v8i)
-            and ((106 * v6i div 256) <= v8i));
+        v3b := Ord((a3 < a1) and (a2 > a0) and ((618 * v6i div 256) >= v8i) and ((106 * v6i div 256) <= v8i));
         {@0290-0294}
         v4b := 73;
       end;
       3: begin
         {@029B-02D6}
-v3b := Ord((PV4_0_integer(a1).v > PV4_0_integer(a0).v)
-            and (PV4_2_integer(a1).v > PV4_2_integer(a0).v) and ((618 * v6i div 256) >= v8i)
-            and ((106 * v6i div 256) <= v8i));
+        v3b := Ord((a3 > a1) and (a2 > a0) and ((618 * v6i div 256) >= v8i) and ((106 * v6i div 256) <= v8i));
         {@02D6-02DA}
         v4b := 81;
       end;
       5: begin
         {@02E1-031C}
-v3b := Ord((PV4_0_integer(a1).v > PV4_0_integer(a0).v)
-            and (PV4_2_integer(a1).v < PV4_2_integer(a0).v) and ((618 * v6i div 256) >= v8i)
-            and ((106 * v6i div 256) <= v8i));
+        v3b := Ord((a3 > a1) and (a2 < a0) and ((618 * v6i div 256) >= v8i) and ((106 * v6i div 256) <= v8i));
         {@031C-0320}
         v4b := 79;
       end;
       7: begin
         {@0326-0361}
-v3b := Ord((PV4_0_integer(a1).v < PV4_0_integer(a0).v)
-            and (PV4_2_integer(a1).v < PV4_2_integer(a0).v) and ((618 * v6i div 256) >= v8i)
-            and ((106 * v6i div 256) <= v8i));
+        v3b := Ord((a3 < a1) and (a2 < a0) and ((618 * v6i div 256) >= v8i) and ((106 * v6i div 256) <= v8i));
         {@0361-0365}
         v4b := 71;
       end;

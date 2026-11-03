@@ -62,9 +62,11 @@ var
   b5362: byte absolute d5362;
   b5363: byte absolute d5363;
   b880C: byte absolute d880C;
+  bA7BE: byte absolute dA7BE;
   bA7D5: byte absolute dA7D5;
   bA7DB: byte absolute dA7DB;
   bAAE6: byte absolute dAAE6;
+  bAE62: byte absolute dAE62;
   bC578: byte absolute dC578;
   gAC6A_dfee: TPV_ absolute dAC6A;
   gACD6_dfee: TPV_ absolute dACD6;
@@ -648,11 +650,12 @@ begin
   bC578 := 1;
   {@0B56-0B63}
   pO0EC_07C0(p9CEE);
-  asm
-  db 191,190,167,30,87,184,12,0,80
-  call XR670_046E
-  db 198,6,98,174,0,198,70,252,0
-  end;
+  {@0B63-0B71}
+  XR670_046E(@bA7BE, 12);
+  {@0B71-0B76}
+  bAE62 := 0;
+  {@0B76-0B7A}
+  v4b := 0;
   {@0B7A-0C08}
   repeat
     {@0B7A-0B82}

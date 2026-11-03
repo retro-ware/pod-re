@@ -109,6 +109,7 @@ var
   bAEE9: byte absolute dAEE9;
   bAEEF: byte absolute dAEEF;
   bAEF0: byte absolute dAEF0;
+  bAEF1: byte absolute dAEF1;
   bB011: byte absolute dB011;
   bB16D: byte absolute dB16D;
   bC592: byte absolute dC592;
@@ -410,10 +411,8 @@ var
 begin
   {@070D-071A}
   v5p := p9CF2;
-  asm
-  db 191,241,174,30,87,184,32,1,80
-  call XR670_046E
-  end;
+  {@071A-0728}
+  XR670_046E(@bAEF1, 288);
   {@0728-086B}
   while v5p <> nil do
   begin
@@ -511,14 +510,8 @@ begin
     else
       pO05F_09C4(pointer(a0));
   end;
-  asm
-  db 255,118,8,255,118,6
-  call pO135_0CA2
-  db 80,255,118,8,255,118,6
-  call pO135_0CCA
-  db 80
-  call pO135_0429
-  end;
+  {@098F-09AC}
+  pO135_0429(pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)));
 end;
 
 { 09C4 }
@@ -855,22 +848,15 @@ var
     pO135_067C(0, 0, pO135_0D1A(longint(a0)));
     {@1150-1184}
     PR0_byte(a1)^.v := Ord(pO135_122B(pointer(a0), v3b, v4b, 0) = 0);
-    asm
-    db 139,126,6,54,255,117,12,54,255,117,10
-    call pO135_0CA2
-    db 80,139,126,6,54,255,117,12,54,255,117,10
-    call pO135_0CCA
-    db 80,176,0,80,176,8,80
-    call pO135_0A4D
-    db 139,126,6,54,138,69,254,139,126,6,54,196,125,10,38,196,189,231,1,38,136,69,8,139,126,6,54,198
-    db 69,249,8
-    end;
+    {@1184-11B1}
+    pO135_0A4D(pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)), 0, 8);
+    {@11B1-11C8}
+    PR8_byte(PR487_pointer(a0)^.v)^.v := v2b;
+    {@11C8-11D0}
+    v7b := 8;
   end;
 
 begin
-  if false then begin
-    if FS = FS then;
-  end;
   {@11DB-11E0}
   bAEE9 := 1;
   {@11E0-11EF}
@@ -879,11 +865,14 @@ begin
   v2b := PR8_byte(PR487_pointer(a0)^.v)^.v;
   {@11FE-120C}
   v3b := pO135_0CA2(longint(a0));
-  asm
-  db 255,118,12,255,118,10
-  call pO135_0CCA
-  db 136,70,252,198,70,246,255,196,126,6,38,198,5,0,198,70,249,8
-  end;
+  {@120C-121A}
+  v4b := pO135_0CCA(longint(a0));
+  {@121A-121E}
+  v10b := 255;
+  {@121E-1225}
+  PR0_byte(a1)^.v := 0;
+  {@1225-1229}
+  v7b := 8;
   {@1229-14F4}
   repeat
     {@1229-14E2}

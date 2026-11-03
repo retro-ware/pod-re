@@ -7,8 +7,8 @@ interface
 uses GAMEDATA;
 
 procedure pR116_006E(a0: byte);
-procedure XR116_00D7;
-procedure XR116_00FF;
+procedure XR116_00D7(a0,a1,a2: pointer; a3: word);
+procedure XR116_00FF(a0,a1: pointer; a2: word);
 
 implementation
 
@@ -20,6 +20,7 @@ type
   PR0_byte = ^R0_byte;
   PR27_byte = ^R27_byte;
 var
+  aAA1F_2fc5: array[0..16379] of word absolute dAA1F;
   aAA35_9f8b: array[0..8189] of pointer absolute dAA35;
   bAA31: byte absolute dAA31;
   lAA35: longint absolute dAA35;
@@ -38,16 +39,10 @@ var
   { 0000 }
   procedure pR116_0000;
   begin
-    asm
-    db 139,126,6,54,138,69,6,48,228,139,248,209,231,209,231,255,181,55,170,255,181,53,170,139,126,6,54,255
-    db 117,250,54,255,117,248,139,126,6,54,138,69,6,48,228,139,248,209,231,255,181,31,170
-    push cs
-    call near ptr XR116_00FF
-    db 139,126,6,54,255,117,250,54,255,117,248,196,62,89,170,129,199,27,0,6,87,160,49,170,48,228,139,248
-    db 209,231,209,231,255,181,55,170,255,181,53,170,184,64,30,80
-    push cs
-    call near ptr XR116_00D7
-    end;
+    {@0003-003A}
+    XR116_00FF(pointer(aAA35_9f8b[a0]), pointer(v8p), aAA1F_2fc5[a0]);
+    {@003A-006A}
+    XR116_00D7(pointer(v8p), @PR27_byte(pAA59)^.v, pointer(aAA35_9f8b[bAA31]), 7744);
   end;
 
 begin

@@ -35,6 +35,8 @@ type
   R2_shortint = record _p: array[1..2] of byte; v: shortint end;
   R33_byte = record _p: array[1..33] of byte; v: byte end;
   R35_byte = record _p: array[1..35] of byte; v: byte end;
+  R36_byte = record _p: array[1..36] of byte; v: byte end;
+  R37_byte = record _p: array[1..37] of byte; v: byte end;
   R3_shortint = record _p: array[1..3] of byte; v: shortint end;
   R41_byte = record _p: array[1..41] of byte; v: byte end;
   R42_longint = record _p: array[1..42] of byte; v: longint end;
@@ -49,6 +51,8 @@ type
   PR2_shortint = ^R2_shortint;
   PR33_byte = ^R33_byte;
   PR35_byte = ^R35_byte;
+  PR36_byte = ^R36_byte;
+  PR37_byte = ^R37_byte;
   PR3_shortint = ^R3_shortint;
   PR41_byte = ^R41_byte;
   PR42_longint = ^R42_longint;
@@ -204,10 +208,10 @@ c322: record case byte of 0: (v322l: longint); 1: (_p1: array[1..2] of byte;
   v335b: byte;
   v336b: byte;
   v337b: byte;
-  _f3: array[1..1] of byte;
+  _f3: array[1..39] of byte;
 c379: record case byte of 0: (v379a: array[0..0] of E2_byte); 1: (v379b: byte);
-      2: (_p2: array[1..1] of byte; v378a: array[0..19] of E2_byte); 3: (_p3: array[1..1] of byte;
-      v378b: byte) end;
+      2: (_p2: array[1..1] of byte; v378a: array[0..0] of E2_byte); 3: (_p3: array[1..1] of byte;
+      v378b: byte); 4: (_p4: array[1..2] of byte; v377b: byte) end;
   v383p: pointer;
   v385w: word;
   v387w: word;
@@ -231,24 +235,42 @@ c379: record case byte of 0: (v379a: array[0..0] of E2_byte); 1: (v379b: byte);
   procedure pO108_0135;
   var
     w1b: byte;
-    _f1: array[1..1] of byte;
+    w2b: byte;
     w3b: byte;
-    _f2: array[1..1] of byte;
   begin
     if false then begin
       if LSV = [48..57, 65..90] then;
     end;
-    asm
-    db 139,126,6,129,199,135,254,22,87,184,40,0,80
-    call XR670_046E
-    db 198,70,255,1,139,126,6,54,138,133,120,253,136,70,253,138,70,253,136,70,252,176,1,58,70,252,118,3
-    db 233,169,0,136,70,254,235,3,254,70,254,138,70,254,48,228,139,126,6,3,248,54,138,133,120,253,80,191
-    db 21,1,14,87,154,36,13,37,8,116,93,138,70,255,48,228,209,224,139,126,6,3,248,54,128,189,133,254
-    db 0,117,22,138,86,254,138,70,255,48,228,209,224,139,126,6,3,248,54,136,149,133,254,235,49,138,70,254
-    db 48,228,72,72,138,208,138,70,255,48,228,209,224,139,126,6,3,248,54,136,149,134,254,254,70,255,138,86
-    db 254,138,70,255,48,228,209,224,139,126,6,3,248,54,136,149,133,254,235,29,138,70,254,48,228,139,126,6
-    db 3,248,54,128,189,120,253,64,117,11,138,70,255,139,126,6,54,136,133,120,254,138,70,254,58,70,252,116
-    db 3,233,92,255
+    {@013B-014D}
+    XR670_046E(@c379.v377b, 40);
+    {@014D-0151}
+    w1b := 1;
+    {@0151-015C}
+    w3b := v648b;
+    for w2b := 1 to w3b do
+    begin
+      {@0174-020A}
+      if v648a[w2b] in [48..57, 65..90] then
+      begin
+        {@0190-01EB}
+        if c379.v379a[w1b].f = 0 then
+          c379.v379a[w1b].f := w2b
+        else
+        begin
+          {@01BA-01D4}
+          c379.v378a[w1b].f := w2b - 2;
+          {@01D4-01D7}
+          Inc(w1b);
+          {@01D7-01EB}
+          c379.v379a[w1b].f := w2b;
+        end;
+      end
+      else
+      begin
+        {@01ED-020A}
+        if v648a[w2b] = 64 then
+          v392b := w1b;
+      end;
     end;
     {@0215-0229}
     c379.v378a[w1b].f := w3b;
@@ -405,8 +427,10 @@ c379: record case byte of 0: (v379a: array[0..0] of E2_byte); 1: (v379b: byte);
     db 139,126,6,54,255,181,125,254,139,126,6,54,255,181,123,254,139,126,6,54,139,133,182,254,153,185,3,0
     db 247,249,64,80,139,126,6,54,139,133,180,254,153,185,3,0,247,249,64,80
     call pR6DD_0167
-    db 139,126,6,54,136,133,184,254,139,126,6,54,198,133,177,254,1
+    db 139,126,6,54,136,133,184,254
     end;
+    {@07BF-07C8}
+    v335b := 1;
   end;
 
   { 07CC }
@@ -453,12 +477,10 @@ c379: record case byte of 0: (v379a: array[0..0] of E2_byte); 1: (v379b: byte);
   begin
     {@09A9-09AE}
     bAAE6 := 1;
-    asm
-    db 196,62,248,135,38,138,69,36,48,228,64,80,196,62,248,135,38,138,69,37,48,228,64,80,139,126,6,54
-    db 255,181,182,254,139,126,6,54,255,181,180,254
-    call pR6DD_0167
-    db 139,126,6,54,136,133,184,254,139,126,6,54,198,133,177,254,1
-    end;
+    {@09AE-09E3}
+    v328b := pR6DD_0167(PR36_byte(p87F8)^.v + 1, PR37_byte(p87F8)^.v + 1, v330w, v332w);
+    {@09E3-09EC}
+    v335b := 1;
   end;
 
   { 09F0 }
@@ -799,8 +821,10 @@ begin
   {@1156-1183}
   if (a3 <> 0) and (bAA34 > 0) then
   begin
-    {@1163-1178}
-    pO111_00A8(3, 3, a3, bAA34);
+    asm
+  db 184,3,0,80,184,3,0,80,138,70,6,80,160,52,170,80
+  call pO111_00A8
+    end;
     if bAA33 < 2 then
       a3 := 0;
   end;
@@ -813,8 +837,10 @@ begin
       Inc(bAA34);
       if bAA34 > bAA33 then
         bAA34 := bAA32;
-      {@11D7-11EC}
-      pO111_00A8(3, 3, a3, bAA34);
+      asm
+  db 184,3,0,80,184,3,0,80,138,70,6,80,160,52,170,80
+  call pO111_00A8
+      end;
       {@11EC-11F9}
       v302l := pR47F_0BAD;
       {@11F9-1214}

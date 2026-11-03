@@ -47,8 +47,10 @@ var
   b7FF8: byte absolute d7FF8;
   b880C: byte absolute d880C;
   b880D: byte absolute d880D;
+  bA7BE: byte absolute dA7BE;
   bAAE5: byte absolute dAAE5;
   bAAE6: byte absolute dAAE6;
+  bAE62: byte absolute dAE62;
   bC578: byte absolute dC578;
   lA7BE: longint absolute dA7BE;
   lA7CA: longint absolute dA7CA;
@@ -356,11 +358,14 @@ begin
   bC578 := 1;
   {@073E-074B}
   pO0EC_07C0(p9CEE);
-  asm
-  db 191,190,167,30,87,184,12,0,80
-  call XR670_046E
-  db 198,6,98,174,0,198,70,254,0,161,202,167,139,22,204,167,137,70,244,137,86,246
-  end;
+  {@074B-0759}
+  XR670_046E(@bA7BE, 12);
+  {@0759-075E}
+  bAE62 := 0;
+  {@075E-0762}
+  v2b := 0;
+  {@0762-076F}
+  v12p := pA7CA;
   {@076F-07A7}
   while v12p <> nil do
   begin

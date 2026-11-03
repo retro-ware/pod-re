@@ -14,7 +14,7 @@ procedure pR670_032E;
 function pR670_0347(a0: word): word;
 function pR670_037F: pointer;
 procedure pR670_03ED(a0: pointer);
-procedure XR670_046E;
+procedure XR670_046E(a0: pointer; a1: word);
 
 implementation
 
@@ -25,6 +25,7 @@ type
   PR0_pointer = ^R0_pointer;
 var
   a7D72_ec3f: array[0..32759] of byte absolute d7D72;
+  aD8EB_35f0: array[0..519] of array[0..62] of byte absolute dD8EB;
   b880E: byte absolute d880E;
   b92A8: byte absolute d92A8;
   b92A9: byte absolute d92A9;
@@ -302,12 +303,14 @@ begin
   end;
   {@0422-0450}
   if v1b <= 138 then
-    asm
-  db 138,70,255,48,228,186,63,0,247,226,139,248,129,199,235,216,30,87,184,63,0,80
-  push cs
-  call near ptr XR670_046E
-  db 196,126,6,49,192,38,137,5,38,137,69,2,235,19
-    end;
+  begin
+    {@0428-0442}
+    XR670_046E(@aD8EB_35f0[v1b], 63);
+    {@0442-044E}
+    PR0_pointer(a0)^.v := nil;
+    {@044E-0450}
+    Exit;
+  end;
   {@0450-0463}
   FreeMem(PR0_pointer(a0)^.v, 63);
 end;

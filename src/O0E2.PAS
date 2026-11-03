@@ -34,6 +34,7 @@ implementation
 uses LIT, O0EC, O130, O135, R1C3, R47F;
 
 type
+  E3_byte = record f: byte; _r: array[1..2] of byte end;
   E4_byte = record f: byte; _r: array[1..3] of byte end;
   E7_byte = record f: byte; _r: array[1..6] of byte end;
   E7_longint = record f: longint; _r: array[1..3] of byte end;
@@ -171,9 +172,11 @@ var
   aA6A0_9cf4: array[0..4679] of E7_longint absolute dA6A0;
   aA6A4_30da: array[0..4679] of E7_byte absolute dA6A4;
   aA6A5_30da: array[0..4679] of E7_byte absolute dA6A5;
+  aA6E2_fd21: array[0..10919] of E3_byte absolute dA6E2;
   aA7E6_891c: array[0..8189] of TPV_var_longint_byte absolute dA7E6;
   b880C: byte absolute d880C;
   bA6DF: byte absolute dA6DF;
+  bA6E4: byte absolute dA6E4;
   bA6E5: byte absolute dA6E5;
   bA7D0: byte absolute dA7D0;
   bA7D1: byte absolute dA7D1;
@@ -306,10 +309,10 @@ var
   v220p: pointer;
   v224l: longint;
   v225b: byte;
-  _f2: array[1..1] of byte;
+  v226b: byte;
   v227b: byte;
-  _f3: array[1..1] of byte;
   v224b: byte absolute v224l;
+  v220l: longint absolute v220p;
 begin
   if false then begin
     if LSV = [21, 45..46, 49] then;
@@ -341,20 +344,13 @@ begin
               v227b := 6
             else
               v227b := 1;
-            asm
-  db 255,182,38,255,255,182,36,255
-  call pO135_0CA2
-  db 80,255,182,38,255,255,182,36,255
-  call pO135_0CCA
-  db 80,138,134,29,255,48,228,80,176,255,80,255,182,38,255,255,182,36,255
-  call pO135_0CF2
-  db 80
-  call pO130_08D7
-  db 160,228,166,136,134,28,255,176,1,58,134,28,255,119,64,136,134,30,255,235,4,254,134,30,255,196,126,8
-  db 38,255,117,2,38,255,53
-  call pO135_0D1A
-  db 138,208,138,134,30,255,48,228,139,248,139,247,209,231,1,247,138,133,226,166,58,194,117,5,198,134,31,255
-  db 1,138,134,30,255,58,134,28,255,117,198
+            {@0325-035E}
+            pO130_08D7(pO135_0CA2(v220l), pO135_0CCA(v220l), v227b, 255, pO135_0CF2(v220l));
+            for v226b := 1 to bA6E4 do
+            begin
+              {@0377-03A3}
+              if aA6E2_fd21[v226b].f = Byte(pO135_0D1A(longint(PR0_pointer(a0)^.v))) then
+                v225b := 1;
             end;
           end
           else
@@ -769,8 +765,6 @@ var
   v17b: byte;
   v10b: byte absolute v10l;
   v6b: byte absolute v6l;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
   if false then begin
     if LV = 'starts to cough' then;
@@ -779,7 +773,6 @@ begin
     if LV = 'is Poisoned' then;
     if LV = 'is killed' then;
     if LV = 'is cut by knives' then;
-    LM2_0('is Poisoned', 'is cut by knives');
   end;
   {@0CB5-0CC3}
   if PR494_byte(a0)^.v = 0 then
@@ -792,14 +785,7 @@ begin
   begin
     {@0CFD-0D39}
     if (pO135_0805(longint(a0), 1) = 0) or (bAEF0 = 0) then
-      asm
-  db 255,118,12,255,118,10
-  call pO135_0CA2
-  db 80,255,118,12,255,118,10
-  call pO135_0CCA
-  db 80,176,255,80,176,8,80
-  call pO135_0A4D
-      end;
+      pO135_0A4D(pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)), 255, 8);
     {@0D39-1121}
     case v17b of
       29: begin
@@ -1510,7 +1496,7 @@ begin
   call near ptr pO0E2_04DD
     end;
   {@1D64-2025}
-  if (iA7D8 > 0) and (PR494_byte(pointer(a0))^.v <> 0) then
+  if (iA7D8 > 0) and (PR494_byte(a0)^.v <> 0) then
   begin
     {@1D7C-1DD4}
     if wA7D8 <> 1 then
@@ -1547,10 +1533,10 @@ begin
       asm
   db 196,126,12,38,196,189,231,1,38,198,69,1,0
       end;
-      if PR0_byte(PR487_pointer(pointer(a0))^.v)^.v > 0 then
+      if PR0_byte(PR487_pointer(a0)^.v)^.v > 0 then
       begin
         {@1EEB-1F0B}
-        pO0EC_1B08(pointer(pointer(a0)), 'lost a spell', 12, 1);
+        pO0EC_1B08(pointer(a0), 'lost a spell', 12, 1);
         asm
   db 255,118,14,255,118,12,196,126,12,38,196,189,231,1,38,138,5,80
   call pO0EC_186D
@@ -1563,17 +1549,17 @@ begin
       end;
     end;
     {@1F30-2020}
-    if PR494_byte(pointer(a0))^.v = 0 then
+    if PR494_byte(a0)^.v = 0 then
     begin
       {@1F3E-1F51}
       v81a := 'Goes Down';
-      if (PR421_byte(pointer(a0))^.v and 8) = 0 then
+      if (PR421_byte(a0)^.v and 8) = 0 then
       begin
         {@1F5F-1F92}
-        if PR493_byte(pointer(a0))^.v = 5 then
+        if PR493_byte(a0)^.v = 5 then
           v81a := v81a2 + ', and is Dying';
         {@1F92-1FBA}
-        if PR493_byte(pointer(a0))^.v in [6..8] then
+        if PR493_byte(a0)^.v in [6..8] then
           v81a := 'is killed';
       end;
       asm
@@ -1596,7 +1582,7 @@ begin
   push cs
   call near ptr pO0E2_04DD
         end;
-        if (PR494_byte(pointer(a0))^.v = 0) and (PR493_byte(pointer(a0))^.v <> 10) then
+        if (PR494_byte(a0)^.v = 0) and (PR493_byte(a0)^.v <> 10) then
           asm
   db 255,118,14,255,118,12
   call pO135_0F14
@@ -1688,23 +1674,37 @@ end;
 { 21FC }
 function pO0E2_21FC(a0: pointer; a1: byte; a2: S40): byte;
 var
-  _f1: array[1..2] of byte;
+  v43b: byte;
+  _f1: array[1..1] of byte;
 begin
-  asm
-  db 255,118,14,255,118,12,255,118,14,255,118,12
-  call pO135_0CA2
-  db 80,255,118,14,255,118,12
-  call pO135_0CCA
-  db 80,176,1,80
-  call pO135_122B
-  db 8,192,116,100,196,126,12,38,198,133,237,1,0,196,126,12,38,198,133,238,1,1,138,70,10,196,126,12
-  db 38,136,133,252,1,128,62,12,136,5,117,34,160,240,174,136,70,213,198,6,240,174,1,255,118,14,255,118
-  db 12,176,3,80,176,0,80
-  call pO135_141F
-  db 138,70,213,162,240,174,255,118,14,255,118,12,176,1,80,141,126,214,22,87
-  call pO0EC_2601
-  call pO0EC_2A17
-  db 198,70,255,1,235,4
+  {@2215-22A3}
+  if pO135_122B(pointer(a0), pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)), 1) <> 0 then
+  begin
+    {@223F-2248}
+    PR493_byte(a0)^.v := 0;
+    {@2248-2251}
+    PR494_byte(a0)^.v := 1;
+    {@2251-225C}
+    PR508_byte(a0)^.v := a1;
+    if b880C = 5 then
+    begin
+      {@2263-2269}
+      v43b := bAEF0;
+      {@2269-226E}
+      bAEF0 := 1;
+      {@226E-227F}
+      pO135_141F(longint(a0), 3, 0);
+      {@227F-2285}
+      bAEF0 := v43b;
+    end;
+    {@2285-2298}
+    pO0EC_2601(pointer(a0), 1, a2);
+    {@2298-229D}
+    pO0EC_2A17;
+    {@229D-22A1}
+    pO0E2_21FC := 1;
+    {@22A1-22A3}
+    Exit;
   end;
   {@22A3-22A7}
   pO0E2_21FC := 0;

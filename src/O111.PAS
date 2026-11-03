@@ -6,7 +6,7 @@ interface
 
 uses GAMEDATA;
 
-procedure pO111_00A8(a0: word; a1: word; a2: byte; a3: byte);
+procedure pO111_00A8(a0: longint; a1: byte; a2: byte);
 procedure pO111_01F1(a0: S8; a1: byte; a2: byte);
 procedure pO111_096E;
 procedure pO111_0A91(a0: byte);
@@ -20,18 +20,28 @@ uses LIT, R116, R142, R1C3, R47F, R5C0, R5C3, R670, R6DD;
 
 type
   E3_byte = record f: byte; _r: array[1..2] of byte end;
+  PV4_0_word = record v: word; _r: array[1..2] of byte end;
+  PV4_2_word = record _p: array[1..2] of byte; v: word end;
   X12 = array[0..11] of byte;
 var
   a0CB0_0c20: array[0..2729] of X12 absolute d0CB0;
   aAA06_fd21: array[0..10919] of E3_byte absolute dAA06;
   aAA07_fd21: array[0..10919] of E3_byte absolute dAA07;
+  aAA1F_2fc5: array[0..16379] of word absolute dAA1F;
+  aAA35_9f8b: array[0..8189] of pointer absolute dAA35;
   aAA35_b676: array[0..8189] of longint absolute dAA35;
+  aAA5D_0389: array[0..8189] of array[0..3] of byte absolute dAA5D;
   aAA5D_9f8b: array[0..8189] of pointer absolute dAA5D;
   aCC1E_eec0: array[0..10919] of array[0..2] of byte absolute dCC1E;
   aD51E_eec0: array[0..10919] of array[0..2] of byte absolute dD51E;
   b8834: byte absolute d8834;
   bAA08: byte absolute dAA08;
   bAA15: byte absolute dAA15;
+  bAA31: byte absolute dAA31;
+  bAA33: byte absolute dAA33;
+  bAA35: byte absolute dAA35;
+  bAA59: byte absolute dAA59;
+  bAA5D: byte absolute dAA5D;
   bAAC3: byte absolute dAAC3;
   bAAD5: byte absolute dAAD5;
   bAAD7: byte absolute dAAD7;
@@ -43,6 +53,7 @@ var
   l8836: longint absolute d8836;
   lAAD7: longint absolute dAAD7;
   pAA59: pointer absolute dAA59;
+  sbB16D: shortint absolute dB16D;
 
 procedure pO111_0000(a0: byte); far; forward;
 
@@ -74,25 +85,25 @@ begin
 end;
 
 { 00A8 }
-procedure pO111_00A8(a0: word; a1: word; a2: byte; a3: byte);
+procedure pO111_00A8(a0: longint; a1: byte; a2: byte);
 var
   _f1: array[1..14] of byte;
 begin
   {@00AE-00F0}
-  if (b8834 = 2) and (aAA35_b676[a3] = 0) or ((b8834 <> 2) or (bAA15 <> 0)) and (aAA5D_9f8b[a3] = nil) then
+  if (b8834 = 2) and (aAA35_b676[a2] = 0) or ((b8834 <> 2) or (bAA15 <> 0)) and (aAA5D_9f8b[a2] = nil) then
     Exit;
   {@00F0-0107}
   if (b8834 = 2) and (bAA15 = 0) then
-    pR116_006E(a3);
+    pR116_006E(a2);
   {@0107-010B}
-  a2 := 0;
-  if a2 <> 0 then
+  a1 := 0;
+  if a1 <> 0 then
   begin
     {@0111-0176}
     if (b8834 = 2) and (bAA15 = 0) then
-      pR1C3_08C0(a0 - 1, a1 - 1, 0, 0, pAA59, l8836)
+      pR1C3_08C0(PV4_2_word(a0).v - 1, PV4_0_word(a0).v - 1, 0, 0, pAA59, l8836)
     else
-      pR1C3_08C0(a0 - 1, a1 - 1, 0, 0, pointer(aAA5D_9f8b[a3]), l8836);
+      pR1C3_08C0(PV4_2_word(a0).v - 1, PV4_0_word(a0).v - 1, 0, 0, pointer(aAA5D_9f8b[a2]), l8836);
     {@0176-017B}
     pR6DD_0051;
     {@017B-0180}
@@ -105,15 +116,9 @@ begin
   {@0187-018C}
   pR6DD_0051;
   if (b8834 = 2) and (bAA15 = 0) then
-    asm
-  db 255,118,12,255,118,10,255,54,91,170,255,54,89,170
-  call pR1C3_0EEB
-    end
+    pR1C3_0EEB(PV4_2_word(a0).v, PV4_0_word(a0).v, pAA59)
   else
-    asm
-  db 255,118,12,255,118,10,138,70,6,48,228,139,248,209,231,209,231,255,181,95,170,255,181,93,170
-  call pR1C3_0EEB
-    end;
+    pR1C3_0EEB(PV4_2_word(a0).v, PV4_0_word(a0).v, pointer(aAA5D_9f8b[a2]));
   {@01CD-01D2}
   pR6DD_0030;
 end;
@@ -234,27 +239,35 @@ end;
 
 { 096E }
 procedure pO111_096E;
-var
-  _f1: array[1..2] of byte;
 begin
-  asm
-  db 128,62,52,136,2,116,3,233,165,0,128,62,21,170,0,116,3,233,155,0,160,51,170,136,70,255,176,0
-  db 58,70,255,127,116,162,109,177,235,4,254,6,109,177,160,109,177,152,139,248,209,231,209,231,139,133,53,170
-  db 11,133,55,170,116,79,160,49,170,48,228,139,208,160,109,177,152,59,194,117,29,160,109,177,152,139,248,209
-  db 231,209,231,255,181,55,170,255,181,53,170,184,64,30,80
-  call pR5C0_0000
-db 235,35,160,109,177,152,139,248,209,231,209,231,255,181,55,170,255,181,53,170,160,109,177,152,139,248,209,231
-  db 255,181,31,170
-  call pR5C0_0000
-  db 160,109,177,58,70,255,117,145,191,89,170,30,87
-  call pR1C3_1A83
-  db 191,53,170,30,87,184,66,0,80
-  call XR670_046E
-  db 235,65,160,51,170,136,70,255,176,0,58,70,255,127,38,162,109,177,235,4,254,6,109,177,160,109,177,152
-  db 139,248,209,231,209,231,129,199,93,170,30,87
-  call pR1C3_1A83
-  db 160,109,177,58,70,255,117,223,191,93,170,30,87,184,36,0,80
-  call XR670_046E
+  {@0974-0A64}
+  if (b8834 = 2) and (bAA15 = 0) then
+  begin
+    {@0988-0A09}
+    for sbB16D := 0 to bAA33 do
+    begin
+      {@099E-0A01}
+      if aAA35_9f8b[sbB16D] <> nil then
+      begin
+        {@09B2-0A01}
+        if sbB16D = bAA31 then
+          pR5C0_0000(pointer(aAA35_9f8b[sbB16D]), 7744)
+        else
+          pR5C0_0000(pointer(aAA35_9f8b[sbB16D]), aAA1F_2fc5[sbB16D]);
+      end;
+    end;
+    {@0A09-0A13}
+    pR1C3_1A83(@bAA59);
+    {@0A13-0A21}
+    XR670_046E(@bAA35, 66);
+  end
+  else
+  begin
+    {@0A23-0A56}
+    for sbB16D := 0 to bAA33 do
+      pR1C3_1A83(@aAA5D_0389[sbB16D]);
+    {@0A56-0A64}
+    XR670_046E(@bAA5D, 36);
   end;
   {@0A64-0A69}
   bAAC3 := 0;

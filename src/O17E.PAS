@@ -84,12 +84,7 @@ end;
 procedure pO17E_0157(a0: shortint; a1: shortint; a2: word; a3: byte; a4: byte);
 var
   v1b: byte;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
-  if false then begin
-    with LPR^ do for a0 := a0 to a0 do ;
-  end;
   {@015D-0161}
   v1b := 0;
   {@0161-0178}
@@ -110,16 +105,12 @@ begin
     {@01E7-01E9}
     Exit;
   end;
-  {@01E9-01FE}
+  {@01E9-0240}
   with PW2_5_0157(a9DA8_9f8b[v1b])^ do
   begin
-    {@01FE-0229}
     Move(_w5_27abyte[a2 * _w5_18word], PR27_byte(p9DB4)^.v, _w5_18word);
   end;
-  asm
-  db 138,70,14,152,80,138,70,12,152,80,255,54,182,157,255,54,180,157
-  call pR1C3_0EEB
-  end;
+  pR1C3_0EEB(a0, a1, p9DB4);
 end;
 
 { 02E6 }

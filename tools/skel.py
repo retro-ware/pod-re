@@ -64,6 +64,16 @@ def params_ok(p, pt, nested=False):
     sz = sum(6 if t == 'real' else 4 if (t in ('pointer', 'longint', 'string') or re.match(r'[SB]\d+$', t)) else 2 for t in pt)
     return sz == p['retn'] - (2 if nested else 0)
 DSREF = {}  # main program: one symbolic reference each to DSCONST / DSVAR keeps them linked
+def tail_params(key, t):
+    """Parameter list of an asm tail entry, once the lifter has typed it (SIGS); none before."""
+    ts = SIGS.get((key, t))
+    if not ts or not ts[0]: return ''
+    g = []     # a0, a1: word; a2: pointer (TPC lines are limited to 127 characters)
+    for i, x in enumerate(ts[0]):
+        if g and g[-1][1] == x: g[-1][0].append('a%d' % i)
+        else: g.append((['a%d' % i], x))
+    return '(' + '; '.join('%s: %s' % (','.join(n), x) for n, x in g) + ')'
+
 def tail_labels(key):
     """Entry points into a unit's {$L} asm tail referenced from its Pascal part."""
     if key in TAIL: return TAIL[key]
@@ -402,7 +412,7 @@ def gen_unit(key):
         for t, d in sorted(types.items()): L.append('  %s = %s;' % (t, d))
         L.append('')
     L += isigs
-    L += ['procedure %s;' % n for t, (n, far) in sorted(tails.items()) if (key, t) in EXT_TAIL]
+    L += ['procedure %s%s;' % (n, tail_params(key, t)) for t, (n, far) in sorted(tails.items()) if (key, t) in EXT_TAIL]
     L.append('')
     L.append('implementation')
     L.append('')
@@ -422,7 +432,7 @@ def gen_unit(key):
         gen_tail(key, code, tails)
         L.append('{$L %sA.OBJ}' % key)
         for t, (n, far) in sorted(tails.items()):
-            L.append('procedure %s; external;' % n if (key, t) in EXT_TAIL else 'procedure %s; %s; external;' % (n, 'far' if far else 'near'))
+            L.append('procedure %s; external;' % n if (key, t) in EXT_TAIL else 'procedure %s%s; %s; external;' % (n, tail_params(key, t), 'far' if far else 'near'))
         L.append('')
     for p in procs:
         if p['entry'] in iface or p['entry'] == u.get('init') or (key, p['entry']) in NEST: continue

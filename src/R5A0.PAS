@@ -30,8 +30,12 @@ var
   l92B3: longint absolute d92B3;
   l92B9: longint absolute d92B9;
   p92B3: pointer absolute d92B3;
+  p92B9: pointer absolute d92B9;
+  p92C2: pointer absolute d92C2;
+  p92C6: pointer absolute d92C6;
   w3DE8: word absolute d3DE8;
   w92B7: word absolute d92B7;
+  w92BD: word absolute d92BD;
 
 
 { 0000 }
@@ -114,11 +118,10 @@ begin
     {@0115-011D}
     pR670_0000(0);
   end;
-  asm
-  db 196,62,194,146,6,87,184,200,50,80
-  call XR670_046E
-  db 161,194,146,139,22,196,146,163,179,146,137,22,181,146
-  end;
+  {@011D-012C}
+  XR670_046E(@PR0_byte(p92C2)^.v, 13000);
+  {@012C-013A}
+  p92B3 := p92C2;
   asm
   db 161,179,146,139,22,181,146,37,15,0,129,226,0,0,8,192,116,12,131,6,179,146,1,131,22,181,146,0
   db 235,226
@@ -134,9 +137,9 @@ end;
 { 018F }
 procedure pR5A0_018F(a0: byte);
 var
-  _f1: array[1..3] of byte;
-  v4b: byte;
-  _f2: array[1..130] of byte;
+  v4p: pointer;
+  _f1: array[1..130] of byte;
+  v4b: byte absolute v4p;
 begin
   if false then begin
     if LV = 'MUSIC' then;
@@ -144,13 +147,14 @@ begin
   end;
   {@0196-01B3}
   pR5C3_0915('MUSIC', '.dax', a0, @b92BD, @v4b);
-  asm
-  db 196,62,198,146,6,87,184,0,24,80
-  call XR670_046E
-  db 161,198,146,139,22,200,146,163,185,146,137,22,187,146,196,126,252,6,87,196,62,185,146,6,87,255,54,189
-  db 146,154,92,26,37,8,255,118,254,255,118,252,255,54,189,146
-  call pR5C0_0000
-  end;
+  {@01B3-01C2}
+  XR670_046E(@PR0_byte(p92C6)^.v, 6144);
+  {@01C2-01D0}
+  p92B9 := p92C6;
+  {@01D0-01E4}
+  Move(PR0_byte(v4p)^.v, PR0_byte(p92B9)^.v, w92BD);
+  {@01E4-01F3}
+  pR5C0_0000(v4p, w92BD);
 end;
 
 { 01F9 }

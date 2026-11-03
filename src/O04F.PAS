@@ -115,6 +115,7 @@ var
   b8815: byte absolute d8815;
   b9D92: byte absolute d9D92;
   b9D93: byte absolute d9D93;
+  bA7BE: byte absolute dA7BE;
   bAAE5: byte absolute dAAE5;
   bAAE6: byte absolute dAAE6;
   bAB0E: byte absolute dAB0E;
@@ -133,6 +134,9 @@ var
   p9CFA: pointer absolute d9CFA;
   pA7CA: pointer absolute dA7CA;
   s0E12: string absolute d0E12;
+  s23B4: string absolute d23B4;
+  s23DD: string absolute d23DD;
+  s2406: string absolute d2406;
   s2481: string absolute d2481;
   s24AA: string absolute d24AA;
   s24D3: string absolute d24D3;
@@ -617,32 +621,53 @@ var
   v268b: byte;
   _f1: array[1..1] of byte;
   v270b: byte;
-  _f2: array[1..8] of byte;
+  v274p: pointer;
+  v278p: pointer;
+  v274b: byte absolute v274p;
   v11a2: string[10] absolute v11a;
 begin
-  if false then begin
-    if LV = FS then;
-  end;
   {@0BA0-0BA5}
   v270b := 0;
   {@0BA5-0BAD}
   pR142_00D4(0);
   if b7FF4 <> 0 then
-    asm
-  db 128,62,245,127,0,116,120,176,1,80,176,3,80,176,10,80,176,0,80,191,180,35,30,87
-  call pR47F_0354
-  db 49,192,137,70,6,137,70,8,161,202,167,139,22,204,167,137,134,238,254,137,150,240,254,139,134,238,254,11
-  db 134,240,254,116,49,196,190,238,254,38,139,69,42,38,139,85,44,137,134,234,254,137,150,236,254,141,190,238
-  db 254,22,87
-  call pR670_03ED
-  db 139,134,234,254,139,150,236,254,137,134,238,254,137,150,240,254,235,197,191,190,167,30,87,184,12,0,80
-  call XR670_046E
-  db 235,72,128,62,127,197,0,117,43,196,62,248,135,38,128,125,28,0,116,32,176,1,80,176,3,80,176,10
-  db 80,176,0,80,191,221,35,30,87
-  call pR47F_0354
-  db 49,192,137,70,6,137,70,8,235,22,176,1,80,176,3,80,176,10,80,176,0,80,191,6,36,30,87
-  call pR47F_0354
+  begin
+    {@0BB7-0C7E}
+    if b7FF5 <> 0 then
+    begin
+      {@0BBE-0BD4}
+      pR47F_0354(1, 3, 10, 0, s23B4);
+      {@0BD4-0BDC}
+      a0 := 0;
+      {@0BDC-0BEB}
+      v274p := pA7CA;
+      {@0BEB-0C26}
+      while v274p <> nil do
+      begin
+        {@0BF5-0C09}
+        v278p := PR42_pointer(v274p)^.v;
+        {@0C09-0C14}
+        pR670_03ED(@v274b);
+        {@0C14-0C24}
+        v274p := v278p;
+      end;
+      {@0C26-0C34}
+      XR670_046E(@bA7BE, 12);
     end
+    else
+    begin
+      {@0C36-0C7E}
+      if (bC57F = 0) and (PR28_byte(p87F8)^.v <> 0) then
+      begin
+        {@0C48-0C5E}
+        pR47F_0354(1, 3, 10, 0, s23DD);
+        {@0C5E-0C66}
+        a0 := 0;
+      end
+      else
+        pR47F_0354(1, 3, 10, 0, s2406);
+    end;
+  end
   else
     pR47F_0354(1, 3, 10, 0, s2481);
   {@0C96-0CAD}
@@ -1015,15 +1040,13 @@ begin
   if false then begin
     if LV = 'The monsters rejoice for the party has been destroyed.' then;
     if LV = 'Press any key to continue' then;
-    LP1('The monsters rejoice for the party has been destroyed.');
   end;
-  asm
-  db 191,30,176,30,87,184,6,0,80
-  call XR670_046E
-  db 198,6,244,127,0,128,62,14,136,0,117,4
-  push cs
-  call near ptr pO04F_072B
-  end;
+  {@1465-1473}
+  XR670_046E(@bB01E, 6);
+  {@1473-1478}
+  b7FF4 := 0;
+  if b880E = 0 then
+    pO04F_072B;
   {@1483-1488}
   b880C := 6;
   {@1488-148C}

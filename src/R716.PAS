@@ -10,7 +10,7 @@ procedure pR716_0000;
 function pR716_003B(a0: byte): byte;
 function pR716_0107(a0: byte; a1: byte): byte;
 procedure pR716_018D(a0: pointer; a1: pointer);
-procedure XR716_01DC;
+procedure XR716_01DC(a0,a1,a2,a3,a4,a5,a6: word);
 
 implementation
 

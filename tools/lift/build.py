@@ -60,7 +60,7 @@ def infer_sigs(results):
                 rsigned.add(n.args[0].target)
         lift.walk(stmts, f)
     sigs = {}
-    for pr in PROCS.values():
+    for pr in list(PROCS.values()) + list(lift.prog.TAILS.values()):
         types = []
         for i, p in enumerate(pr.params):
             if p.copy:

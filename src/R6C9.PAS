@@ -15,7 +15,7 @@ uses LIT;
 
 
 {$L R6C9A.OBJ}
-procedure XR6C9_00D6; far; external;
+procedure XR6C9_00D6(a0: word); far; external;
 procedure XR6C9_00F5; far; external;
 procedure XR6C9_00FF; far; external;
 

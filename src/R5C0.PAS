@@ -12,16 +12,18 @@ implementation
 
 uses LIT, R670;
 
+type
+  R0_byte = record v: byte end;
+  PR0_byte = ^R0_byte;
 
 
 { 0000 }
 procedure pR5C0_0000(a0: pointer; a1: word);
 begin
-  asm
-  db 196,126,8,6,87,255,118,6
-  call XR670_046E
-  db 255,118,10,255,118,8,255,118,6,154,84,2,37,8
-  end;
+  {@0003-0010}
+  XR670_046E(@PR0_byte(a0)^.v, a1);
+  {@0010-001E}
+  FreeMem(a0, a1);
 end;
 
 { 0022 }

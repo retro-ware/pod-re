@@ -32,12 +32,12 @@
 "O040:0FE1": "ok",
 "O040:114C": "ok",
 "O040:115A": "ok",
-"O040:11FD": "fail: far target R670:046E",
+"O040:11FD": "ok",
 "O040:134B": "ok",
 "O040:13E0": "ok",
 "O040:1556": "ok",
 "O040:1641": "ok",
-"O040:1677": "fail: far target R670:046E",
+"O040:1677": "ok",
 "O040:16B8": "ok",
 "O040:176A": "ok",
 "O040:17BB": "ok",
@@ -181,13 +181,13 @@
 "O065:0CB6": "ok",
 "O065:0E34": "ok",
 "O065:0EAD": "ok",
-"O065:0F66": "fail: far target R670:046E",
+"O065:0F66": "ok",
 "O065:1090": "ok",
 "O065:10C1": "ok",
 "O065:1209": "ok",
 "O065:1687": "ok",
 "O065:184C": "ok",
-"O065:1C1E": "fail: verify bytes differ at +54",
+"O065:1C1E": "ok",
 "O065:1E18": "ok",
 "O068:0000": "ok",
 "O068:00A4": "ok",
@@ -222,7 +222,7 @@
 "O06B:1A4E": "ok",
 "O06B:1B34": "ok",
 "O06B:1B93": "ok",
-"O06B:1D63": "fail: merge32 Loc(kind='up', off=-17, size=2, index=None, scale=None, ptr=None, depth=",
+"O06B:1D63": "ok",
 "O06B:1F85": "ok",
 "O06B:20C8": "ok",
 "O06B:25BD": "ok",
@@ -236,7 +236,7 @@
 "O06E:07FF": "ok",
 "O06E:09F2": "ok",
 "O06E:0AD8": "ok",
-"O06E:10BA": "fail: far target R670:046E",
+"O06E:10BA": "ok",
 "O06E:1AA3": "ok",
 "O06E:1E05": "ok",
 "O06E:1EA6": "ok",
@@ -327,7 +327,7 @@
 "O07C:12A5": "ok",
 "O07C:12AC": "ok",
 "O07C:12F6": "ok",
-"O07C:134E": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O07C:134E": "ok",
 "O07C:152F": "ok",
 "O07C:1536": "ok",
 "O07C:15AA": "ok",
@@ -365,13 +365,13 @@
 "O07C:21AD": "ok",
 "O07C:21CC": "ok",
 "O07C:2209": "ok",
-"O07C:22CD": "ok",
+"O07C:22CD": "fail: verify bytes differ at +3",
 "O07C:24F9": "ok",
 "O07C:2827": "ok",
 "O07C:284F": "ok",
 "O07C:2877": "ok",
 "O07C:2885": "ok",
-"O07C:28EA": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O07C:28EA": "ok",
 "O07C:295C": "ok",
 "O07C:297A": "ok",
 "O07C:2A92": "ok",
@@ -379,7 +379,7 @@
 "O07C:2B2A": "ok",
 "O07C:2B79": "ok",
 "O07C:2C10": "ok",
-"O07C:2C72": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O07C:2C72": "ok",
 "O07C:2E7E": "ok",
 "O07C:2EE2": "ok",
 "O07C:30DF": "ok",
@@ -407,7 +407,7 @@
 "O0A1:10D8": "ok",
 "O0A1:1329": "ok",
 "O0A1:1403": "ok",
-"O0A1:182A": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O0A1:182A": "ok",
 "O0A1:18B9": "ok",
 "O0A1:1C3E": "ok",
 "O0A1:1CF8": "ok",
@@ -419,22 +419,22 @@
 "O0A1:2939": "ok",
 "O0A1:29D4": "ok",
 "O0A1:2A57": "ok",
-"O0A1:2ABB": "fail: 4-byte value for a 2-byte parameter (merge requested)",
-"O0A1:2CA5": "fail: param merge requested",
+"O0A1:2ABB": "ok",
+"O0A1:2CA5": "ok",
 "O0A1:2DE8": "ok",
 "O0A1:3344": "fail: compile Type mismatch.",
-"O0A1:3586": "fail: compile Type mismatch.",
-"O0A1:3713": "fail: far target R670:046E",
+"O0A1:3586": "ok",
+"O0A1:3713": "ok",
 "O0A1:3B4F": "ok",
 "O0A1:3D7E": "ok",
 "O0A1:3E58": "ok",
 "O0A1:41EF": "ok",
-"O0A1:4334": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O0A1:4334": "ok",
 "O0A1:48B2": "ok",
 "O0A1:4943": "ok",
 "O0A1:4A85": "ok",
 "O0A1:4AEE": "ok",
-"O0A1:4C33": "fail: condition shape",
+"O0A1:4C33": "ok",
 "O0A1:4F44": "ok",
 "O0AA:0041": "ok",
 "O0AA:063D": "ok",
@@ -471,7 +471,7 @@
 "O0B2:01E9": "ok",
 "O0B2:02B5": "ok",
 "O0B2:02E7": "ok",
-"O0B2:038A": "ok",
+"O0B2:038A": "fail: verify bytes differ at +3",
 "O0B2:0472": "ok",
 "O0B2:04FD": "ok",
 "O0B2:05F1": "ok",
@@ -596,13 +596,13 @@
 "O0BB:4ABA": "ok",
 "O0BB:4AF4": "ok",
 "O0BB:4B22": "ok",
-"O0BB:4BCE": "ok",
-"O0BB:4CAC": "ok",
+"O0BB:4BCE": "fail: verify bytes differ at +61",
+"O0BB:4CAC": "fail: verify bytes differ at +1B",
 "O0BB:4CDE": "ok",
-"O0BB:4DCB": "ok",
+"O0BB:4DCB": "fail: verify bytes differ at +1B",
 "O0BB:4DF8": "ok",
-"O0BB:4E3D": "ok",
-"O0BB:4E8B": "ok",
+"O0BB:4E3D": "fail: verify bytes differ at +3A",
+"O0BB:4E8B": "fail: verify bytes differ at +1B",
 "O0BB:4EB8": "ok",
 "O0BB:50F8": "ok",
 "O0BB:5142": "fail: verify bytes differ at +4E",
@@ -612,7 +612,7 @@
 "O0BB:5382": "ok",
 "O0BB:54D9": "fail: verify bytes differ at +5D",
 "O0BB:55C0": "fail: verify bytes differ at +27",
-"O0BB:560D": "fail: verify bytes differ at +53",
+"O0BB:560D": "ok",
 "O0BB:57B2": "ok",
 "O0BB:582B": "fail: verify size differs by -1",
 "O0BB:58E3": "ok",
@@ -627,7 +627,7 @@
 "O0BB:62B4": "fail: verify bytes differ at +1DD",
 "O0BB:652D": "fail: verify bytes differ at +9B",
 "O0BB:6728": "ok",
-"O0BB:6874": "fail: verify bytes differ at +5D",
+"O0BB:6874": "ok",
 "O0BB:6B64": "ok",
 "O0BB:6C36": "ok",
 "O0BB:6C6B": "ok",
@@ -740,7 +740,7 @@
 "O102:0BF2": "ok",
 "O102:0C12": "ok",
 "O102:0C3B": "ok",
-"O102:0E0C": "fail: far target R670:046E",
+"O102:0E0C": "ok",
 "O102:1276": "ok",
 "O102:12D1": "fail: local overlap at -2",
 "O102:1362": "ok",
@@ -791,7 +791,7 @@
 "O10E:0090": "ok",
 "O111:0000": "ok",
 "O111:00A8": "ok",
-"O111:01F1": "fail: far target R670:046E",
+"O111:01F1": "fail: local overlap at -8",
 "O111:096E": "ok",
 "O111:0A91": "ok",
 "O111:0B1C": "ok",
@@ -838,7 +838,7 @@
 "O135:0CF2": "ok",
 "O135:0D1A": "ok",
 "O135:0D94": "ok",
-"O135:0F14": "fail: 4-byte value for a 2-byte parameter (merge requested)",
+"O135:0F14": "ok",
 "O135:122B": "ok",
 "O135:141F": "ok",
 "O135:14A9": "ok",
@@ -942,7 +942,7 @@
 "R5C3:0174": "ok",
 "R5C3:01C3": "ok",
 "R5C3:0252": "fail: verify size differs by -10",
-"R5C3:02A3": "fail: verify bytes differ at +38",
+"R5C3:02A3": "ok",
 "R5C3:0336": "ok",
 "R5C3:055E": "ok",
 "R5C3:05A8": "ok",
@@ -982,7 +982,7 @@
 "R6DD:0380": "ok",
 "R716:0000": "ok",
 "R716:003B": "ok",
-"R716:0107": "fail: near target 1dc",
+"R716:0107": "fail: 4-byte value for a 2-byte parameter (merge requested)",
 "R716:018D": "ok",
 "R716:01D7": "ok",
 "R73F:0000": "ok",
@@ -999,11 +999,60 @@
 "1C77",
 "1CDE"
 ],
+"min:O079:01D1": [
+"0286",
+"0344",
+"0354",
+"0364",
+"0374",
+"0384",
+"044B",
+"054C",
+"055C",
+"07EC",
+"080F",
+"0832",
+"084A",
+"0854",
+"087F",
+"0893"
+],
 "min:O07C:24F9": [
 "251A",
 "271A",
 "27ED",
 "2817"
+],
+"min:O0A1:0321": [
+"033D",
+"0356",
+"036B",
+"03B6",
+"03DE",
+"03F1",
+"03FB",
+"040F",
+"041D",
+"0433",
+"043D",
+"044B",
+"045D",
+"0467",
+"0475",
+"0485",
+"048F",
+"049D",
+"04BD",
+"04C7",
+"04D5",
+"054A",
+"05AB",
+"05F0",
+"0608",
+"061F"
+],
+"min:O0A1:1403": [
+"153A"
 ],
 "min:O0B5:09F5": [
 "0A1E"
@@ -1409,14 +1458,23 @@
 "0155-0168",
 "01C0-01D3"
 ],
+"raw:O040:07DB": [
+"0884-0897"
+],
 "raw:O040:0D0B": [
 "0D5A-0D68"
+],
+"raw:O040:1E4A": [
+"1E8D-1EA1"
 ],
 "raw:O04F:0D89": [
 "0DB0-0DCD"
 ],
 "raw:O052:00D2": [
 "031D-033A"
+],
+"raw:O055:046D": [
+"0549-055C"
 ],
 "raw:O055:0654": [
 "065A-0663"
@@ -1430,7 +1488,8 @@
 "063D-064B",
 "062F-063D",
 "0621-062F",
-"0608-0618"
+"0608-0618",
+"05FB-0618"
 ],
 "raw:O065:065F": [
 "0665-067B"
@@ -1438,7 +1497,8 @@
 "raw:O065:0EAD": [
 "0F22-0F32",
 "0F04-0F22",
-"0EDE-0F04"
+"0EDE-0F04",
+"0EB3-0F22"
 ],
 "raw:O065:10C1": [
 "10C7-111B",
@@ -1462,6 +1522,9 @@
 "027C-02D2",
 "0265-02D8"
 ],
+"raw:O06E:10BA": [
+"13ED-13FF"
+],
 "raw:O075:06DF": [
 "0C88-0F07"
 ],
@@ -1481,9 +1544,8 @@
 "583C-5841",
 "5839-583C"
 ],
-"raw:O079:01D1": [
-"0272-0286",
-"0323-032D"
+"raw:O079:08A7": [
+"0992-0998"
 ],
 "raw:O07C:02F4": [
 "0306-0312"
@@ -1531,7 +1593,8 @@
 "raw:O07C:1C42": [
 "1C9D-1CB2",
 "1C93-1D69",
-"1C51-1C5D"
+"1C51-1C5D",
+"1C48-1D6B"
 ],
 "raw:O07C:1EC3": [
 "1EC9-1EDB"
@@ -1542,13 +1605,18 @@
 "raw:O07C:2209": [
 "2234-22AC",
 "2229-22C2",
-"221C-2229"
+"221C-2229",
+"2214-221C"
 ],
 "raw:O07C:22CD": [
 "243F-2451",
 "242D-243F",
 "241A-242D",
-"23F9-24B0"
+"23F9-24B0",
+"2344-2356",
+"2332-2344",
+"231F-2332",
+"22EA-23E7"
 ],
 "raw:O07C:2B79": [
 "2BC0-2BC5",
@@ -1567,6 +1635,9 @@
 "raw:O0A1:1F46": [
 "2472-248D",
 "248D-24A8"
+],
+"raw:O0A1:2ABB": [
+"2ADB-2B0A"
 ],
 "raw:O0A1:2DE8": [
 "2E06-2E0C",
@@ -1617,7 +1688,10 @@
 "raw:O0B2:038A": [
 "0390-03AF",
 "03C7-03CF",
-"03CF-03EE"
+"03CF-03EE",
+"0402-0406",
+"03F4-0402",
+"03EE-0450"
 ],
 "raw:O0B2:08A2": [
 "095E-096E",
@@ -1628,11 +1702,18 @@
 "0920-093F",
 "093F-0943"
 ],
+"raw:O0B5:0966": [
+"09B8-09E2"
+],
 "raw:O0B5:0EB7": [
 "11AB-11BC",
 "1163-1195",
 "114A-1163",
-"10A1-1310"
+"10A1-1310",
+"1097-1653"
+],
+"raw:O0BB:09DE": [
+"0AE1-0B3F"
 ],
 "raw:O0BB:0ED6": [
 "0F9F-1024",
@@ -1808,6 +1889,9 @@
 "raw:O0BB:4AF4": [
 "4AFA-4B1D"
 ],
+"raw:O0BB:4B22": [
+"4B92-4BC9"
+],
 "raw:O0BB:4BCE": [
 "4C1A-4C3D"
 ],
@@ -1843,6 +1927,9 @@
 "raw:O0BB:55C0": [
 "55C7-55F5"
 ],
+"raw:O0BB:560D": [
+"577B-579E"
+],
 "raw:O0BB:582B": [
 "58B1-58DF"
 ],
@@ -1867,10 +1954,18 @@
 "6547-670A"
 ],
 "raw:O0BB:6874": [
-"6937-694A"
+"6937-694A",
+"6911-6924"
 ],
 "raw:O0BB:6CF9": [
 "6D13-6D85"
+],
+"raw:O0EC:1CBC": [
+"1CE1-1CFA"
+],
+"raw:O0EC:36C5": [
+"3707-3715",
+"3715-3723"
 ],
 "raw:O102:0738": [
 "07EF-085F"
@@ -1878,17 +1973,26 @@
 "raw:O108:0000": [
 "0053-005B"
 ],
+"raw:O108:06D2": [
+"0782-07BF"
+],
 "raw:O108:081E": [
 "0893-08B9",
 "08B9-08C3",
 "0881-0893",
-"086F-0881"
+"086F-0881",
+"0865-086F",
+"085B-0865",
+"0851-085B",
+"083D-0847"
 ],
 "raw:O108:1009": [
 "10CB-10E4",
 "130E-1327",
 "1403-1410",
-"1410-141D"
+"1410-141D",
+"1163-1178",
+"11D7-11EC"
 ],
 "raw:O108:1D45": [
 "217F-218C",
@@ -1925,6 +2029,12 @@
 "1608-1616",
 "1616-1624"
 ],
+"raw:R142:0217": [
+"02BB-02D5",
+"02D5-02EF",
+"02EF-0309",
+"0309-0323"
+],
 "raw:R182:0076": [
 "007D-0082",
 "0223-0231",
@@ -1948,6 +2058,9 @@
 "11F3-120B",
 "123C-1254"
 ],
+"raw:R1C3:1421": [
+"144D-1458"
+],
 "raw:R1C3:19A4": [
 "19AA-19BB"
 ],
@@ -1955,8 +2068,14 @@
 "1B21-1B2C",
 "1BCC-1BE5"
 ],
+"raw:R1C3:1F72": [
+"1F97-1FAF"
+],
 "raw:R47F:00B7": [
 "00C3-00E2"
+],
+"raw:R47F:01DF": [
+"0220-023F"
 ],
 "raw:R47F:0498": [
 "055C-0594",
@@ -1966,7 +2085,8 @@
 "raw:R47F:0711": [
 "084E-086F",
 "084B-084E",
-"0821-084B"
+"0821-084B",
+"0813-086F"
 ],
 "raw:R5A0:0031": [
 "0070-0077"

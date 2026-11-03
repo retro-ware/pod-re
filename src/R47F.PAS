@@ -39,12 +39,10 @@ type
   R0_string = record v: string end;
   R0_string_40_ = record v: string[40] end;
   R17_byte = record _p: array[1..17] of byte; v: byte end;
-  RA0_byte = record a: array[0..32000] of byte end;
   PR0_byte = ^R0_byte;
   PR0_string = ^R0_string;
   PR0_string_40_ = ^R0_string_40_;
   PR17_byte = ^R17_byte;
-  PRA0_byte = ^RA0_byte;
 var
   MB800_160: array[0..405, 0..159] of byte absolute $B800:0;
   MBA00_160: array[0..405, 0..159] of byte absolute $BA00:0;
@@ -56,23 +54,21 @@ var
   b8819: byte absolute d8819;
   b8830: byte absolute d8830;
   b8834: byte absolute d8834;
-  b9D8A: byte absolute d9D8A;
   b9D92: byte absolute d9D92;
   b9D93: byte absolute d9D93;
   bB16D: byte absolute dB16D;
   bC5C5: byte absolute dC5C5;
   g8818_6095: Registers absolute d8818;
   p87F8: pointer absolute d87F8;
-  p9D86: pointer absolute d9D86;
   s0E12: string absolute d0E12;
   sbB16D: shortint absolute dB16D;
   w882C: word absolute d882C;
   w882E: word absolute d882E;
 
 {$L R47FA.OBJ}
-procedure XR47F_1037; near; external;
-procedure XR47F_1097; near; external;
-procedure XR47F_11A6; far; external;
+procedure XR47F_1037(a0,a1: word; a2,a3,a4: byte); near; external;
+procedure XR47F_1097(a0,a1: word; a2,a3,a4: byte); near; external;
+procedure XR47F_11A6(a0,a1: word; a2,a3,a4: byte); far; external;
 
 
 { 0000 }
@@ -212,8 +208,10 @@ begin
     asm
   db 138,70,8,136,70,254
     end;
-  {@0220-023F}
-  Move(PRA0_byte(p9D86)^.a[v2b * 8], b9D8A, 8);
+  asm
+  db 138,70,254,48,228,177,3,211,224,196,62,134,157,3,248,6,87,191,138,157,30,87,184,8,0,80,154,92
+  db 26,37,8
+  end;
   case b8834 of
     0: asm
   db 138,70,10,136,70,239,176,1,58,70,239,119,46,136,70,255,235,3,254,70,255,138,70,18,48,228,80,138
@@ -227,18 +225,13 @@ begin
   call near ptr XR47F_1097
   db 254,70,18,138,70,255,58,70,239,117,215
       end;
-    2: begin
-      asm
-  db 138,70,10,136,70,239,176,1,58,70,239,119,47
-      end;
-      asm
-  db 136,70,255,235,3,254,70,255,138,70,18,48,228,80,138,70,16,48,228,80,138,70,14,80,138,70,12,80
-  db 138,70,254,80
+    2: asm
+  db 138,70,10,136,70,239,176,1,58,70,239,119,47,136,70,255,235,3,254,70,255,138,70,18,48,228,80,138
+  db 70,16,48,228,80,138,70,14,80,138,70,12,80,138,70,254,80
   push cs
   call near ptr XR47F_11A6
   db 254,70,18,138,70,255,58,70,239,117,214
       end;
-    end;
   end;
 end;
 
@@ -464,25 +457,14 @@ begin
     {@0804-080B}
     v43b := v299b;
     case v300b of
-      32: begin
-        {@0813-086F}
-        if (v43b <> 0) and (v43b < a3) then
-        begin
-          asm
-  db 141,190,212,253,22,87,141,190,213,254,22,87,154,111,10,37,8,191,15,7,14,87,154,252,10,37,8,141
-  db 190,213,254,22,87,184,255,0,80,154,137,10,37,8
-          end;
-          asm
-  db 254,70,214
-          end;
-          asm
-  db 138,70,214,80,176,24,80,176,15,80,176,0,80,141,190,210,254,22,87,191,15,7,14,87,154,111,10,37
-  db 8
+      32: asm
+  db 128,126,213,0,116,86,138,70,213,58,70,6,115,78,141,190,212,253,22,87,141,190,213,254,22,87,154,111
+  db 10,37,8,191,15,7,14,87,154,252,10,37,8,141,190,213,254,22,87,184,255,0,80,154,137,10,37,8
+  db 254,70,214,138,70,214,80,176,24,80,176,15,80,176,0,80,141,190,210,254,22,87,191,15,7,14,87,154
+  db 111,10,37,8
   push cs
   call near ptr pR47F_0354
-          end;
         end;
-      end;
       33..122: begin
         {@087A-08DB}
         if v43b < a3 then
@@ -623,32 +605,36 @@ end;
 { 0C27 }
 procedure pR47F_0C27;
 begin
-  asm
-  db 160,52,136,60,0,117,46,176,0,80,176,0,80,176,39,80,176,24,80,176,0,80,176,0,80
-  push cs
-  call near ptr pR47F_00B7
-  db 176,0,80,176,0,80,176,39,80,176,24,80,176,1,80,176,0,80
-  push cs
-  call near ptr pR47F_00B7
-  db 235,95
-  end;
-  asm
-  db 60,2,117,19,191,0,0,184,0,160,80,87,184,0,250,80
+  {@0C2A-0CBE}
+  case b8834 of
+    0: begin
+      {@0C31-0C47}
+      pR47F_00B7(0, 0, 39, 24, 0, 0);
+      {@0C47-0C5D}
+      pR47F_00B7(0, 0, 39, 24, 1, 0);
+    end;
+    2: asm
+  db 191,0,0,184,0,160,80,87,184,0,250,80
   call XR670_046E
-  db 235,72
-  end;
-  asm
-  db 60,1,117,68
-  end;
-  asm
+      end;
+    1: begin
+      asm
   db 191,0,0,184,0,184,80,87,184,64,31,80
   call XR670_046E
+      end;
+      asm
   db 191,0,0,184,0,186,80,87,184,64,31,80
   call XR670_046E
+      end;
+      asm
   db 191,0,0,184,0,188,80,87,184,64,31,80
   call XR670_046E
+      end;
+      asm
   db 191,0,0,184,0,190,80,87,184,64,31,80
   call XR670_046E
+      end;
+    end;
   end;
 end;
 

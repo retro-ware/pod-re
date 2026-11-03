@@ -16,7 +16,7 @@ procedure pO0AA_1845(a0: pointer);
 function pO0AA_2DD0(a0: pointer; a1: byte; a2: pointer): byte;
 procedure pO0AA_2F7B(a0: byte);
 function pO0AA_30F3(a0: byte; a1: byte; a2: pointer; a3: pointer): byte;
-function pO0AA_3C48(a0: longint): word;
+function pO0AA_3C48(a0: word; a1: word): word;
 procedure pO0AA_36BA(a0: pointer; a1: byte; a2: byte; a3: byte);
 function pO0AA_3975(a0: pointer): byte;
 procedure pO0AA_1C04(a0: pointer);
@@ -31,8 +31,6 @@ type
   E11_byte = record f: byte; _r: array[1..10] of byte end;
   E16_byte = record f: byte; _r: array[1..15] of byte end;
   E9_byte = record f: byte; _r: array[1..8] of byte end;
-  PV4_0_word = record v: word; _r: array[1..2] of byte end;
-  PV4_2_word = record _p: array[1..2] of byte; v: word end;
   X63 = array[0..62] of byte;
   R0_X63 = record v: X63 end;
   R0_byte = record v: byte end;
@@ -209,6 +207,7 @@ var
   b5362: byte absolute d5362;
   b5363: byte absolute d5363;
   b880C: byte absolute d880C;
+  b9CEE: byte absolute d9CEE;
   b9D92: byte absolute d9D92;
   b9D93: byte absolute d9D93;
   bA7DB: byte absolute dA7DB;
@@ -237,6 +236,7 @@ var
   s1575: string absolute d1575;
   s166B: string absolute d166B;
   s1694: string absolute d1694;
+  s16BD: string absolute d16BD;
   s1738: string absolute d1738;
   s1761: string absolute d1761;
   s178A: string absolute d178A;
@@ -1590,18 +1590,19 @@ c56: record case byte of 0: (v56a2: string[55]); 1: (v56a: string[15]); 2: (v56b
       9: (_p9: array[1..36] of byte; v20b: byte); 10: (_p10: array[1..40] of byte; v16p: pointer);
       11: (_p11: array[1..40] of byte; v16b: byte); 12: (_p12: array[1..44] of byte; v12p: pointer);
       13: (_p13: array[1..48] of byte; v8b: byte); 14: (_p14: array[1..49] of byte; v7b: byte);
-      15: (_p15: array[1..51] of byte; v5b: byte); 16: (_p16: array[1..51] of byte; v5sb: shortint);
-      17: (_p17: array[1..52] of byte; v4l: longint); 18: (_p18: array[1..52] of byte; v4b: byte) end;
-  _f1: array[1..256] of byte;
+      15: (_p15: array[1..50] of byte; v6b: byte); 16: (_p16: array[1..50] of byte; v6sb: shortint);
+      17: (_p17: array[1..51] of byte; v5b: byte); 18: (_p18: array[1..51] of byte; v5sb: shortint);
+      19: (_p19: array[1..52] of byte; v4l: longint); 20: (_p20: array[1..52] of byte; v4b: byte) end;
+  v312a: string;
   v313b: byte;
-  _f2: array[1..2] of byte;
+  v315w: word;
   v316b: byte;
   v317b: byte;
   v318b: byte;
+  v312b: byte absolute v312a;
 begin
   if false then begin
     if LV = ' ' then;
-    if F2(FS, ' ') then;
   end;
   {@2755-2A84}
   repeat
@@ -1684,19 +1685,33 @@ begin
         if c56.v16p = nil then
           v317b := 1
         else
-          asm
-  db 198,134,200,254,0,196,126,240,6,87,141,190,200,254,22,87
-  call pO0B5_0AF2
-  db 136,70,250,141,190,194,253,22,87,191,117,21,30,87,154,111,10,37,8,141,190,200,254,22,87,154,252,10
-  db 37,8,191,189,22,30,87,154,252,10,37,8,141,190,200,254,22,87,184,255,0,80,154,137,10,37,8,138
-  db 70,250,152,209,224,196,62,238,156,3,248,38,139,133,75,1,49,210,82,80,141,190,200,254,22,87,176,10
-  db 80
-  call pO0B5_019B
-  db 137,134,197,254,191,238,156,30,87,141,126,252,22,87,139,134,197,254,49,210,82,80,138,70,250,80
-  call pO0B5_0368
-  db 198,134,195,254,1,198,134,196,254,1,198,70,251,0,235,3,254,70,251,138,70,251,152,209,224,196,62,238
-  db 156,3,248,38,131,189,75,1,0,118,10,198,134,196,254,0,198,134,195,254,0,128,126,251,2,117,217
+        begin
+          {@2999-299E}
+          v312b := 0;
+          {@299E-29B1}
+          c56.v6b := pO0B5_0AF2(PR0_string(c56.v16p)^.v, @v312b);
+          {@29B1-29E5}
+          v312a := s1575 + v312a + s16BD;
+          {@29E5-2A0C}
+          v315w := pO0B5_019B(longint(PRA331_word(p9CEE)^.a[c56.v6sb]), v312a, 10);
+          {@2A0C-2A27}
+          pO0B5_0368(@b9CEE, @c56.v4b, longint(v315w), c56.v6b);
+          {@2A27-2A2C}
+          v317b := 1;
+          {@2A2C-2A31}
+          v316b := 1;
+          for c56.v5b := 0 to 2 do
+          begin
+            {@2A3A-2A58}
+            if PRA331_word(p9CEE)^.a[c56.v5sb] > 0 then
+            begin
+              {@2A4E-2A53}
+              v316b := 0;
+              {@2A53-2A58}
+              v317b := 0;
+            end;
           end;
+        end;
         {@2A5E-2A70}
         if c56.v20p <> nil then
           pO108_2363(@c56.v20b);
@@ -1717,21 +1732,19 @@ c54: record case byte of 0: (v54a2: string[53]); 1: (v54a: string[15]); 2: (v54b
       13: (_p13: array[1..46] of byte; v8w: word); 14: (_p14: array[1..46] of byte; v8b: byte);
       15: (_p15: array[1..48] of byte; v6w: word); 16: (_p16: array[1..50] of byte; v4b: byte);
       17: (_p17: array[1..51] of byte; v3b: byte); 18: (_p18: array[1..52] of byte; v2b: byte);
-      19: (_p19: array[1..53] of byte; v1b: byte); 20: (_p20: array[1..53] of byte; v1sb: shortint) end;
+      19: (_p19: array[1..52] of byte; v2sb: shortint); 20: (_p20: array[1..53] of byte; v1b: byte);
+      21: (_p21: array[1..53] of byte; v1sb: shortint) end;
   v310a: string;
   v311b: byte;
-  _f1: array[1..2] of byte;
+  v313w: word;
   v314b: byte;
   v315b: byte;
   v316b: byte;
   v317b: byte;
   v310b: byte absolute v310a;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
   if false then begin
     if LV = ' ' then;
-    for a0 := a0 to a0 do LM0_8([LB], [LB], [LB], [LB], [LB], [LB], [LB], [LB]);
   end;
   {@2A91-2DCA}
   repeat
@@ -1828,14 +1841,17 @@ v311b := pO108_1D45(s166B, s2B8D, v314b, v316b, v315b, v317b, c54.v12p, 1, 1, @c
         v310a := s1575 + v310a + s1976
       else
         v310a := s1575 + v310a + s194D;
-      asm
-  db 138,70,254,152,209,224,196,62,238,156,3,248,38,139,133,75,1,49,210,82,80,141,190,202,254,22,87,176
-  db 10,80
-  call pO0B5_019B
-  db 137,134,199,254,255,54,240,156,255,54,238,156,139,134,199,254,49,210,82,80,138,70,254,80
-  call pO0B5_0966
-  db 198,70,235,1,198,70,255,0,235,3,254,70,255,138,70,255,152,209,224,196,62,238,156,3,248,38,131,189
-  db 75,1,0,118,4,198,70,235,0,128,126,255,2,117,223
+      {@2D44-2D6B}
+      v313w := pO0B5_019B(longint(PRA331_word(p9CEE)^.a[c54.v2sb]), v310a, 10);
+      {@2D6B-2D84}
+      pO0B5_0966(p9CEE, longint(v313w), c54.v2b);
+      {@2D84-2D88}
+      c54.v21b := 1;
+      for c54.v1b := 0 to 2 do
+      begin
+        {@2D91-2DA9}
+        if PRA331_word(p9CEE)^.a[c54.v1sb] > 0 then
+          c54.v21b := 0;
       end;
     end;
     {@2DAF-2DC1}
@@ -2420,12 +2436,12 @@ begin
 end;
 
 { 3C48 }
-function pO0AA_3C48(a0: longint): word;
+function pO0AA_3C48(a0: word; a1: word): word;
 begin
   {@3C4E-3C54}
-  pO0AA_3C48 := PV4_2_word(a0).v;
-  if PV4_0_word(a0).v < PV4_2_word(a0).v then
-    pO0AA_3C48 := PV4_0_word(a0).v;
+  pO0AA_3C48 := a0;
+  if a1 < a0 then
+    pO0AA_3C48 := a1;
 end;
 
 { 3C6B }

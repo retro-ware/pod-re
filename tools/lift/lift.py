@@ -183,7 +183,7 @@ class ProcCtx:
         return prog.far_target(self.key, at)
 
     def near(self, t):
-        p = PROCS.get((self.key, t))
+        p = PROCS.get((self.key, t)) or prog.tail(self.key, t)
         if p is None:
             raise LiftError('near target %x' % t)
         return p
