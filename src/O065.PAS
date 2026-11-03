@@ -714,29 +714,39 @@ end;
 
 { 0EAD }
 procedure pO065_0EAD;
-var loc: array[1..10] of byte;
+type
+  RX33 = record _p: array[1..33] of byte; v: byte end;
+  RX57 = record _p: array[1..57] of byte; v: byte end;
+  RX4 = record _p: array[1..4] of byte; v4, v5, v6: byte end;
+var
+  vB: byte;
+  qA9F8: byte absolute dA9F8;
+  q87F8: pointer absolute d87F8;
+  qA6E0: pointer absolute dA6E0;
 begin
   if false then begin
     if LV = 'DungCom' then;
     if LSV = [1..2] then;
     if LV = 'WildCom' then;
   end;
-  asm
-    db 196,62,248,135,38,128,125,33,0,116,32,141,126,247,22,87,191,125,14,14,87,154,111,10,37,8,160,248
-    db 169,80,176,0,80,176,25,80
-    call pO13E_0022
-    db 235,68,196,62,248,135,38,138,69,57,80,191,133,14,14,87,154,36,13,37,8,116,13,196,62,248,135,38
-    db 138,69,57,136,70,255,235,4,198,70,255,0,141,126,247,22,87,191,165,14,14,87,154,111,10,37,8,138
-    db 70,255,80,176,0,80,176,39,80
-    call pO13E_0022
-    db 184,233,4,80,154,63,2,37,8,163,224,166,137,22,226,166,196,62,224,166,38,198,69,4,0,196,62,224
-    db 166,38,198,69,5,1,196,62,224,166,38,198,69,6,0,196,62,248,135,38,128,125,33,0,116,6
-    push cs
-    call near ptr pO065_065F
-    db 235,4
-    push cs
-    call near ptr pO065_0E34
+  if RX33(q87F8^).v <> 0 then
+    pO13E_0022('DungCom', qA9F8, 0, 25)
+  else
+  begin
+    if RX57(q87F8^).v in [1..2] then
+      vB := RX57(q87F8^).v
+    else
+      vB := 0;
+    pO13E_0022('WildCom', vB, 0, 39);
   end;
+  GetMem(qA6E0, $4E9);
+  RX4(qA6E0^).v4 := 0;
+  RX4(qA6E0^).v5 := 1;
+  RX4(qA6E0^).v6 := 0;
+  if RX33(q87F8^).v <> 0 then
+    pO065_065F
+  else
+    pO065_0E34;
 end;
 
 { 0F66 }

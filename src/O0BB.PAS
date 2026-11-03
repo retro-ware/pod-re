@@ -160,7 +160,6 @@ type
   R374_longint = record _p: array[1..374] of byte; v: longint end;
   R378_byte = record _p: array[1..378] of byte; v: byte end;
   R380_byte = record _p: array[1..380] of byte; v: byte end;
-  R3_byte = record _p: array[1..3] of byte; v: byte end;
   R41_byte = record _p: array[1..41] of byte; v: byte end;
   R420_byte = record _p: array[1..420] of byte; v: byte end;
   R421_byte = record _p: array[1..421] of byte; v: byte end;
@@ -222,7 +221,6 @@ W9_20_09DE = record case byte of 0: (_p0: array[1..30] of byte; _w20_30abyte: ar
   PR374_longint = ^R374_longint;
   PR378_byte = ^R378_byte;
   PR380_byte = ^R380_byte;
-  PR3_byte = ^R3_byte;
   PR41_byte = ^R41_byte;
   PR420_byte = ^R420_byte;
   PR421_byte = ^R421_byte;
@@ -311,7 +309,6 @@ var
   bAE5C: byte absolute dAE5C;
   bAE61: byte absolute dAE61;
   bAE88: byte absolute dAE88;
-  bAE8D: byte absolute dAE8D;
   bAEF0: byte absolute dAEF0;
   gAB3E_dd92: TPV_byte_byte_var absolute dAB3E;
   l9CE6: longint absolute d9CE6;
@@ -3718,48 +3715,50 @@ end;
 
 { 47DF }
 procedure pO0BB_47DF;
+type
+  RX1F0 = record _p: array[1..$1F0] of byte; v: byte end;
 var
-  _f1: array[1..260] of byte;
+  vSel: byte;
+  vPad: byte;
+  vDone: boolean;
+  q9CEE: pointer absolute d9CEE;
+  l9CEE: longint absolute d9CEE;
+  s2807: S40 absolute d2807;
+  s2CAC: S40 absolute d2CAC;
+  s14D1: S40 absolute d14D1;
+  s4025: string[10] absolute d4025;
+  s405C: string absolute d405C;
+  q5362: byte absolute d5362;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
   end;
-  asm
-  db 198,70,253,0
-  end;
-  asm
-  db 196,62,238,156,38,128,189,240,1,0,116,19,176,1,80,176,2,80
-  call pO0E2_1374
-  db 48,228,72,136,70,255,235,32,176,1,80
-  call pO108_00CB
-  db 191,7,40,30,87,191,172,44,30,87,176,0,80,176,0,80
-  call pO108_1009
-  db 136,70,255,138,70,255,60,0,117,120,255,54,240,156,255,54,238,156,176,50,80,176,85,80
-  push cs
-  call near ptr pO0BB_0E1D
-  db 80,176,0,80,176,0,80,176,0,80,176,0,80,141,190,253,254,22,87,191,37,64,30,87,154,111,10,37
-  db 8,191,92,64,30,87,154,252,10,37,8
-  call pO0E2_2039
-  db 255,54,240,156,255,54,238,156,176,112,80,176,85,80
-  push cs
-  call near ptr pO0BB_0E1D
-  db 80,176,0,80,176,0,80,176,0,80,176,0,80,141,126,252,22,87,191,222,71,14,87,154,111,10,37,8
-  call pO0E2_2039
-  db 198,70,253,1,233,149,0,60,1,117,119,255,54,240,156,255,54,238,156,176,54,80,176,85,80
-  push cs
-  call near ptr pO0BB_0E1D
-  db 80,176,0,80,176,0,80,176,0,80,176,0,80,141,190,253,254,22,87,191,37,64,30,87,154,111,10,37
-  db 8,191,92,64,30,87,154,252,10,37,8
-  call pO0E2_2039
-  db 255,54,240,156,255,54,238,156,176,112,80,176,85,80
-  push cs
-  call near ptr pO0BB_0E1D
-  db 80,176,0,80,176,0,80,176,0,80,176,0,80,141,126,252,22,87,191,222,71,14,87,154,111,10,37,8
-  call pO0E2_2039
-  db 198,70,253,1,235,26,191,209,20,30,87,160,98,83,80
-  call pO108_2254
-  db 58,6,98,83,176,0,117,1,64,136,70,253,128,126,253,0,117,3,233,164,254
-  end;
+  vDone := false;
+  repeat
+    if RX1F0(q9CEE^).v <> 0 then
+      vSel := pO0E2_1374(1, 2) - 1
+    else
+    begin
+      pO108_00CB(1);
+      vSel := pO108_1009(s2807, s2CAC, 0, 0);
+    end;
+    case vSel of
+      0:
+        begin
+          pO0E2_2039(l9CEE, $32, pO0BB_0E1D($55), 0, 0, 0, 0, s4025 + s405C);
+          pO0E2_2039(l9CEE, $70, pO0BB_0E1D($55), 0, 0, 0, 0, '');
+          vDone := true;
+        end;
+      1:
+        begin
+          pO0E2_2039(l9CEE, $36, pO0BB_0E1D($55), 0, 0, 0, 0, s4025 + s405C);
+          pO0E2_2039(l9CEE, $70, pO0BB_0E1D($55), 0, 0, 0, 0, '');
+          vDone := true;
+        end;
+    else
+      vDone := pO108_2254(s14D1, q5362) = q5362;
+    end;
+  until vDone;
 end;
 
 { 495E }
@@ -5017,8 +5016,35 @@ end;
 
 { 6874 }
 procedure pO0BB_6874(a0: pointer; a1: pointer; a2: word);
+type
+  TPVX = procedure(a0: byte; a1: byte; var a2: byte);
+  PPX = ^pointer;
+  PLX = ^longint;
+  RXK = record k: byte; _p: array[1..2] of byte; n: byte end;
+  RXB2 = record _p: array[1..$B2] of byte; v: byte end;
+  RX1EF = record _p: array[1..$1EF] of byte; v: byte end;
 var
-  _f1: array[1..292] of byte;
+  v1b: byte;
+  v2b: shortint;
+  v3b: shortint;
+  v4b: byte;
+  v8p: pointer;
+  v9b: byte;
+  v10b: byte;
+  v11b: byte;
+  vS: string[20];
+  vW: word;
+  v23b: byte;
+  qA7DC: byte absolute dA7DC;
+  qAE8D: byte absolute dAE8D;
+  qA7D2: byte absolute dA7D2;
+  qB16C: byte absolute dB16C;
+  qAE5B: byte absolute dAE5B;
+  qAE5C: byte absolute dAE5C;
+  qAD3A: byte absolute dAD3A;
+  aAD3B: array[1..255] of pointer absolute dAD3B;
+  lAD3B: longint absolute dAD3B;
+  gAB3E: TPVX absolute dAB3E;
 begin
   if false then begin
     if LV = 'Fire' then;
@@ -5026,69 +5052,68 @@ begin
     if LV = 'acid' then;
     if LV = 'breathes ' then;
   end;
-  asm
-  db 198,6,220,167,1
-  end;
-  if (bAE8D = 0) or (PR3_byte(a1)^.v > 3) then
-    asm
-  db 196,126,8,38,198,69,3,3
+  qA7DC := 1;
+  if (qAE8D = 0) or (RXK(a1^).n > 3) then
+    RXK(a1^).n := 3;
+  if RXK(a1^).n > 0 then
+  begin
+    vW := RXB2(PPX(a0)^^).v;
+    case RXK(a1^).k of
+      $54, $53:
+        begin
+          qA7D2 := $21;
+          v10b := 3;
+          v11b := 9;
+          vS := 'Fire';
+          if RXK(a1^).k = $53 then
+            vW := pO0E2_13BF(24, 10) + 12;
+        end;
+      $55:
+        begin
+          qA7D2 := $22;
+          v10b := 3;
+          v11b := 7;
+          vS := 'cold';
+        end;
+      $60:
+        begin
+          qA7D2 := $20;
+          v10b := 1;
+          v11b := 6;
+          vS := 'acid';
+        end;
     end;
-  asm
-  db 196,126,8,38,128,125,3,0,119,3,233,173,2,196,126,12,38,196,61,38,138,133,178,0,48,228,137,70
-  db 222,196,126,8,38,138,5,60,84,116,4,60,83,117,60,198,6,210,167,33,198,70,246,3,198,70,245,9
-  db 191,91,104,14,87,141,126,224,22,87,184,20,0,80,154,137,10,37,8,196,126,8,38,128,61,83,117,17
-  db 176,24,80,176,10,80
-  call pO0E2_13BF
-  db 5,12,0,137,70,222,235,74,60,85,117,34,198,6,210,167,34,198,70,246,3,198,70,245,7,191,96,104
-  db 14,87,141,126,224,22,87,184,20,0,80,154,137,10,37,8,235,36,60,96,117,32,198,6,210,167,32,198
-  db 70,246,1,198,70,245,6,191,101,104,14,87,141,126,224,22,87,184,20,0,80,154,137,10,37,8,196,126
-  db 12,38,255,117,2,38,255,53
-  call pO135_0CA2
-  db 136,70,254,196,126,12,38,255,117,2,38,255,53
-  call pO135_0CCA
-  db 136,70,253,176,23,80,176,1,80,191,108,177,30,87,255,30,62,171,128,62,108,177,0,117,3,233,204,1
-  db 138,70,254,80,138,70,253,80,160,91,174,80,160,92,174,80,138,70,246,80,138,70,245,80
-  push cs
-  call near ptr pO0BB_1736
-  db 160,58,173,136,70,220,176,1,58,70,220,119,62,136,70,252,235,3,254,70,252,196,126,12,38,255,117,2
-  db 38,255,53
-  call pO0EC_29F3
-  db 138,208,138,70,252,48,228,139,248,209,231,209,231,196,189,55,173,38,138,133,239,1,58,194,116,5,198,6
-  db 108,177,0,138,70,252,58,70,220,117,199,128,62,58,173,0,119,3,233,91,1,128,62,108,177,0,117,3
-  db 233,81,1,196,126,12,38,255,117,2,38,255,53,141,190,221,254,22,87,191,106,104,14,87,154,111,10,37
-  db 8,141,126,224,22,87,154,252,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 196,126,12,38,255,117,2,38,255,53,255,54,61,173,255,54,59,173
-  call pO135_17F9
-  db 136,70,221,196,126,12,38,255,117,2,38,255,53
-  call pO0EC_0C95
-  db 196,126,12,38,255,117,2,38,255,53,138,70,221,80,176,1,80,176,0,80
-  call pO135_0BAF
-  db 176,17,80
-  call pR1C3_2120
-  db 196,126,12,38,255,117,2,38,255,53
-  call pO135_0CA2
-  db 152,80,196,126,12,38,255,117,2,38,255,53
-  call pO135_0CCA
-  db 152,80,255,54,61,173,255,54,59,173
-  call pO135_0CA2
-  db 152,80,255,54,61,173,255,54,59,173
-  call pO135_0CCA
-  db 152,80,176,1,80,176,30,80
-  call pO0EC_1F07
-  db 160,58,173,136,70,220,176,1,58,70,220,119,103,136,70,252,235,3,254,70,252,138,70,252,48,228,139,248
-  db 209,231,209,231,139,133,55,173,11,133,57,173,116,66,138,70,252,48,228,139,248,209,231,209,231,139,133,55
-  db 173,139,149,57,173,137,70,248,137,86,250,255,118,250,255,118,248,176,3,80,176,0,80
-  call pO0E2_12C9
-  db 136,70,247,255,118,250,255,118,248,255,118,222,176,2,80,138,70,247,80
-  call pO0E2_1D19
-  db 138,70,252,58,70,220,117,158,196,126,8,38,254,77,3,196,126,12,38,255,117,2,38,255,53
-  call pO0EC_2CF6
-  db 136,70,255
+    v2b := pO135_0CA2(PLX(a0)^);
+    v3b := pO135_0CCA(PLX(a0)^);
+    gAB3E($17, 1, qB16C);
+    if qB16C <> 0 then
+    begin
+      pO0BB_1736(v2b, v3b, qAE5B, qAE5C, v10b, v11b);
+      for v4b := 1 to qAD3A do
+        if RX1EF(aAD3B[v4b]^).v <> pO0EC_29F3(PPX(a0)^) then
+          qB16C := 0;
+      if qAD3A > 0 then
+        if qB16C <> 0 then
+        begin
+          pO0EC_1B08(PPX(a0)^, 'breathes ' + vS, 10, 1);
+          v23b := pO135_17F9(PLX(a0)^, lAD3B);
+          pO0EC_0C95(PPX(a0)^);
+          pO135_0BAF(PPX(a0)^, v23b, 1, 0);
+          pR1C3_2120($11);
+          pO0EC_1F07(pO135_0CA2(PLX(a0)^), pO135_0CCA(PLX(a0)^), pO135_0CA2(lAD3B), pO135_0CCA(lAD3B), 1, 30);
+          for v4b := 1 to qAD3A do
+            if aAD3B[v4b] <> nil then
+            begin
+              v8p := aAD3B[v4b];
+              v9b := pO0E2_12C9(v8p, 3, 0);
+              pO0E2_1D19(v8p, vW, 2, v9b);
+            end;
+          Dec(RXK(a1^).n);
+          v1b := pO0EC_2CF6(PPX(a0)^);
+        end;
+    end;
   end;
-  asm
-  db 198,6,220,167,0
-  end;
+  qA7DC := 0;
 end;
 
 { 6B64 }
@@ -5194,32 +5219,30 @@ end;
 
 { 6CF9 }
 procedure pO0BB_6CF9(a0: pointer; a1: S40; a2: byte);
-var loc: array[1..257] of byte;
+type
+  RXB0 = record v: byte end;
+var
+  q880C: byte absolute d880C;
+  a53CD: array[0..255] of string[34] absolute d53CD;
 begin
   if false then begin
     if LV = 'Casts a Spell' then;
     if LV = 'Spell:' then;
   end;
-  asm
-    db 128,62,12,136,5,117,107,255,118,14,255,118,12,141,126,201,22,87,191,228,108,14,87,154,111,10,37,8
-    db 176,10,80,176,1,80
-    call pO0EC_1B08
-    db 176,0,80,176,23,80,176,39,80,176,23,80
-    call pR142_0217
-    db 176,0,80,176,23,80,176,10,80,176,0,80,141,190,215,254,22,87,191,242,108,14,87,154,111,10,37,8
-    db 138,70,6,48,228,186,35,0,247,226,139,248,129,199,205,83,30,87,154,252,10,37,8
-    call pR47F_0354
-    db 235,112,176,1,80,176,18,80,176,38,80,176,22,80
-    call pR142_0217
-    db 255,118,14,255,118,12,176,1,80,176,19,80,176,0,80
-    call pO0EC_1C22
-    db 196,126,12,38,138,5,48,228,64,64,80,176,19,80,176,10,80,176,0,80,141,126,215,22,87
-    call pR47F_0354
-    db 176,1,80,176,20,80,176,10,80,176,0,80,138,70,6,48,228,186,35,0,247,226,139,248,129,199,205,83
-    db 30,87
-    call pR47F_0354
-    call pR47F_0D1A
-    call pO0EC_1BEF
+  if q880C = 5 then
+  begin
+    pO0EC_1B08(a0, 'Casts a Spell', 10, 1);
+    pR142_0217(0, 23, 39, 23);
+    pR47F_0354(0, 23, 10, 0, 'Spell:' + a53CD[a2]);
+  end
+  else
+  begin
+    pR142_0217(1, 18, 38, 22);
+    pO0EC_1C22(a0, 1, 19, 0);
+    pR47F_0354(RXB0(a0^).v + 2, 19, 10, 0, a1);
+    pR47F_0354(1, 20, 10, 0, a53CD[a2]);
+    pR47F_0D1A;
+    pO0EC_1BEF;
   end;
 end;
 
