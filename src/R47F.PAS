@@ -44,10 +44,6 @@ type
   PR0_string_40_ = ^R0_string_40_;
   PR17_byte = ^R17_byte;
 var
-  MB800_160: array[0..405, 0..159] of byte absolute $B800:0;
-  MBA00_160: array[0..405, 0..159] of byte absolute $BA00:0;
-  MBC00_160: array[0..405, 0..159] of byte absolute $BC00:0;
-  MBE00_160: array[0..405, 0..159] of byte absolute $BE00:0;
   b8815: byte absolute d8815;
   b8818: byte absolute d8818;
   b8819: byte absolute d8819;
@@ -191,26 +187,37 @@ end;
 
 { 01DF }
 procedure pR47F_01DF(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte; a5: byte; a6: byte);
-var loc: array[1..18] of byte;
+type
+  TB = array[0..65520] of byte;
+var
+  v1b: byte;
+  v2b: byte;
+  _pad: array[1..14] of byte;
+  p9D86: ^TB absolute d9D86;
+  b8834: byte absolute d8834;
 begin
-  asm
-    db 128,126,18,39,119,15,128,126,16,24,119,9,161,134,157,11,6,136,157,117,3,233,8,1,128,126,6,0
-    db 116,23,138,70,8,80,154,1,28,37,8,48,228,153,185,64,0,247,241,146,136,70,254,235,6,138,70,8
-    db 136,70,254,138,70,254,48,228,177,3,211,224,196,62,134,157,3,248,6,87,191,138,157,30,87,184,8,0
-    db 80,154,92,26,37,8,160,52,136,60,0,117,62,138,70,10,136,70,239,176,1,58,70,239,119,46,136,70
-    db 255,235,3,254,70,255,138,70,18,48,228,80,138,70,16,48,228,80,138,70,14,80,138,70,12,80,138,70
-    db 254,80
-    call near ptr XR47F_1037
-    db 254,70,18,138,70,255,58,70,239,117,215,233,129,0,60,1,117,61,138,70,10,136,70,239,176,1,58,70
-    db 239,119,46,136,70,255,235,3,254,70,255,138,70,18,48,228,80,138,70,16,48,228,80,138,70,14,80,138
-    db 70,12,80,138,70,254,80
-    call near ptr XR47F_1097
-    db 254,70,18,138,70,255,58,70,239,117,215,235,64,60,2,117,60,138,70,10,136,70,239,176,1,58,70,239
-    db 119,47,136,70,255,235,3,254,70,255,138,70,18,48,228,80,138,70,16,48,228,80,138,70,14,80,138,70
-    db 12,80,138,70,254,80
-    push cs
-    call near ptr XR47F_11A6
-    db 254,70,18,138,70,255,58,70,239,117,214
+  if (a0 > 39) or (a1 > 24) or (p9D86 = nil) then Exit;
+  if a6 <> 0 then
+    v2b := Ord(UpCase(Chr(a5))) mod 64
+  else
+    v2b := a5;
+  Move(p9D86^[v2b * 8], d9D8A, 8);
+  case b8834 of
+    0: for v1b := 1 to a4 do
+       begin
+         XR47F_1037(a0, a1, a2, a3, v2b);
+         Inc(a0);
+       end;
+    1: for v1b := 1 to a4 do
+       begin
+         XR47F_1097(a0, a1, a2, a3, v2b);
+         Inc(a0);
+       end;
+    2: for v1b := 1 to a4 do
+       begin
+         XR47F_11A6(a0, a1, a2, a3, v2b);
+         Inc(a0);
+       end;
   end;
 end;
 
@@ -582,55 +589,45 @@ var
   v6w: word;
   v8w: word;
   v10w: word;
-  _f1: array[1..4] of byte;
+  v12w: word;
+  v14w: word;
   v15b: byte;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
+  b8834: byte absolute d8834;
+  MB800_160: array[0..405, 0..159] of byte absolute $B800:0;
+  MBA00_160: array[0..405, 0..159] of byte absolute $BA00:0;
+  MBC00_160: array[0..405, 0..159] of byte absolute $BC00:0;
+  MBE00_160: array[0..405, 0..159] of byte absolute $BE00:0;
 begin
-  if false then begin
-    for a0 := a0 to a0 do for _fw := _fw to _fw do ;
-  end;
-  {@0D3A-0D3F}
   pR6DD_0051;
   case b8834 of
     0: begin
-      {@0D46-0D61}
       pR47F_00B7(a0, a1, a2, a3, 0, a4);
-      {@0D61-0D7C}
       pR47F_00B7(a0, a1, a2, a3, 1, a4);
     end;
-    2: asm
-  db 138,70,14,48,228,177,3,211,224,139,216,138,70,12,48,228,177,3,211,224,186,64,1,247,226,3,195,137
-  db 70,244,138,70,14,48,228,139,208,138,70,10,48,228,43,194,64,177,3,211,224,137,70,242,138,70,8,48
-  db 228,64,177,3,211,224,72,137,70,239,138,70,12,48,228,177,3,211,224,59,70,239,119,51,137,70,246,235
-  db 3,255,70,246,139,70,244,49,210,5,0,0,129,210,0,160,137,199,142,194,6,87,255,118,242,138,70,6
-  db 80,154,127,26,37,8,129,70,244,64,1,139,70,246,59,70,239,117,210
+    2: begin
+      v12w := a1 * 8 * $140 + a0 * 8;
+      v14w := (a2 - a0 + 1) * 8;
+      for v10w := a1 * 8 to (a3 + 1) * 8 - 1 do
+      begin
+        FillChar(pointer(v12w + $A0000000)^, v14w, a4);
+        Inc(v12w, $140);
       end;
+    end;
     1: begin
-      {@0E13-0E1D}
       v2w := a1 * 2;
-      {@0E1D-0E28}
       v4w := a3 * 2 + 1;
-      {@0E28-0E34}
       v6w := a0 * 4;
-      {@0E34-0E4A}
       v8w := (a2 - a0 + 1) * 4;
-      {@0E4A-0E60}
       v15b := a4 + a4 shl 4;
       for v10w := v2w to v4w do
       begin
-        {@0E79-0E97}
         FillChar(MB800_160[v10w, v6w], v8w, v15b);
-        {@0E97-0EB5}
         FillChar(MBA00_160[v10w, v6w], v8w, v15b);
-        {@0EB5-0ED3}
         FillChar(MBC00_160[v10w, v6w], v8w, v15b);
-        {@0ED3-0EF1}
         FillChar(MBE00_160[v10w, v6w], v8w, v15b);
       end;
     end;
   end;
-  {@0EFC-0F01}
   pR6DD_0030;
 end;
 
@@ -654,19 +651,12 @@ end;
 
 { 0F64 }
 procedure pR47F_0F64;
-var loc: array[1..22] of byte;
 begin
   if false then begin
     if LV = 'Loading...Please Wait' then;
   end;
-  asm
-    db 176,21,80,176,24,80,176,39,80,176,24,80
-    push cs
-    call near ptr pR47F_0F07
-    db 176,0,80,176,24,80,176,10,80,176,0,80,141,126,234,22,87,191,78,15,14,87,154,111,10,37,8
-    push cs
-    call near ptr pR47F_0354
-  end;
+  pR47F_0F07(21, 24, 39, 24);
+  pR47F_0354(0, 24, 10, 0, 'Loading...Please Wait');
 end;
 
 { 0F9D }

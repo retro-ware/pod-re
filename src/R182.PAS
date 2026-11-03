@@ -11,6 +11,9 @@ implementation
 
 uses LIT, Dos, Overlay, R1C3, R47F, R5C3, R670, R716;
 
+
+
+{ 0076 }
 var
   b851B: byte absolute d851B;
   b8751: byte absolute d8751;
@@ -38,9 +41,9 @@ var
   s8750: string absolute d8750;
   s92D4: string absolute d92D4;
   s93D4: string absolute d93D4;
-
-
-{ 0076 }
+  b869E: byte absolute d869E;
+  w1: array[0..6] of word absolute dC5D4;
+  w2: array[0..6] of word absolute dC5E2;
 begin
   if false then begin
     if LV = 'GAME.OVR' then;
@@ -198,10 +201,10 @@ WriteLn(Output, 'Not enough memory to run game.  You need ', 143360 - OvrGetBuf 
   {@039C-03A1}
   pR716_0000;
   if bC60C <> 0 then
-    asm
-  db 198,6,158,134,0,235,4,254,6,158,134,191,29,133,30,87,154,2,9,37,8,139,208,160,158,134,48,228
-  db 139,248,209,231,137,149,212,197,154,199,7,37,8,191,29,133,30,87,154,2,9,37,8,139,208,160,158,134
-  db 48,228,139,248,209,231,137,149,226,197,154,199,7,37,8,128,62,158,134,6,117,185
+    for b869E := 0 to 6 do
+    begin
+      ReadLn(g851D_a7c7, w1[b869E]);
+      ReadLn(g851D_a7c7, w2[b869E]);
     end;
   {@03F6-0400}
   Close(g851D_a7c7);

@@ -451,6 +451,8 @@ def gen_unit(key):
         out = []
         out.append('{ %04X }' % e)
         if init:
+            if (key, e) in LIFTED and LIFTED[(key, e)].get('hand'):
+                out += LIFTED[(key, e)]['decl']   # hand-written init: unit-level declarations
             out.append('begin')
         else:
             out.append(sig(p))

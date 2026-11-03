@@ -150,7 +150,7 @@ def generate(results, sigs):
         gtypes[pr.key].update(em.types)
         absmem[pr.key].update(getattr(em, 'absmem', {}))
     for (k, e), (decl, body) in HAND.items():
-        skel.LIFTED[(k, e)] = {'decl': decl, 'body': body}
+        skel.LIFTED[(k, e)] = {'decl': decl, 'body': body, 'hand': True}
     # GAMEDATA item cuts so every alias starts on an item
     os.makedirs('data', exist_ok=True)
     old = set()
