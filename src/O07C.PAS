@@ -149,6 +149,7 @@ type
   R46_byte = record _p: array[1..46] of byte; v: byte end;
   R487_pointer = record _p: array[1..487] of byte; v: pointer end;
   R48_byte = record _p: array[1..48] of byte; v: byte end;
+  R493_byte = record _p: array[1..493] of byte; v: byte end;
   R495_byte = record _p: array[1..495] of byte; v: byte end;
   R495_shortint = record _p: array[1..495] of byte; v: shortint end;
   R496_byte = record _p: array[1..496] of byte; v: byte end;
@@ -196,6 +197,7 @@ type
   PR46_byte = ^R46_byte;
   PR487_pointer = ^R487_pointer;
   PR48_byte = ^R48_byte;
+  PR493_byte = ^R493_byte;
   PR495_byte = ^R495_byte;
   PR495_shortint = ^R495_shortint;
   PR496_byte = ^R496_byte;
@@ -2057,10 +2059,14 @@ end;
 { 2209 }
 procedure pO07C_2209(a0: pointer; a1: word; a2: word; a3: word);
 var
-  _f1: array[1..22] of byte;
+  _f1: array[1..3] of byte;
+  v4b: byte;
+  v8p: pointer;
+  v8l: longint absolute v8p;
 begin
   if false then begin
     if LV = 'is terrified' then;
+    LP1('is terrified');
   end;
   asm
   db 198,6,220,167,1
@@ -2071,19 +2077,20 @@ begin
   asm
   db 161,242,156,139,22,244,156,137,70,248,137,86,250
   end;
-  asm
-  db 139,70,248,11,70,250,117,3,233,142,0,196,126,248,38,138,133,239,1,196,126,12,38,196,61,38,58,133
-  db 239,1,116,99,196,126,248,38,128,189,237,1,0,117,88,255,118,250,255,118,248,176,1,80,176,252,80
-  call pO0E2_12C9
-  db 8,192,117,67,255,118,250,255,118,248,176,120,80,141,126,252,22,87
-  call pO0EC_27C1
-  db 8,192,117,44,255,118,250,255,118,248,176,120,80,49,192,80,176,0,80,176,1,80,176,1,80,176,0,80
-  db 141,126,235,22,87,191,252,33,14,87,154,111,10,37,8
-  call pO0E2_2039
-  db 196,126,248,38,139,133,227,1,38,139,149,229,1,137,70,248,137,86,250,233,103,255
+  {@2229-22C2}
+  while v8p <> nil do
+  begin
+    {@2234-22AC}
+if (PR495_byte(v8p)^.v <> PR495_byte(PR0_pointer(a0)^.v)^.v) and (PR493_byte(v8p)^.v = 0)
+        and (pO0E2_12C9(v8p, 1, -4) = 0) and (pO0EC_27C1(v8p, 120, @v4b) = 0) then
+      pO0E2_2039(v8l, 120, 0, 0, 1, 1, 0, 'is terrified');
+    asm
+  db 196,126,248,38,139,133,227,1,38,139,149,229,1,137,70,248,137,86,250
+    end;
   end;
-  {@22C2-22C7}
-  bA7DC := 0;
+  asm
+  db 198,6,220,167,0
+  end;
 end;
 
 { 24F9 }
