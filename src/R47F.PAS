@@ -39,10 +39,12 @@ type
   R0_string = record v: string end;
   R0_string_40_ = record v: string[40] end;
   R17_byte = record _p: array[1..17] of byte; v: byte end;
+  RA0_byte = record a: array[0..32000] of byte end;
   PR0_byte = ^R0_byte;
   PR0_string = ^R0_string;
   PR0_string_40_ = ^R0_string_40_;
   PR17_byte = ^R17_byte;
+  PRA0_byte = ^RA0_byte;
 var
   MB800_160: array[0..405, 0..159] of byte absolute $B800:0;
   MBA00_160: array[0..405, 0..159] of byte absolute $BA00:0;
@@ -54,12 +56,14 @@ var
   b8819: byte absolute d8819;
   b8830: byte absolute d8830;
   b8834: byte absolute d8834;
+  b9D8A: byte absolute d9D8A;
   b9D92: byte absolute d9D92;
   b9D93: byte absolute d9D93;
   bB16D: byte absolute dB16D;
   bC5C5: byte absolute dC5C5;
   g8818_6095: Registers absolute d8818;
   p87F8: pointer absolute d87F8;
+  p9D86: pointer absolute d9D86;
   s0E12: string absolute d0E12;
   sbB16D: shortint absolute dB16D;
   w882C: word absolute d882C;
@@ -194,24 +198,22 @@ end;
 { 01DF }
 procedure pR47F_01DF(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte; a5: byte; a6: byte);
 var
-  _f1: array[1..16] of byte;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
+  _f1: array[1..1] of byte;
+  v2b: byte;
+  _f2: array[1..16] of byte;
 begin
-  if false then begin
-    for _fw := _fw to _fw do ;
-  end;
   asm
   db 128,126,18,39,119,15,128,126,16,24,119,9,161,134,157,11,6,136,157,117,3,233,8,1
   end;
-  asm
-  db 128,126,6,0,116,23,138,70,8,80,154,1,28,37,8,48,228,153,185,64,0,247,241,146,136,70,254,235
-  db 6,138,70,8,136,70,254
-  end;
-  asm
-  db 138,70,254,48,228,177,3,211,224,196,62,134,157,3,248,6,87,191,138,157,30,87,184,8,0,80,154,92
-  db 26,37,8
-  end;
+  {@01FD-0220}
+  if a6 <> 0 then
+    v2b := Byte(Ord(UpCase(Chr(a5))) mod 64)
+  else
+    asm
+  db 138,70,8,136,70,254
+    end;
+  {@0220-023F}
+  Move(PRA0_byte(p9D86)^.a[v2b * 8], b9D8A, 8);
   case b8834 of
     0: asm
   db 138,70,10,136,70,239,176,1,58,70,239,119,46,136,70,255,235,3,254,70,255,138,70,18,48,228,80,138
@@ -466,8 +468,10 @@ begin
         {@0813-086F}
         if (v43b <> 0) and (v43b < a3) then
         begin
-          {@0821-084B}
-          v299a := v299a + ' ';
+          asm
+  db 141,190,212,253,22,87,141,190,213,254,22,87,154,111,10,37,8,191,15,7,14,87,154,252,10,37,8,141
+  db 190,213,254,22,87,184,255,0,80,154,137,10,37,8
+          end;
           asm
   db 254,70,214
           end;

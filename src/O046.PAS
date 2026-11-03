@@ -12,75 +12,161 @@ implementation
 
 uses LIT, O04F, O06E, O0AA, O0B5, O0EC, O108, R47F, R670;
 
+type
+  R331_word = record _p: array[1..331] of byte; v: word end;
+  R333_word = record _p: array[1..333] of byte; v: word end;
+  R335_word = record _p: array[1..335] of byte; v: word end;
+  R423_longint = record _p: array[1..423] of byte; v: longint end;
+  R42_pointer = record _p: array[1..42] of byte; v: pointer end;
+  PR331_word = ^R331_word;
+  PR333_word = ^R333_word;
+  PR335_word = ^R335_word;
+  PR423_longint = ^R423_longint;
+  PR42_pointer = ^R42_pointer;
+var
+  b880C: byte absolute d880C;
+  bAAE5: byte absolute dAAE5;
+  bAAE6: byte absolute dAAE6;
+  bAE62: byte absolute dAE62;
+  bC578: byte absolute dC578;
+  p9CEE: pointer absolute d9CEE;
+  pA7CA: pointer absolute dA7CA;
+  s3196: string absolute d3196;
+  s93D4: string absolute d93D4;
 
 
 { 000E }
 procedure pO046_000E;
-var loc: array[1..272] of byte;
+var
+  v1b: byte;
+  v2b: byte;
+  _f1: array[1..2] of byte;
+  v5b: byte;
+  v6b: byte;
+  v7b: byte;
+  _f2: array[1..2] of byte;
+  v10b: byte;
+  v11b: byte;
+  v12b: byte;
+  v16p: pointer;
+  v16b: byte absolute v16p;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
     if LV = 'tmpvault.dat' then;
+    if LV = FS then;
   end;
-  asm
-    db 198,6,12,136,10,198,6,120,197,1
-    call pO0EC_2ED1
-    db 198,6,120,197,1,255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    call pO06E_0450
-    db 8,192,117,8
-    call pO0EC_3E0E
-    db 233,48,2,161,202,167,11,6,204,167,116,44,161,202,167,139,22,204,167,137,70,240,137,86,242,196,62,202
-    db 167,38,139,69,42,38,139,85,44,163,202,167,137,22,204,167,141,126,240,22,87
-    call pR670_03ED
-    db 235,203,49,192,163,202,167,163,204,167,141,126,250,22,87,141,126,249,22,87
-    call pO06E_30B1
-    db 198,6,98,174,0,198,70,251,0,198,70,244,1,191,14,171,30,87,184,40,0,80
-    call XR670_046E
-    db 198,70,246,0,176,0,80,141,126,246,22,87
-    call pO108_00AB
-    db 141,126,250,22,87,141,126,249,22,87
-    call pO0B5_0E45
-    db 128,126,250,0,117,6,128,126,249,0,116,13,176,1,80,141,126,246,22,87
-    call pO108_00AB
-    db 176,2,80,141,126,246,22,87
-    call pO108_00AB
-    db 196,62,238,156,38,131,189,75,1,0,119,24,196,62,238,156,38,131,189,77,1,0,119,12,196,62,238,156
-    db 38,131,189,79,1,0,118,13,176,3,80,141,126,246,22,87
-    call pO108_00AB
-    db 196,62,238,156,38,139,133,167,1,38,11,133,169,1,116,13,176,4,80,141,126,246,22,87
-    call pO108_00AB
-    db 176,5,80,141,126,246,22,87
-    call pO108_00AB
-    db 138,70,244,162,229,170,141,126,239,22,87,191,0,0,14,87,154,111,10,37,8,191,150,49,30,87,176,1
-    db 80,176,0,80
-    call pO108_1009
-    db 136,70,254,160,229,170,136,70,244,128,62,230,170,0,116,15,128,126,254,27,117,9,198,6,230,170,0,198
-    db 70,254,5,198,70,245,0,128,62,230,170,0,117,113,138,70,254,60,0,117,12,141,126,245,22,87
-    call pO0AA_0C9D
-    db 235,92,60,1,117,17,141,126,250,22,87,141,126,249,22,87
-    call pO04F_0F77
-    db 235,71,60,2,117,7
-    call pO0B5_0453
-    db 235,60,60,3,117,27,176,0,80
-    call pO0AA_2A8A
-    db 176,1,80,176,17,80,176,38,80,176,22,80
-    call pR47F_0F07
-    db 235,29,60,4,117,17,141,126,245,22,87
-    call pO0AA_1067
-    call pO0EC_2ED1
-    db 235,8,60,5,117,4,198,70,251,1,235,59,138,70,254,136,70,255,128,126,255,80,116,6,128,126,255,72
-    db 117,41,255,54,240,156,255,54,238,156,176,0,80
-    call pO0EC_0987
-    db 138,70,254,80
-    call pO0AA_2F7B
-    db 255,54,240,156,255,54,238,156,176,1,80
-    call pO0EC_0987
-    db 128,126,251,0,117,3,233,77,254,141,190,240,254,22,87,191,212,147,30,87,154,111,10,37,8,191,1,0
-    db 14,87,154,252,10,37,8
-    call pO06E_3314
-    call pO0EC_3E0E
+  {@0015-001A}
+  b880C := 10;
+  {@001A-001F}
+  bC578 := 1;
+  {@001F-0024}
+  pO0EC_2ED1;
+  {@0024-0029}
+  bC578 := 1;
+  {@0029-0036}
+  pO0EC_07C0(p9CEE);
+  if pO06E_0450 = 0 then
+  begin
+    {@003F-0044}
+    pO0EC_3E0E;
+    {@0044-0047}
+    Exit;
   end;
+  {@0047-007C}
+  while pA7CA <> nil do
+  begin
+    {@0050-005D}
+    v16p := pA7CA;
+    {@005D-0070}
+    pA7CA := PR42_pointer(pA7CA)^.v;
+    {@0070-007A}
+    pR670_03ED(@v16b);
+  end;
+  {@007C-0084}
+  pA7CA := nil;
+  {@0084-0093}
+  pO06E_30B1(@v6b, @v7b);
+  {@0093-0098}
+  bAE62 := 0;
+  {@0098-009C}
+  v5b := 0;
+  {@009C-00A0}
+  v12b := 1;
+  {@00A0-0253}
+  repeat
+    asm
+  db 191,14,171,30,87,184,40,0,80
+  call XR670_046E
+  db 198,70,246,0,176,0,80,141,126,246,22,87
+  call pO108_00AB
+  db 141,126,250,22,87,141,126,249,22,87
+  call pO0B5_0E45
+  db 128,126,250,0,117,6,128,126,249,0,116,13,176,1,80,141,126,246,22,87
+  call pO108_00AB
+    end;
+    {@00E7-00F4}
+    pO108_00AB(2, @v10b);
+    if (PR331_word(p9CEE)^.v > 0) or (PR333_word(p9CEE)^.v > 0) or (PR335_word(p9CEE)^.v > 0) then
+      pO108_00AB(3, @v10b);
+    {@0125-0142}
+    if PR423_longint(p9CEE)^.v <> 0 then
+      pO108_00AB(4, @v10b);
+    {@0142-014F}
+    pO108_00AB(5, @v10b);
+    {@014F-0155}
+    bAAE5 := v12b;
+    {@0155-0177}
+    v2b := pO108_1009('', s3196, 1, 0);
+    {@0177-017D}
+    v12b := bAAE5;
+    if (bAAE6 <> 0) and (v2b = 27) then
+    begin
+      {@018A-018F}
+      bAAE6 := 0;
+      {@018F-0193}
+      v2b := 5;
+    end;
+    {@0193-0197}
+    v11b := 0;
+    if bAAE6 = 0 then
+      case v2b of
+        0: pO0AA_0C9D(@v11b);
+        1: pO04F_0F77(@v6b, @v7b);
+        2: pO0B5_0453;
+        3: begin
+          {@01D5-01DD}
+          pO0AA_2A8A(0);
+          {@01DD-01EE}
+          pR47F_0F07(1, 17, 38, 22);
+        end;
+        4: begin
+          {@01F4-01FE}
+          pO0AA_1067(@v11b);
+          {@01FE-0203}
+          pO0EC_2ED1;
+        end;
+        5: v5b := 1;
+      end
+    else
+    begin
+      {@020F-0215}
+      v1b := v2b;
+      if (v1b = 80) or (v1b = 72) then
+      begin
+        {@0221-0231}
+        pO0EC_0987(p9CEE, 0);
+        {@0231-023A}
+        pO0AA_2F7B(v2b);
+        {@023A-024A}
+        pO0EC_0987(p9CEE, 1);
+      end;
+    end;
+  until v5b <> 0;
+  {@0253-0272}
+  pO06E_3314(s93D4 + 'tmpvault.dat');
+  {@0272-0277}
+  pO0EC_3E0E;
 end;
 
 { 027B }

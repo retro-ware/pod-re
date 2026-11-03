@@ -329,8 +329,7 @@ end;
 { 00BC }
 procedure pO040_00BC;
 var
-  v2w: word;
-  v4w: word;
+  c4: record case byte of 0: (v4l: longint); 1: (v4w: word); 2: (_p2: array[1..2] of byte; v2w: word) end;
 begin
   {@00C2-00CA}
   pO055_0000(2);
@@ -342,13 +341,11 @@ begin
     Exit;
   end;
   {@00E9-00F4}
-  v2w := pO055_0136(1);
+  c4.v2w := pO055_0136(1);
   {@00F4-00FF}
-  v4w := pO055_0136(2);
-  asm
-  db 255,118,254,255,118,252
-  call pO055_1195
-  end;
+  c4.v4w := pO055_0136(2);
+  {@00FF-010A}
+  pO055_1195(c4.v4l);
 end;
 
 { 010E }
@@ -991,12 +988,12 @@ begin
   begin
     {@0CEB-0CF0}
     pR142_011B;
-    asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  call pO0EC_301C
-  db 198,6,143,197,0
-    end;
+    {@0CF0-0CFD}
+    pO0EC_07C0(p9CEE);
+    {@0CFD-0D02}
+    pO0EC_301C;
+    {@0D02-0D07}
+    bC58F := 0;
   end;
 end;
 
@@ -1021,8 +1018,10 @@ begin
     v7b := v6w and v4w
   else
     v7b := v6w or v4w;
-  {@0D5A-0D68}
-  pO055_1195(0, v7b);
+  asm
+  db 49,192,80,138,70,249,48,228,80
+  call pO055_1195
+  end;
   {@0D68-0D7A}
   pO055_0766(v2w, v7b, bB0AE);
 end;
@@ -1087,7 +1086,8 @@ var
   v269b: byte;
   v271w: word;
   v272b: byte;
-  _f1: array[1..2] of byte;
+  v268b: byte absolute v268w;
+  v262l: longint absolute v262p;
   v262b: byte absolute v262p;
 begin
   if false then begin
@@ -1141,18 +1141,14 @@ begin
   v262p := v266p;
   {@0F42-0F48}
   v268w := 0;
-  asm
-  db 141,190,239,254,22,87,191,52,14,14,87,154,111,10,37,8,141,190,238,254,22,87,191,52,14,14,87,154
-  db 111,10,37,8,176,1,80,160,147,157,48,228,64,80,176,38,80,176,22,80,255,182,252,254,255,182,250,254
-  db 176,0,80,141,190,243,254,22,87,141,190,244,254,22,87,141,190,250,254,22,87
-  call pO055_1031
-  db 255,182,241,254,255,182,244,254,138,134,240,254,80
-  call pO055_0766
-  db 141,190,250,254,22,87
-  call pO108_2363
-  db 176,1,80,176,17,80,176,38,80,176,22,80
-  call pR47F_0F07
-  end;
+  {@0F48-0F9A}
+  pO055_1031('', '', 1, b9D93 + 1, 38, 22, v262l, 0, @v269b, @v268b, @v262b);
+  {@0F9A-0FAC}
+  pO055_0766(v271w, v268w, v272b);
+  {@0FAC-0FB7}
+  pO108_2363(@v262b);
+  {@0FB7-0FC8}
+  pR47F_0F07(1, 17, 38, 22);
 end;
 
 { 0FE1 }
@@ -1757,13 +1753,16 @@ begin
   b880F := 0;
   {@1B8D-1B92}
   pR142_011B;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  call pO0EC_301C
-  call pO0EC_301C
-  db 198,6,143,197,0,198,6,130,197,1
-  end;
+  {@1B92-1B9F}
+  pO0EC_07C0(p9CEE);
+  {@1B9F-1BA4}
+  pO0EC_301C;
+  {@1BA4-1BA9}
+  pO0EC_301C;
+  {@1BA9-1BAE}
+  bC58F := 0;
+  {@1BAE-1BB3}
+  bC582 := 1;
 end;
 
 { 1BB5 }
@@ -1814,10 +1813,8 @@ begin
   PR327_byte(p9CEE)^.v := v6b;
   {@1C66-1C73}
   pO0EC_0EBF(p9CEE);
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  end;
+  {@1C73-1C80}
+  pO0EC_07C0(p9CEE);
 end;
 
 { 1C84 }
@@ -2060,11 +2057,9 @@ begin
   {@1FED-1FF8}
   pO075_3770(0, 1);
   {@1FF8-2006}
-  l7DE9 := l9CEE;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  end;
+  p7DE9 := p9CEE;
+  {@2006-2013}
+  pO0EC_07C0(p9CEE);
 end;
 
 { 2015 }
@@ -2156,8 +2151,6 @@ begin
     if LV = 'Congratulations the party gains experience!' then;
     if LV = 'Congratulations ' then;
     if LV = ' gains experience!' then;
-    LM4_5('Congratulations ', 'Congratulations ', ' gains experience!',
-    'Congratulations the party gains experience!', [LB], [LB], [LB], [LB], [LB]);
   end;
   {@21C6-21CE}
   pO055_0000(2);
@@ -2203,11 +2196,10 @@ begin
       {@22D9-22EC}
       v17p := PR483_pointer(v17p)^.v;
     end;
-    asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  db 233,212,0
-    end;
+    {@22EF-22FC}
+    pO0EC_07C0(p9CEE);
+    {@22FC-22FF}
+    Exit;
   end;
   {@22FF-230C}
   v17p := p9CEE;
@@ -2496,7 +2488,7 @@ begin
     {@2987-2990}
     PR32_byte(p87F8)^.v := 0;
     {@2990-299E}
-    l7DE9 := l9CEE;
+    p7DE9 := p9CEE;
     {@299E-29A6}
     pO040_290D(w8808);
     if b7DE7 = 0 then
@@ -2518,11 +2510,9 @@ begin
         if b7DE7 = 0 then
         begin
           {@2A03-2A11}
-          l9CEE := l7DE9;
-          asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-          end;
+          p9CEE := p7DE9;
+          {@2A11-2A1E}
+          pO0EC_07C0(p9CEE);
         end;
       end;
     end;
@@ -2561,10 +2551,8 @@ begin
       begin
         {@2A76-2A7B}
         bC580 := 16;
-        asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-        end;
+        {@2A7B-2A88}
+        pO0EC_07C0(p9CEE);
       end;
     end
     else

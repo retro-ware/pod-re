@@ -29,7 +29,6 @@ type
   R495_byte = record _p: array[1..495] of byte; v: byte end;
   R50_byte = record _p: array[1..50] of byte; v: byte end;
   R54_byte = record _p: array[1..54] of byte; v: byte end;
-  R57_byte = record _p: array[1..57] of byte; v: byte end;
   R7_byte = record _p: array[1..7] of byte; v: byte end;
   R8_byte = record _p: array[1..8] of byte; v: byte end;
   RB7_50_byte = record _p: array[1..7] of byte; a: array[0..1198, 0..49] of byte end;
@@ -46,7 +45,6 @@ type
   PR495_byte = ^R495_byte;
   PR50_byte = ^R50_byte;
   PR54_byte = ^R54_byte;
-  PR57_byte = ^R57_byte;
   PR7_byte = ^R7_byte;
   PR8_byte = ^R8_byte;
   PRB7_50_byte = ^RB7_50_byte;
@@ -86,6 +84,8 @@ var
   b8213: byte absolute d8213;
   b8214: byte absolute d8214;
   b8215: byte absolute d8215;
+  b8218: byte absolute d8218;
+  b821A: byte absolute d821A;
   b821C: byte absolute d821C;
   b821E: byte absolute d821E;
   b880C: byte absolute d880C;
@@ -189,7 +189,12 @@ end;
 
 { 065F }
 procedure pO065_065F;
-var loc: array[1..4] of byte;
+var
+  v1b: byte;
+  v2sb: shortint;
+  _f1: array[1..2] of byte;
+  v2b: byte absolute v2sb;
+  v1sb: shortint absolute v1b;
   { 0183 }
   procedure pO065_0183;
   var loc: array[1..2] of byte;
@@ -290,40 +295,150 @@ var loc: array[1..4] of byte;
 
   { 047B }
   procedure pO065_047B;
-  var loc: array[1..10] of byte;
+  var
+    w1b: byte;
+    w2b: byte;
+    w3b: byte;
+    w4b: byte;
+    w5b: byte;
+    w6b: byte;
+    w7b: byte;
+    w8b: byte;
+    _f1: array[1..2] of byte;
   begin
+    {@0481-049D}
+    w7b := pO065_010F(v1b, v2sb - 1, 2);
+    {@049D-04B9}
+    w8b := pO065_010F(v1sb + 1, v2b, 0);
+    if (w7b = 0) and (w8b = 0) then
+      w6b := 1
+    else
+      w6b := 0;
+    {@04CF-0621}
+    for w1b := 1 to 4 do
+      case w1b of
+        1: case b8218 of
+            0: begin
+              {@04E6-04F6}
+              if w7b = 1 then
+                w2b := 4
+              else
+                w2b := 22;
+            end;
+            3: w2b := 15;
+            1: w2b := 5;
+          end;
+        2: begin
+          {@0514-059E}
+          if b8218 = 0 then
+            case w7b of
+              0: w4b := 22;
+              3: begin
+                {@052C-0550}
+                if (b821A = 0) and (w8b <> 0) then
+                  w4b := 24
+                else
+                begin
+                  {@053F-0550}
+                  if b821A = 0 then
+                    w4b := 7
+                  else
+                    w4b := 1;
+                end;
+              end;
+              1: begin
+                {@0556-0573}
+                if b821A = 0 then
+                begin
+                  {@055D-056D}
+                  if w8b <> 0 then
+                    w4b := 11
+                  else
+                    w4b := 7;
+                end
+                else
+                  w4b := 3;
+              end;
+            end
+          else
+          begin
+            {@0575-059E}
+            if b821A <> 0 then
+              w4b := 9
+            else
+            begin
+              {@0582-059E}
+              if w8b <> 0 then
+                w4b := 5
+              else
+              begin
+                {@058E-059E}
+                if w6b <> 0 then
+                  w4b := 17
+                else
+                  w4b := 19;
+              end;
+            end;
+          end;
+        end;
+        3: case b8218 of
+            0: w3b := 22;
+            3: w3b := 16;
+            1: w3b := 10;
+          end;
+        4: begin
+          {@05C9-0618}
+          if b8218 = 0 then
+          begin
+            {@05D0-05F9}
+            if w7b = 0 then
+              w5b := 22
+            else
+            begin
+              {@05DC-05F9}
+              if b821A <> 0 then
+                w5b := 4
+              else
+              begin
+                {@05E9-05F9}
+                if w8b = 0 then
+                  w5b := 8
+                else
+                  w5b := 12;
+              end;
+            end;
+          end
+          else
+          begin
+            {@05FB-0618}
+            if b821A <> 0 then
+              w5b := 14
+            else
+              asm
+    db 128,126,248,0,117,6,198,70,251,23,235,4,198,70,251,10
+              end;
+          end;
+        end;
+      end;
     asm
-      db 139,126,6,54,138,69,255,80,139,126,6,54,138,69,254,152,72,80,176,2,80
-      push cs
-      call near ptr pO065_010F
-      db 136,70,249,139,126,6,54,138,69,255,152,64,80,139,126,6,54,138,69,254,80,176,0,80
-      push cs
-      call near ptr pO065_010F
-      db 136,70,248,128,126,249,0,117,12,128,126,248,0,117,6,198,70,250,1,235,4,198,70,250,0,198,70,255
-      db 1,235,3,254,70,255,138,70,255,60,1,117,46,160,24,130,60,0,117,18,128,126,249,1,117,6,198,70
-      db 254,4,235,4,198,70,254,22,235,18,60,3,117,6,198,70,254,15,235,8,60,1,117,4,198,70,254,5
-      db 233,11,1,60,2,116,3,233,140,0,128,62,24,130,0,117,90,138,70,249,60,0,117,6,198,70,252,22
-      db 235,75,60,3,117,38,128,62,26,130,0,117,12,128,126,248,0,116,6,198,70,252,24,235,17,128,62,26
-      db 130,0,117,6,198,70,252,7,235,4,198,70,252,1,235,33,60,1,117,29,128,62,26,130,0,117,18,128
-      db 126,248,0,116,6,198,70,252,11,235,4,198,70,252,7,235,4,198,70,252,3,235,41,128,62,26,130,0
-      db 116,6,198,70,252,9,235,28,128,126,248,0,116,6,198,70,252,5,235,16,128,126,250,0,116,6,198,70
-      db 252,17,235,4,198,70,252,19,235,120,60,3,117,33,160,24,130,60,0,117,6,198,70,253,22,235,18,60
-      db 3,117,6,198,70,253,16,235,8,60,1,117,4,198,70,253,10,235,83,60,4,117,79,128,62,24,130,0
-      db 117,43,128,126,249,0,117,6,198,70,251,22,235,29,128,62,26,130,0,116,6,198,70,251,4,235,16,128
-      db 126,248,0,117,6,198,70,251,8,235,4,198,70,251,12,235,29,128,62,26,130,0,116,6,198,70,251,14
-      db 235,16,128,126,248,0,117,6,198,70,251,23,235,4,198,70,251,10,128,126,255,4,116,3,233,180,254,176
-      db 5,80,176,0,80,138,70,254,80
-      push cs
-      call near ptr pO065_0000
-      db 176,6,80,176,0,80,138,70,252,80
-      push cs
-      call near ptr pO065_0000
-      db 176,5,80,176,1,80,138,70,253,80
-      push cs
-      call near ptr pO065_0000
-      db 176,6,80,176,1,80,138,70,251,80
-      push cs
-      call near ptr pO065_0000
+    db 176,5,80,176,0,80,138,70,254,80
+    push cs
+    call near ptr pO065_0000
+    end;
+    asm
+    db 176,6,80,176,0,80,138,70,252,80
+    push cs
+    call near ptr pO065_0000
+    end;
+    asm
+    db 176,5,80,176,1,80,138,70,253,80
+    push cs
+    call near ptr pO065_0000
+    end;
+    asm
+    db 176,6,80,176,1,80,138,70,251,80
+    push cs
+    call near ptr pO065_0000
     end;
   end;
 
@@ -627,15 +742,10 @@ begin
     pO13E_0022('DungCom', bA9F8, 0, 25)
   else
   begin
-    {@0EDE-0F04}
-    if PR57_byte(p87F8)^.v in [1..2] then
-      asm
-  db 196,62,248,135,38,138,69,57,136,70,255
-      end
-    else
-      asm
-  db 198,70,255,0
-      end;
+    asm
+  db 196,62,248,135,38,138,69,57,80,191,133,14,14,87,154,36,13,37,8,116,13,196,62,248,135,38,138,69
+  db 57,136,70,255,235,4,198,70,255,0
+    end;
     asm
   db 141,126,247,22,87,191,165,14,14,87,154,111,10,37,8,138,70,255,80,176,0,80,176,39,80
   call pO13E_0022

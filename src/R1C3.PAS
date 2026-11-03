@@ -14,13 +14,13 @@ procedure pR1C3_00AC;
 procedure pR1C3_00B9(a0: pointer; a1: byte; a2: byte; a3: byte; a4: word; a5: pointer);
 procedure pR1C3_0352(a0: string; a1: byte; a2: byte; a3: byte; a4: pointer);
 procedure pR1C3_03FF(a0: pointer; a1: pointer; a2: byte; a3: byte; a4: pointer);
-procedure pR1C3_07C4(a0: word; a1: word; a2: word; a3: byte; a4: pointer; a5: word; a6: word);
-procedure pR1C3_08C0(a0: word; a1: word; a2: word; a3: word; a4: pointer; a5: word; a6: word);
+procedure pR1C3_07C4(a0: word; a1: word; a2: byte; a3: byte; a4: pointer; a5: longint);
+procedure pR1C3_08C0(a0: word; a1: word; a2: byte; a3: byte; a4: pointer; a5: longint);
 function pR1C3_0956(a0: byte): byte;
 function pR1C3_09DB(a0: byte): byte;
 procedure pR1C3_0A0C(a0: pointer; a1: pointer);
 procedure pR1C3_0CC4(a0: word; a1: word; a2: pointer);
-procedure pR1C3_0EEB(a0: word; a1: word; a2: pointer);
+procedure pR1C3_0EEB(a0: longint; a1: pointer);
 procedure pR1C3_10FD;
 procedure pR1C3_1421(a0: B16; a1: B16; a2: integer; a3: byte; a4: pointer);
 procedure pR1C3_19A4(a0: word; a1: word; a2: word; a3: byte; a4: pointer);
@@ -372,7 +372,7 @@ begin
   db 139,70,6,11,70,8,117,3,233,173,3
   end;
   {@0411-07BE}
-  with PW4_797_03FF(pointer(a4))^ do
+  with PW4_797_03FF(a4)^ do
   begin
     v16w := 0;
     v18w := 0;
@@ -451,43 +451,70 @@ _w797_27abyte[v16w] := aD81E_ec3f[PRA0_byte(a0)^.a[PR0_word(a1)^.v]] shl 4
 end;
 
 { 07C4 }
-procedure pR1C3_07C4(a0: word; a1: word; a2: word; a3: byte; a4: pointer; a5: word; a6: word);
-var loc: array[1..16] of byte;
+procedure pR1C3_07C4(a0: word; a1: word; a2: byte; a3: byte; a4: pointer; a5: longint);
+var
+  _f1: array[1..13] of byte;
+  v14b: byte;
+  _f2: array[1..2] of byte;
 begin
   asm
-    db 138,70,14,36,1,8,192,116,20,196,126,10,38,139,69,23,38,11,69,25,117,11,128,62,52,136,2,116
-    db 4,176,0,235,2,176,1,136,70,242,160,52,136,60,0,117,61,128,126,242,0,116,27,255,118,20,255,118
-    db 18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_21FF
-    db 235,25,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_2170
-    db 233,134,0,60,1,117,60,128,126,242,0,116,27,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118
-    db 10,255,118,8,255,118,6
-    call near ptr XR1C3_24AC
-    db 235,25,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_2417
-    db 235,70,60,2,117,66,128,126,242,0,116,35,255,118,20,255,118,18,196,126,10,38,138,69,22,80,138,70
-    db 16,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_285B
-    db 235,25,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_27B8
+  db 138,70,14,36,1,8,192,116,20,196,126,10,38,139,69,23,38,11,69,25,117,11,128,62,52,136,2,116
+  db 4,176,0,235,2,176,1,136,70,242
+  end;
+  case b8834 of
+    0: asm
+  db 128,126,242,0,116,27,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_21FF
+  db 235,25,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_2170
+      end;
+    1: asm
+  db 128,126,242,0,116,27,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_24AC
+  db 235,25,255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_2417
+      end;
+    2: begin
+      {@0878-08A1}
+      if v14b <> 0 then
+        asm
+  db 255,118,20,255,118,18,196,126,10,38,138,69,22,80,138,70,16,80,255,118,12,255,118,10,255,118,8,255
+  db 118,6
+  call near ptr XR1C3_285B
+  db 235,25
+        end;
+      asm
+  db 255,118,20,255,118,18,138,70,16,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_27B8
+      end;
+    end;
   end;
 end;
 
 { 08C0 }
-procedure pR1C3_08C0(a0: word; a1: word; a2: word; a3: word; a4: pointer; a5: word; a6: word);
-var loc: array[1..26] of byte;
+procedure pR1C3_08C0(a0: word; a1: word; a2: byte; a3: byte; a4: pointer; a5: longint);
+var
+  _f1: array[1..26] of byte;
 begin
   asm
-    db 160,52,136,60,0,117,39,255,54,60,136,255,54,58,136,255,118,20,255,118,18,138,70,16,80,138,70,14
-    db 80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_229C
-    db 235,92,60,1,117,39,255,54,60,136,255,54,58,136,255,118,20,255,118,18,138,70,16,80,138,70,14,80
-    db 255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_254E
-    db 235,49,60,2,117,45,255,54,60,136,255,54,58,136,255,118,20,255,118,18,196,126,10,38,138,69,22,80
-    db 138,70,16,80,138,70,14,80,255,118,12,255,118,10,255,118,8,255,118,6
-    call near ptr XR1C3_2911
+  db 160,52,136,60,0,117,39,255,54,60,136,255,54,58,136,255,118,20,255,118,18,138,70,16,80,138,70,14
+  db 80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_229C
+  db 235,92
+  end;
+  asm
+  db 60,1,117,39,255,54,60,136,255,54,58,136,255,118,20,255,118,18,138,70,16,80,138,70,14,80,255,118
+  db 12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_254E
+  db 235,49
+  end;
+  asm
+  db 60,2,117,45
+  end;
+  asm
+  db 255,54,60,136,255,54,58,136,255,118,20,255,118,18,196,126,10,38,138,69,22,80,138,70,16,80,138,70
+  db 14,80,255,118,12,255,118,10,255,118,8,255,118,6
+  call near ptr XR1C3_2911
   end;
 end;
 
@@ -545,7 +572,7 @@ begin
   db 139,70,10,11,70,12,116,8,139,70,6,11,70,8,117,3,233,153,2
   end;
   {@0A25-0CBE}
-  with PW8_19_0A0C(pointer(a0))^ do
+  with PW8_19_0A0C(a0)^ do
   begin
     Move(_w19_10byte, PR10_byte(a1)^.v, 8);
     case b8834 of
@@ -719,7 +746,7 @@ begin
 end;
 
 { 0EEB }
-procedure pR1C3_0EEB(a0: word; a1: word; a2: pointer);
+procedure pR1C3_0EEB(a0: longint; a1: pointer);
 var
   _f1: array[1..2] of byte;
   v4i: integer;
@@ -741,7 +768,7 @@ begin
   db 139,70,6,11,70,8,117,3,233,251,1
   end;
   {@0EFC-10F7}
-  with PW2_21_0EEB(a2)^ do
+  with PW2_21_0EEB(a1)^ do
   begin
     case b8834 of
       0: begin
@@ -793,7 +820,7 @@ begin
         for v4i := v8w to v12w do
         begin
           {@102E-1054}
-          Move(PRA27_byte(a2)^.a[v16w], Mem[a9116_2fc5[v4w]:v6w], v14w);
+          Move(PRA27_byte(a1)^.a[v16w], Mem[a9116_2fc5[v4w]:v6w], v14w);
           asm
   db 139,70,242,1,70,240
           end;
@@ -818,7 +845,7 @@ begin
         for v4i := v8w to v12w do
         begin
           {@10B6-10E9}
-          Move(PRA27_byte(a2)^.a[v16w], Mem[$A000:Word(LongInt(v6w) + LongInt(320 * v4i))], v14w);
+          Move(PRA27_byte(a1)^.a[v16w], Mem[$A000:Word(LongInt(v6w) + LongInt(320 * v4i))], v14w);
           asm
   db 139,70,242,1,70,240
           end;

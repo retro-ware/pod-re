@@ -27,8 +27,13 @@ type
   R17_byte = record _p: array[1..17] of byte; v: byte end;
   R1_byte = record _p: array[1..1] of byte; v: byte end;
   R21_byte = record _p: array[1..21] of byte; v: byte end;
+  R25_byte = record _p: array[1..25] of byte; v: byte end;
   R31_byte = record _p: array[1..31] of byte; v: byte end;
   R323_pointer = record _p: array[1..323] of byte; v: pointer end;
+  R339_byte = record _p: array[1..339] of byte; v: byte end;
+  R340_byte = record _p: array[1..340] of byte; v: byte end;
+  R341_byte = record _p: array[1..341] of byte; v: byte end;
+  R380_byte = record _p: array[1..380] of byte; v: byte end;
   R381_byte = record _p: array[1..381] of byte; v: byte end;
   R384_byte = record _p: array[1..384] of byte; v: byte end;
   R385_byte = record _p: array[1..385] of byte; v: byte end;
@@ -48,6 +53,7 @@ type
   R5_pointer = record _p: array[1..5] of byte; v: pointer end;
   RA178_byte = record _p: array[1..178] of byte; a: array[0..32000] of byte end;
   RA30_byte = record _p: array[1..30] of byte; a: array[0..32000] of byte end;
+  RA337_byte = record _p: array[1..337] of byte; a: array[0..32000] of byte end;
   RA59_byte = record _p: array[1..59] of byte; a: array[0..32000] of byte end;
   RB380_9_byte = record _p: array[1..380] of byte; a: array[0..6623, 0..8] of byte end;
   TPV_ = procedure;
@@ -116,8 +122,13 @@ W8_11_189F = record case byte of 0: (_p0: array[1..181] of byte; _w11_181byte: b
   PR17_byte = ^R17_byte;
   PR1_byte = ^R1_byte;
   PR21_byte = ^R21_byte;
+  PR25_byte = ^R25_byte;
   PR31_byte = ^R31_byte;
   PR323_pointer = ^R323_pointer;
+  PR339_byte = ^R339_byte;
+  PR340_byte = ^R340_byte;
+  PR341_byte = ^R341_byte;
+  PR380_byte = ^R380_byte;
   PR381_byte = ^R381_byte;
   PR384_byte = ^R384_byte;
   PR385_byte = ^R385_byte;
@@ -137,6 +148,7 @@ W8_11_189F = record case byte of 0: (_p0: array[1..181] of byte; _w11_181byte: b
   PR5_pointer = ^R5_pointer;
   PRA178_byte = ^RA178_byte;
   PRA30_byte = ^RA30_byte;
+  PRA337_byte = ^RA337_byte;
   PRA59_byte = ^RA59_byte;
   PRB380_9_byte = ^RB380_9_byte;
   PW0_11_189F = ^W0_11_189F;
@@ -146,6 +158,7 @@ W8_11_189F = record case byte of 0: (_p0: array[1..181] of byte; _w11_181byte: b
   PW8_11_189F = ^W8_11_189F;
 var
   a4061_dfae: array[0..861] of string[37] absolute d4061;
+  a651A_3981: array[0..2046] of E16_byte absolute d651A;
   a651A_d53e: array[0..2046] of E16_shortint absolute d651A;
   a651B_3981: array[0..2046] of E16_byte absolute d651B;
   b5362: byte absolute d5362;
@@ -160,6 +173,7 @@ var
   bAB0E: byte absolute dAB0E;
   bAB10: byte absolute dAB10;
   bAE64: byte absolute dAE64;
+  bAE88: byte absolute dAE88;
   bAE8A: byte absolute dAE8A;
   bB16D: byte absolute dB16D;
   gACD6_dfee: TPV_ absolute dACD6;
@@ -169,6 +183,7 @@ var
   p9CF2: pointer absolute d9CF2;
   pAD3B: pointer absolute dAD3B;
   s199F: string absolute d199F;
+  s20FD: string absolute d20FD;
   s2126: string absolute d2126;
   s278C: string absolute d278C;
   s29A1: string absolute d29A1;
@@ -363,7 +378,6 @@ begin
     if LV = 'cast any spells' then;
     if LV = 'memorize spells' then;
     if LV = 'scribe any scrolls' then;
-    if LV = FS then;
   end;
   {@03C5-03C9}
   v42b := 0;
@@ -393,10 +407,8 @@ begin
   end;
   {@04B5-04B9}
   pO06B_03BE := 0;
-  asm
-  db 255,54,240,156,255,54,238,156,141,126,214,22,87,176,10,80,176,1,80
-  call pO0EC_1B08
-  end;
+  {@04B9-04D1}
+  pO0EC_1B08(p9CEE, v42a2, 10, 1);
 end;
 
 { 04F2 }
@@ -407,7 +419,6 @@ var
   v4b: byte;
   v5b: byte;
   v6b: byte;
-  _f1: array[1..24] of byte;
   v2b: byte absolute v2w;
 begin
   if false then begin
@@ -438,11 +449,7 @@ begin
         if v3b <> 0 then
           v4b := 1
         else
-          asm
-  db 255,54,240,156,255,54,238,156,141,126,226,22,87,191,218,4,14,87,154,111,10,37,8,176,10,80,176,1
-  db 80
-  call pO0EC_1B08
-          end;
+          pO0EC_1B08(p9CEE, 'has no spells memorized', 10, 1);
       end;
     until v6b = 0;
   {@0591-059C}
@@ -602,9 +609,9 @@ var
   v2b: byte;
   v3b: byte;
   v4b: byte;
-  _f1: array[1..1] of byte;
+  v5b: byte;
   v7w: word;
-  _f2: array[1..29] of byte;
+  v8b: byte;
   v7b: byte absolute v7w;
 begin
   if false then begin
@@ -637,26 +644,40 @@ begin
     v7w := 65535;
     {@0987-0A78}
     while v1b = 0 do
-      asm
-  push cs
-  call near ptr pO06B_05C9
-  db 8,192,176,0,117,1,64,136,70,255,128,126,255,0,116,37,255,54,240,156,255,54,238,156,141,126,221,22
-  db 87,191,5,9,14,87,154,111,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 233,172,0,176,1,80,176,2,80,141,126,249,22,87,141,126,254,22,87
-  call pO0AA_30F3
-  db 136,70,252,198,70,253,1,128,126,252,0,117,7,198,70,255,1,233,131,0,138,70,252,48,228,139,248,177
-  db 4,211,231,138,133,27,101,80,138,70,252,48,228,139,248,177,4,211,231,138,133,26,101,80,141,126,248,22
-  db 87
-  push cs
-  call near ptr pO06B_025F
-  db 8,192,119,25,138,70,252,48,228,139,248,177,4,211,231,128,189,26,101,2,117,68,128,62,138,174,0,118
-  db 61,198,6,136,174,0,198,70,251,0,138,70,251,48,228,196,62,238,156,3,248,38,128,125,30,0,116,5
-  db 254,70,251,235,233,138,70,252,48,228,5,128,0,138,208,138,70,251,48,228,196,62,238,156,3,248,38,136
-  db 85,30
-  push cs
-  call near ptr pO06B_086A
+    begin
+      {@0990-099E}
+      v1b := Ord(pO06B_05C9 = 0);
+      if v1b <> 0 then
+        pO0EC_1B08(p9CEE, 'cannot memorize any spells', 10, 1)
+      else
+      begin
+        {@09C9-09E1}
+        v4b := pO0AA_30F3(1, 2, @v7b, @v2b);
+        {@09E1-09E5}
+        v3b := 1;
+        if v4b = 0 then
+          v1b := 1
+        else
+        begin
+          {@09F2-0A75}
+if (pO06B_025F(a651B_3981[v4b].f, a651A_3981[v4b].f, @v8b) > 0) or (a651A_3981[v4b].f = 2)
+              and (bAE8A > 0) then
+          begin
+            {@0A38-0A3D}
+            bAE88 := 0;
+            {@0A3D-0A41}
+            v5b := 0;
+            {@0A41-0A58}
+            while PRA30_byte(p9CEE)^.a[v5b] <> 0 do
+              Inc(v5b);
+            {@0A58-0A71}
+            PRA30_byte(p9CEE)^.a[v5b] := v4b + 128;
+            {@0A71-0A75}
+            pO06B_086A;
+          end;
+        end;
       end;
+    end;
     {@0A78-0AB3}
     if v7w <> 65535 then
     begin
@@ -675,11 +696,7 @@ begin
   end;
   {@0AC0-0AEE}
   if PR494_byte(p9CEE)^.v <> 0 then
-    asm
-  db 255,54,240,156,255,54,238,156,141,126,221,22,87,191,5,9,14,87,154,111,10,37,8,176,10,80,176,1
-  db 80
-  call pO0EC_1B08
-    end;
+    pO0EC_1B08(p9CEE, 'cannot memorize any spells', 10, 1);
 end;
 
 { 0B69 }
@@ -731,12 +748,14 @@ begin
     {@0BE2-0BFA}
     v4b := pO0AA_30F3(3, 3, @v8b, @v2b);
     if v4b = 0 then
-      asm
-  db 198,70,255,1,128,126,254,0,117,36,255,54,240,156,255,54,238,156,141,126,219,22,87,191,242,10,14,87
-  db 154,111,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 235,4,198,70,253,1
-      end
+    begin
+      {@0C00-0C04}
+      v1b := 1;
+      if v2b = 0 then
+        pO0EC_1B08(p9CEE, 'has no copyable scrolls', 10, 1)
+      else
+        v3b := 1;
+    end
     else
     begin
       {@0C35-0C39}
@@ -1114,23 +1133,22 @@ begin
           72: pO06B_11CE;
           80: pO06B_1326;
         end;
-        asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-        end;
+        {@150F-151C}
+        pO0EC_07C0(p9CEE);
       end;
     end
     else
     begin
       {@151E-1562}
       if (v3b < 2) or (bAAE6 <> 0) and (v3b = 27) then
-        asm
-  db 128,126,255,0,176,0,117,1,64,136,70,255,128,126,255,0,116,26,255,54,240,156,255,54,238,156,191,253
-  db 32,30,87,176,10,80,176,0,80
-  call pO0EC_1B08
-  db 235,5
-  call pO0EC_1BEF
-        end;
+      begin
+        {@1531-153D}
+        v1b := Ord(v1b = 0);
+        if v1b <> 0 then
+          pO0EC_1B08(p9CEE, s20FD, 10, 0)
+        else
+          pO0EC_1BEF;
+      end;
     end;
   end;
   {@1565-156A}
@@ -1635,7 +1653,10 @@ var
     w8b: byte;
     _f2: array[1..1] of byte;
     w10b: byte;
-    _f3: array[1..34] of byte;
+    w11b: byte;
+    w12b: byte;
+    w13b: byte;
+    w13sb: shortint absolute w13b;
   begin
     if false then begin
       if LV = 'is healed' then;
@@ -1674,14 +1695,14 @@ var
           pO0E2_0104(w4p, 33, nil);
         {@2187-218B}
         w10b := 1;
-        asm
-    db 255,118,254,255,118,252,141,126,233,22,87,191,63,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,229,255,118,254,255,118,252,176,1,80
-    call pO0E2_186E
-    db 255,118,254,255,118,252,176,2,80
-    call pO0E2_186E
-        end;
+        {@218B-21AB}
+        pO0EC_1B08(w4p, 'is healed', 10, 1);
+        {@21AB-21B2}
+        Dec(v27w);
+        {@21B2-21C0}
+        pO0E2_186E(w4p, 1);
+        {@21C0-21CE}
+        pO0E2_186E(w4p, 2);
       end;
       {@21CE-2225}
       if (v35w > 0) and (PR493_byte(w4p)^.v = 7) then
@@ -1692,11 +1713,10 @@ var
         PR494_byte(w4p)^.v := 1;
         {@21F5-21FE}
         PR508_byte(w4p)^.v := 1;
-        asm
-    db 255,118,254,255,118,252,141,126,218,22,87,191,73,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,221
-        end;
+        {@21FE-221E}
+        pO0EC_1B08(w4p, 'is changed back to flesh', 10, 1);
+        {@221E-2225}
+        Dec(v35w);
       end;
       {@2225-22DF}
       if (v31w > 0) and (pO0EC_27C1(w4p, 55, @w8b) <> 0) then
@@ -1718,37 +1738,82 @@ var
         PR494_byte(w4p)^.v := 1;
         {@22AF-22B8}
         PR493_byte(w4p)^.v := 0;
-        asm
-    db 255,118,254,255,118,252,141,126,229,22,87,191,98,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,225
-        end;
+        {@22B8-22D8}
+        pO0EC_1B08(w4p, 'is detoxified', 10, 1);
+        {@22D8-22DF}
+        Dec(v31w);
       end;
       {@22DF-24E8}
       if ((v13w > 0) or (v15w > 0)) and (PR493_byte(w4p)^.v = 6) and (PR173_byte(w4p)^.v <> 0) then
-        asm
-    db 198,6,219,167,1,255,118,254,255,118,252,176,55,80,49,192,49,210,82,80
-    call pO0E2_0104
-    db 198,6,219,167,0,196,126,252,38,198,133,252,1,1,196,126,252,38,198,133,237,1,0,196,126,252,38,198
-    db 133,238,1,1,139,126,6,54,131,125,243,0,118,51,139,126,6,49,192,54,137,69,241,255,118,254,255,118
-    db 252,141,126,222,22,87,191,112,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,243,233,96,1,196,126,252,38,128,125,25,0,118,17,139,126,6,54,131,125,241,0
-    db 118,7,196,126,252,38,254,77,25,196,126,252,38,138,133,178,0,196,126,252,38,58,133,124,1,118,29,196
-    db 126,252,38,138,133,124,1,48,228,139,208,196,126,252,38,138,133,178,0,48,228,43,194,136,70,245,235,4
-    db 198,70,245,0,198,70,244,0,196,126,252,38,128,125,25,14,115,3,233,218,0,198,70,243,0,235,3,254
-    db 70,243,138,70,243,152,196,126,252,3,248,38,128,189,81,1,0,118,105,128,126,243,2,116,12,128,126,243
-    db 3,116,6,128,126,243,4,117,37,138,70,243,152,196,126,252,3,248,38,138,133,81,1,48,228,139,208,196
-    db 126,252,38,138,69,25,48,228,45,14,0,247,226,0,70,244,235,50,196,126,252,38,128,125,25,15,118,23
-    db 138,70,243,152,196,126,252,3,248,38,138,133,81,1,48,228,209,224,0,70,244,235,17,138,70,243,152,196
-    db 126,252,3,248,38,138,133,81,1,0,70,244,128,126,243,6,116,3,233,122,255,128,126,244,0,118,18,138
-    db 70,244,48,228,139,200,138,70,245,48,228,153,247,241,136,70,245,196,126,252,38,128,125,25,17,114,33,196
-    db 126,252,38,128,189,83,1,0,119,22,196,126,252,38,128,189,85,1,0,119,11,196,126,252,38,128,189,84
-    db 1,0,118,11,138,70,245,196,126,252,38,40,133,178,0,255,118,254,255,118,252,141,126,213,22,87,191,133
-    db 32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,241
+      begin
+        {@2312-2317}
+        bA7DB := 1;
+        {@2317-232B}
+        pO0E2_0104(w4p, 55, nil);
+        {@232B-2330}
+        bA7DB := 0;
+        {@2330-2339}
+        PR508_byte(w4p)^.v := 1;
+        {@2339-2342}
+        PR493_byte(w4p)^.v := 0;
+        {@2342-234B}
+        PR494_byte(w4p)^.v := 1;
+        if v13w > 0 then
+        begin
+          {@2355-235E}
+          v15w := 0;
+          {@235E-237E}
+          pO0EC_1B08(w4p, 'has been ressurected', 10, 1);
+          {@237E-2385}
+          Dec(v13w);
+        end
+        else
+        begin
+          {@2388-23A3}
+          if (PR25_byte(w4p)^.v > 0) and (v15w > 0) then
+            Dec(PR25_byte(w4p)^.v);
+          {@23A3-23D6}
+          if PR178_byte(w4p)^.v > PR380_byte(w4p)^.v then
+            w11b := PR178_byte(w4p)^.v - PR380_byte(w4p)^.v
+          else
+            w11b := 0;
+          {@23D6-23DA}
+          w12b := 0;
+          if PR25_byte(w4p)^.v >= 14 then
+          begin
+            {@23E7-2473}
+            for w13b := 0 to 6 do
+            begin
+              {@23F0-246A}
+              if PRA337_byte(w4p)^.a[w13sb] > 0 then
+              begin
+                {@2401-246A}
+                if (w13b = 2) or (w13b = 3) or (w13b = 4) then
+                  Inc(w12b, (PR25_byte(w4p)^.v - 14) * PRA337_byte(w4p)^.a[w13sb])
+                else
+                begin
+                  {@2438-246A}
+                  if PR25_byte(w4p)^.v > 15 then
+                    Inc(w12b, PRA337_byte(w4p)^.a[w13sb] * 2)
+                  else
+                    Inc(w12b, PRA337_byte(w4p)^.a[w13sb]);
+                end;
+              end;
+            end;
+            {@2473-248B}
+            if w12b > 0 then
+              w11b := Byte(w11b div w12b);
+            {@248B-24C1}
+  if (PR25_byte(w4p)^.v < 17) or (PR339_byte(w4p)^.v > 0) or (PR341_byte(w4p)^.v > 0)
+                or (PR340_byte(w4p)^.v > 0) then
+              Dec(PR178_byte(w4p)^.v, w11b);
+          end;
+          {@24C1-24E1}
+          pO0EC_1B08(w4p, 'has been raised from the dead', 10, 1);
+          {@24E1-24E8}
+          Dec(v15w);
         end;
+      end;
       {@24E8-2542}
       if (v19w > 0) and (pO0EC_27C1(w4p, 36, @w8b) <> 0) then
       begin
@@ -1756,22 +1821,18 @@ var
         pAD3B := w4p;
         {@2516-251B}
         pO0BB_3336;
-        asm
-    db 255,118,254,255,118,252,141,126,220,22,87,191,163,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-    call pO0EC_1B08
-    db 139,126,6,54,255,77,237
-        end;
+        {@251B-253B}
+        pO0EC_1B08(w4p, 'is relieved of a curse', 10, 1);
+        {@253B-2542}
+        Dec(v19w);
       end;
       {@2542-25A1}
       if (w10b = 0) and (v23w > 0) and (pO0EC_27C1(w4p, 33, @w8b) <> 0) then
       begin
         {@2569-257F}
         pO0E2_0104(p9CEE, 33, nil);
-        asm
-    db 255,54,240,156,255,54,238,156,141,126,229,22,87,191,186,32,14,87,154,111,10,37,8,176,10,80,176,1
-    db 80
-    call pO0EC_1B08
-        end;
+        {@257F-25A1}
+        pO0EC_1B08(p9CEE, 'regains sight', 10, 1);
       end;
       {@25A1-25B4}
       w4p := PR483_pointer(w4p)^.v;
@@ -1879,28 +1940,34 @@ begin
   pO06B_20C8;
   {@2791-2796}
   pO06B_1F85;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  call pO0EC_301C
-  db 141,126,201,22,87,191,101,174,30,87,184,14,0,80,154,163,9,37,8,191,101,174,30,87,141,126,201,22
-  db 87,184,14,0,80,154,163,9,37,8,85
-  push cs
-  call near ptr pO06B_25BD
-  db 85
-  push cs
-  call near ptr pO06B_1D63
-  db 198,6,100,174,1,176,0,80
-  call pO0B2_0B81
-  db 196,126,6,38,136,5,198,6,100,174,0,196,126,6,38,128,61,0,117,42
-  end;
-  {@27F9-27FE}
-  pO06B_20C8;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  call pO0EC_301C
-  db 141,126,201,22,87,191,101,174,30,87,184,14,0,80,154,163,9,37,8
+  {@2796-27A3}
+  pO0EC_07C0(p9CEE);
+  {@27A3-27A8}
+  pO0EC_301C;
+  {@27A8-27BB}
+  gAE65_551d := v55a;
+  {@27BB-27CE}
+  v55a := gAE65_551d;
+  {@27CE-27D3}
+  pO06B_25BD;
+  {@27D3-27D8}
+  pO06B_1D63;
+  {@27D8-27DD}
+  bAE64 := 1;
+  {@27DD-27EB}
+  PR0_byte(a0)^.v := pO0B2_0B81(0);
+  {@27EB-27F0}
+  bAE64 := 0;
+  if PR0_byte(a0)^.v = 0 then
+  begin
+    {@27F9-27FE}
+    pO06B_20C8;
+    {@27FE-280B}
+    pO0EC_07C0(p9CEE);
+    {@280B-2810}
+    pO0EC_301C;
+    {@2810-2823}
+    gAE65_551d := v55a;
   end;
 end;
 

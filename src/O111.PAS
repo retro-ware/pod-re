@@ -26,7 +26,7 @@ var
   aAA06_fd21: array[0..10919] of E3_byte absolute dAA06;
   aAA07_fd21: array[0..10919] of E3_byte absolute dAA07;
   aAA35_b676: array[0..8189] of longint absolute dAA35;
-  aAA5D_b676: array[0..8189] of longint absolute dAA5D;
+  aAA5D_9f8b: array[0..8189] of pointer absolute dAA5D;
   aCC1E_eec0: array[0..10919] of array[0..2] of byte absolute dCC1E;
   aD51E_eec0: array[0..10919] of array[0..2] of byte absolute dD51E;
   b8834: byte absolute d8834;
@@ -40,8 +40,9 @@ var
   gAA09_f028: X12 absolute dAA09;
   gCC1E_9554: B768 absolute dCC1E;
   gD51E_9554: B768 absolute dD51E;
+  l8836: longint absolute d8836;
   lAAD7: longint absolute dAAD7;
-  pAAD7: pointer absolute dAAD7;
+  pAA59: pointer absolute dAA59;
 
 procedure pO111_0000(a0: byte); far; forward;
 
@@ -78,7 +79,7 @@ var
   _f1: array[1..14] of byte;
 begin
   {@00AE-00F0}
-  if (b8834 = 2) and (aAA35_b676[a3] = 0) or ((b8834 <> 2) or (bAA15 <> 0)) and (aAA5D_b676[a3] = 0) then
+  if (b8834 = 2) and (aAA35_b676[a3] = 0) or ((b8834 <> 2) or (bAA15 <> 0)) and (aAA5D_9f8b[a3] = nil) then
     Exit;
   {@00F0-0107}
   if (b8834 = 2) and (bAA15 = 0) then
@@ -87,14 +88,11 @@ begin
   a2 := 0;
   if a2 <> 0 then
   begin
-    asm
-  db 128,62,52,136,2,117,46,128,62,21,170,0,117,39,139,70,12,72,80,139,70,10,72,80,176,0,80,176
-  db 0,80,255,54,91,170,255,54,89,170,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-  db 235,48,139,70,12,72,80,139,70,10,72,80,176,0,80,176,0,80,138,70,6,48,228,139,248,209,231,209
-  db 231,255,181,95,170,255,181,93,170,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-    end;
+    {@0111-0176}
+    if (b8834 = 2) and (bAA15 = 0) then
+      pR1C3_08C0(a0 - 1, a1 - 1, 0, 0, pAA59, l8836)
+    else
+      pR1C3_08C0(a0 - 1, a1 - 1, 0, 0, pointer(aAA5D_9f8b[a3]), l8836);
     {@0176-017B}
     pR6DD_0051;
     {@017B-0180}
@@ -104,13 +102,18 @@ begin
     {@0185-0187}
     Exit;
   end;
-  asm
-  call pR6DD_0051
-  db 128,62,52,136,2,117,28,128,62,21,170,0,117,21,255,118,12,255,118,10,255,54,91,170,255,54,89,170
+  {@0187-018C}
+  pR6DD_0051;
+  if (b8834 = 2) and (bAA15 = 0) then
+    asm
+  db 255,118,12,255,118,10,255,54,91,170,255,54,89,170
   call pR1C3_0EEB
-  db 235,30,255,118,12,255,118,10,138,70,6,48,228,139,248,209,231,209,231,255,181,95,170,255,181,93,170
+    end
+  else
+    asm
+  db 255,118,12,255,118,10,138,70,6,48,228,139,248,209,231,209,231,255,181,95,170,255,181,93,170
   call pR1C3_0EEB
-  end;
+    end;
   {@01CD-01D2}
   pR6DD_0030;
 end;
@@ -276,14 +279,12 @@ begin
     pR670_0000(0);
   end;
   {@0AC4-0ADC}
-  if aAA5D_b676[a0 - 1] = 0 then
+  if aAA5D_9f8b[a0 - 1] = nil then
     Exit;
-  asm
-  db 184,2,0,80,184,2,0,80,176,0,80,176,1,80,138,70,6,48,228,72,139,248,209,231,209,231,255,181
-  db 95,170,255,181,93,170,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-  call pR1C3_10FD
-  end;
+  {@0ADC-0B0B}
+  pR1C3_08C0(2, 2, 0, 1, pointer(aAA5D_9f8b[a0 - 1]), l8836);
+  {@0B0B-0B10}
+  pR1C3_10FD;
 end;
 
 { 0B1C }
@@ -324,8 +325,10 @@ begin
   pR6DD_0051;
   {@0BB7-0BBC}
   pR142_0137;
-  {@0BBC-0BD1}
-  pR1C3_0EEB(1, 1, pAAD7);
+  asm
+  db 184,1,0,80,184,1,0,80,255,54,217,170,255,54,215,170
+  call pR1C3_0EEB
+  end;
   {@0BD1-0BD6}
   pR6DD_0030;
 end;

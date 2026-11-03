@@ -85,11 +85,13 @@ var
   g3DC0_87e6: B8 absolute d3DC0;
   gC61E_9554: B768 absolute dC61E;
   gC91E_9554: B768 absolute dC91E;
-  lC616: longint absolute dC616;
+  l8836: longint absolute d8836;
   p87F8: pointer absolute d87F8;
   p8836: pointer absolute d8836;
   pA9E6: pointer absolute dA9E6;
   pA9EA: pointer absolute dA9EA;
+  pC616: pointer absolute dC616;
+  pC61A: pointer absolute dC61A;
   w0D82: word absolute d0D82;
   w0D84: word absolute d0D84;
   w0D86: word absolute d0D86;
@@ -203,7 +205,6 @@ begin
   if false then begin
     if LSV = [0, 4] then;
     if LV = 'skygrnd' then;
-    LP1('skygrnd');
   end;
   {@01A3-01C9}
   pR1C3_1AF7(2, 16, 11, 44, bA9EE, g3DC0_87e6, p8836);
@@ -222,13 +223,16 @@ begin
   if (bA9F7 and 128) <> 0 then
   begin
     {@022E-023F}
-    if lC616 = 0 then
+    if pC616 = nil then
       pO12A_0F5F(bA9F8);
-    asm
-  db 138,70,253,48,228,80,138,70,252,48,228,80,176,0,80,176,0,80,255,54,24,198,255,54,22,198,255,54
-  db 56,136,255,54,54,136
-  call pR1C3_08C0
-  db 128,62,19,198,0,117,10,198,6,18,198,1,198,6,19,198,1
+    {@023F-0266}
+    pR1C3_08C0(v3b, v4b, 0, 0, pC616, l8836);
+    if bC613 = 0 then
+    begin
+      {@026D-0272}
+      bC612 := 1;
+      {@0272-0277}
+      bC613 := 1;
     end;
     {@0277-027A}
     Exit;
@@ -271,11 +275,8 @@ begin
     {@031B-0320}
     bC613 := 0;
   end;
-  asm
-  db 138,70,253,48,228,80,138,70,252,48,228,80,176,0,80,176,0,80,255,54,28,198,255,54,26,198,255,54
-  db 56,136,255,54,54,136
-  call pR1C3_08C0
-  end;
+  {@0320-0347}
+  pR1C3_08C0(v3b, v4b, 0, 0, pC61A, l8836);
 end;
 
 { 034B }

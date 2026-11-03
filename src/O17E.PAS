@@ -26,6 +26,7 @@ var
   a9DA8_0389: array[0..8189] of array[0..3] of byte absolute d9DA8;
   a9DA8_9f8b: array[0..8189] of pointer absolute d9DA8;
   a9DA8_b676: array[0..8189] of longint absolute d9DA8;
+  l8836: longint absolute d8836;
   p9DB4: pointer absolute d9DB4;
   w3EA4: word absolute d3EA4;
 
@@ -98,23 +99,27 @@ begin
   if (a2 = 0) or (v1b > 2) then
     Exit;
   {@0187-019F}
-  if a9DA8_b676[v1b] = 0 then
+  if a9DA8_9f8b[v1b] = nil then
     Exit;
   {@019F-01AF}
   Dec(a2, a3EA0_2fc5[v1b]);
   if a3 <> 0 then
-    asm
-  db 138,70,14,152,80,138,70,12,152,80,138,70,10,80,138,70,6,80,138,70,255,48,228,139,248,209,231,209
-  db 231,255,181,170,157,255,181,168,157,255,54,56,136,255,54,54,136
-  call pR1C3_07C4
-  db 235,87
-    end;
-  {@01E9-0240}
+  begin
+    {@01B5-01E7}
+    pR1C3_07C4(a0, a1, a2, a4, pointer(a9DA8_9f8b[v1b]), l8836);
+    {@01E7-01E9}
+    Exit;
+  end;
+  {@01E9-01FE}
   with PW2_5_0157(a9DA8_9f8b[v1b])^ do
   begin
+    {@01FE-0229}
     Move(_w5_27abyte[a2 * _w5_18word], PR27_byte(p9DB4)^.v, _w5_18word);
   end;
-  pR1C3_0EEB(a0, a1, p9DB4);
+  asm
+  db 138,70,14,152,80,138,70,12,152,80,255,54,182,157,255,54,180,157
+  call pR1C3_0EEB
+  end;
 end;
 
 { 02E6 }

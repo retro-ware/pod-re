@@ -7,7 +7,7 @@ interface
 uses GAMEDATA;
 
 function pR6B9_0000(a0: word; a1: word; a2: word): word;
-procedure pR6B9_001F(a0: longint; a1: word; a2: word);
+procedure pR6B9_001F(a0: longint; a1: longint);
 procedure pR6B9_00B6(a0: word);
 procedure pR6B9_00D6;
 
@@ -34,7 +34,7 @@ begin
 end;
 
 { 001F }
-procedure pR6B9_001F(a0: longint; a1: word; a2: word);
+procedure pR6B9_001F(a0: longint; a1: longint);
 begin
   asm
     db 198,6,192,146,2,139,70,10,139,86,12,37,15,0,129,226,0,0,8,192,116,7,49,192,154,233,0,37

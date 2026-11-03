@@ -27,6 +27,8 @@ var
   b92C0: byte absolute d92C0;
   b92C1: byte absolute d92C1;
   b92CA: byte absolute d92CA;
+  l92B3: longint absolute d92B3;
+  l92B9: longint absolute d92B9;
   p92B3: pointer absolute d92B3;
   w3DE8: word absolute d3DE8;
   w92B7: word absolute d92B7;
@@ -74,10 +76,8 @@ begin
   push cs
   call near ptr pR5A0_018F
     end;
-    asm
-  db 255,54,181,146,255,54,179,146,255,54,187,146,255,54,185,146
-  call pR6B9_001F
-    end;
+    {@0077-008C}
+    pR6B9_001F(l92B3, l92B9);
   end;
   {@008C-0094}
   pR6B9_00B6(0);

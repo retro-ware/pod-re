@@ -9,7 +9,7 @@ uses GAMEDATA;
 procedure pO13E_0022(a0: string; a1: byte; a2: byte; a3: byte);
 procedure pO13E_0101(a0: byte);
 procedure pO13E_0182(a0: string; a1: byte; a2: byte);
-procedure pO13E_04B3(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte);
+procedure pO13E_04B3(a0: shortint; a1: shortint; a2: byte; a3: byte; a4: byte);
 
 implementation
 
@@ -40,6 +40,7 @@ var
   bCF1E: byte absolute dCF1E;
   g3DC8_1297: B16 absolute d3DC8;
   g3DD8_1297: B16 absolute d3DD8;
+  l8836: longint absolute d8836;
   p9DC0: pointer absolute d9DC0;
 
 
@@ -162,16 +163,11 @@ begin
 end;
 
 { 04B3 }
-procedure pO13E_04B3(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte);
+procedure pO13E_04B3(a0: shortint; a1: shortint; a2: byte; a3: byte; a4: byte);
 var
   v4p: pointer;
   v4b: byte absolute v4p;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
-  if false then begin
-    with LPR^ do ;
-  end;
   {@04B9-04DE}
   if a9DC4_b6a1[a4, a3] = nil then
     Exit;
@@ -186,22 +182,16 @@ begin
       PR22_byte(v4p)^.v := PR22_byte(a9DC4_b6a1[a4, a3])^.v;
       {@054E-0579}
       pR1C3_0A0C(pointer(a9DC4_9f5c[a4, a3]), v4p);
-      asm
-  db 138,70,14,152,139,240,209,224,1,240,80,138,70,12,152,139,240,209,224,1,240,80,176,0,80,176,1,80
-  db 255,118,254,255,118,252,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-  db 141,126,252,22,87
-  call pR1C3_1A83
-  db 235,73
-      end;
+      {@0579-05A8}
+      pR1C3_08C0(a0 * 3, a1 * 3, 0, 1, v4p, l8836);
+      {@05A8-05B2}
+      pR1C3_1A83(@v4b);
+      {@05B2-05B4}
+      Exit;
     end;
   end;
-  asm
-  db 138,70,14,152,139,240,209,224,1,240,80,138,70,12,152,139,240,209,224,1,240,80,176,0,80,176,1,80
-  db 138,70,8,48,228,209,224,209,224,139,208,138,70,6,48,228,139,248,177,3,211,231,3,250,255,181,198,157
-  db 255,181,196,157,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-  end;
+  {@05B4-05FD}
+  pR1C3_08C0(a0 * 3, a1 * 3, 0, 1, pointer(a9DC4_9f5c[a4, a3]), l8836);
 end;
 
 { 0603 }

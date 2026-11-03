@@ -60,9 +60,12 @@ var
   a4011_ec3f: array[0..32759] of byte absolute d4011;
   a53CD_9a87: array[0..935] of string[34] absolute d53CD;
   b5362: byte absolute d5362;
+  b5363: byte absolute d5363;
+  b880C: byte absolute d880C;
   bA7D5: byte absolute dA7D5;
   bA7DB: byte absolute dA7DB;
   bAAE6: byte absolute dAAE6;
+  bC578: byte absolute dC578;
   gAC6A_dfee: TPV_ absolute dAC6A;
   gACD6_dfee: TPV_ absolute dACD6;
   gACE2_dfee: TPV_ absolute dACE2;
@@ -71,6 +74,7 @@ var
   p9CEE: pointer absolute d9CEE;
   p9CF2: pointer absolute d9CF2;
   pAD3B: pointer absolute dAD3B;
+  s2577: string absolute d2577;
   s25F2: string absolute d25F2;
   s2644: string absolute d2644;
   s266D: string absolute d266D;
@@ -81,6 +85,7 @@ var
   s2763: string absolute d2763;
   s278C: string absolute d278C;
   s3144: string absolute d3144;
+  s316D: string absolute d316D;
 
 function pO04C_0000(a0: string): byte; far; forward;
 procedure pO04C_0053; far; forward;
@@ -99,14 +104,12 @@ function pO04C_0000(a0: string): byte;
 var
   _f1: array[1..1] of byte;
 begin
-  asm
-  db 255,54,240,156,255,54,238,156,141,190,255,254,22,87,176,0,80,176,0,80
-  call pO0EC_1B08
-  db 191,119,37,30,87,160,99,83,80
-  call pO108_2254
-  db 136,70,255
-  call pO0EC_1BEF
-  end;
+  {@001B-0034}
+  pO0EC_1B08(p9CEE, a0, 0, 0);
+  {@0034-0045}
+  pO04C_0000 := pO108_2254(s2577, b5363);
+  {@0045-004A}
+  pO0EC_1BEF;
 end;
 
 { 0053 }
@@ -130,50 +133,45 @@ end;
 { 00C4 }
 procedure pO04C_00C4;
 var
-  _f1: array[1..3] of byte;
-  v4b: byte;
-  v5b: byte;
-  v6b: byte;
-  v47a: string[40];
-  _f2: array[1..1] of byte;
+c47: record case byte of 0: (v47a2: string[46]); 1: (v47a: string[40]); 2: (_p2: array[1..41] of byte;
+      v6b: byte); 3: (_p3: array[1..42] of byte; v5b: byte); 4: (_p4: array[1..43] of byte; v4b: byte) end;
+  _f1: array[1..1] of byte;
 begin
   if false then begin
     if LV = 'is not Diseased' then;
     if LV = 'is cured' then;
   end;
   {@00CA-00CE}
-  v6b := 0;
-  for v5b := 1 to 4 do
+  c47.v6b := 0;
+  for c47.v5b := 1 to 4 do
   begin
     {@00D7-0101}
-    if pO0EC_27C1(p9CEE, a4011_ec3f[v5b], @v4b) <> 0 then
+    if pO0EC_27C1(p9CEE, a4011_ec3f[c47.v5b], @c47.v4b) <> 0 then
     begin
       {@00F9-00FD}
-      v6b := 1;
+      c47.v6b := 1;
       {@00FD-0101}
-      v5b := 4;
+      c47.v5b := 4;
     end;
   end;
   {@0107-017D}
-  if v6b = 0 then
-    v47a := 'is not Diseased'
+  if c47.v6b = 0 then
+    c47.v47a := 'is not Diseased'
   else
   begin
     {@0122-0127}
     bA7DB := 1;
-    for v5b := 1 to 4 do
-      pO0E2_0104(p9CEE, a4011_ec3f[v5b], nil);
+    for c47.v5b := 1 to 4 do
+      pO0E2_0104(p9CEE, a4011_ec3f[c47.v5b], nil);
     {@0155-0165}
     pO0E2_186E(p9CEE, 0);
     {@0165-016A}
     bA7DB := 0;
     {@016A-017D}
-    v47a := 'is cured';
+    c47.v47a := 'is cured';
   end;
-  asm
-  db 255,54,240,156,255,54,238,156,141,126,209,22,87,176,0,80,176,1,80
-  call pO0EC_1B08
-  end;
+  {@017D-0195}
+  pO0EC_1B08(p9CEE, c47.v47a2, 0, 1);
 end;
 
 { 0199 }
@@ -431,7 +429,6 @@ c66: record case byte of 0: (v66a2: string[65]); 1: (v66a: string[10]); 2: (v66b
 begin
   if false then begin
     if LV = '/' then;
-    if FS = FS then;
   end;
   {@0635-0639}
   c66.v13b := 0;
@@ -524,10 +521,8 @@ begin
   pO108_2363(@c66.v4b);
   {@090B-0910}
   pO0EC_2ED1;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  end;
+  {@0910-091D}
+  pO0EC_07C0(p9CEE);
 end;
 
 { 0921 }
@@ -637,34 +632,53 @@ end;
 
 { 0B3C }
 procedure pO04C_0B3C;
-var loc: array[1..10] of byte;
+var
+  _f1: array[1..2] of byte;
+  v3b: byte;
+  v4b: byte;
+  _f2: array[1..6] of byte;
 begin
+  {@0B42-0B47}
+  b880C := 1;
+  {@0B47-0B4C}
+  bC578 := 0;
+  {@0B4C-0B51}
+  pO0EC_2ED1;
+  {@0B51-0B56}
+  bC578 := 1;
+  {@0B56-0B63}
+  pO0EC_07C0(p9CEE);
   asm
-    db 198,6,12,136,1,198,6,120,197,0
-    call pO0EC_2ED1
-    db 198,6,120,197,1,255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    db 191,190,167,30,87,184,12,0,80
-    call XR670_046E
-    db 198,6,98,174,0,198,70,252,0,176,3,80
-    call pO108_00CB
-    db 191,140,39,30,87,191,109,49,30,87,176,1,80,176,0,80
-    call pO108_1009
-    db 136,70,253,128,62,230,170,0,116,34,138,70,253,60,27,117,6,198,70,253,3,235,21,60,72,116,4,60
-    db 80,117,13,138,70,253,80
-    call pO0AA_2F7B
-    db 198,70,253,255,138,70,253,60,0,117,6
-    push cs
-    call near ptr pO04C_062E
-    db 235,34,60,1,117,12,191,230,170,30,87
-    call pO0AA_0C9D
-    db 235,18,60,2,117,6
-    push cs
-    call near ptr pO04C_0921
-    db 235,8,60,3,117,4,198,70,252,1,255,54,240,156,255,54,238,156
-    call pO0EC_07C0
-    db 128,126,252,0,117,3,233,114,255
+  db 191,190,167,30,87,184,12,0,80
+  call XR670_046E
+  db 198,6,98,174,0,198,70,252,0
   end;
+  {@0B7A-0C08}
+  repeat
+    {@0B7A-0B82}
+    pO108_00CB(3);
+    {@0B82-0B9A}
+    v3b := pO108_1009(s278C, s316D, 1, 0);
+    if bAAE6 <> 0 then
+      case v3b of
+        27: v3b := 3;
+        72, 80: begin
+          {@0BB6-0BBF}
+          pO0AA_2F7B(v3b);
+          {@0BBF-0BC3}
+          v3b := 255;
+        end;
+      end;
+    {@0BC3-0BF2}
+    case v3b of
+      0: pO04C_062E;
+      1: pO0AA_0C9D(@bAAE6);
+      2: pO04C_0921;
+      3: v4b := 1;
+    end;
+    {@0BF2-0BFF}
+    pO0EC_07C0(p9CEE);
+  until v4b <> 0;
 end;
 
 { 0C0C }

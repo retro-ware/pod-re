@@ -7,25 +7,25 @@ interface
 uses GAMEDATA;
 
 procedure pO0E2_0000(a0: pointer; a1: byte; a2: S40);
-procedure pO0E2_00BD(a0: byte; a1: pointer; a2: word; a3: word; a4: byte);
+procedure pO0E2_00BD(a0: byte; a1: pointer; a2: longint; a3: byte);
 procedure pO0E2_0104(a0: pointer; a1: byte; a2: pointer);
 procedure pO0E2_04DD(a0: byte; a1: pointer);
 procedure pO0E2_0CAF(a0: pointer; a1: byte; a2: byte);
 function pO0E2_112C(a0: pointer; a1: byte): byte;
-function pO0E2_11C2(a0: pointer; a1: word; a2: word; a3: byte): byte;
+function pO0E2_11C2(a0: pointer; a1: longint; a2: byte): byte;
 function pO0E2_12C9(a0: pointer; a1: byte; a2: shortint): byte;
 function pO0E2_1374(a0: byte; a1: byte): byte;
 function pO0E2_13BF(a0: byte; a1: byte): word;
 procedure pO0E2_13E5(a0: pointer; a1: byte; a2: word; a3: byte; a4: byte);
 procedure pO0E2_149C(a0: pointer; a1: byte; a2: S40);
-procedure pO0E2_1568(a0: word; a1: word);
+procedure pO0E2_1568(a0: pointer);
 procedure pO0E2_15A0(a0: pointer);
-function pO0E2_160B(a0: word; a1: word; a2: byte): byte;
+function pO0E2_160B(a0: pointer; a1: byte): byte;
 function pO0E2_16E6(a0: pointer; a1: byte; a2: byte; a3: pointer): byte;
 procedure pO0E2_1D19(a0: pointer; a1: word; a2: byte; a3: byte);
-procedure pO0E2_2039(a0: word; a1: word; a2: byte; a3: word; a4: byte; a5: byte; a6: byte; a7: byte; a8: S40);
+procedure pO0E2_2039(a0: longint; a1: byte; a2: word; a3: byte; a4: byte; a5: byte; a6: byte; a7: S40);
 function pO0E2_212C(a0: pointer; a1: byte; a2: byte): byte;
-function pO0E2_21FC(a0: pointer; a1: word; a2: S40): byte;
+function pO0E2_21FC(a0: pointer; a1: byte; a2: S40): byte;
 procedure pO0E2_186E(a0: pointer; a1: shortint);
 procedure pO0E2_237B(a0: byte);
 
@@ -37,7 +37,6 @@ type
   E4_byte = record f: byte; _r: array[1..3] of byte end;
   E7_byte = record f: byte; _r: array[1..6] of byte end;
   E7_longint = record f: longint; _r: array[1..3] of byte end;
-  PV2_0_byte = record v: byte; _r: array[1..1] of byte end;
   PV4_0_byte = record v: byte; _r: array[1..3] of byte end;
   R0_byte = record v: byte end;
   R0_pointer = record v: pointer end;
@@ -54,7 +53,9 @@ type
   R28_shortint = record _p: array[1..28] of byte; v: shortint end;
   R29_byte = record _p: array[1..29] of byte; v: byte end;
   R30_byte = record _p: array[1..30] of byte; v: byte end;
+  R312_byte = record _p: array[1..312] of byte; v: byte end;
   R313_byte = record _p: array[1..313] of byte; v: byte end;
+  R314_byte = record _p: array[1..314] of byte; v: byte end;
   R323_pointer = record _p: array[1..323] of byte; v: pointer end;
   R327_byte = record _p: array[1..327] of byte; v: byte end;
   R339_byte = record _p: array[1..339] of byte; v: byte end;
@@ -69,6 +70,7 @@ type
   R46_byte = record _p: array[1..46] of byte; v: byte end;
   R480_shortint = record _p: array[1..480] of byte; v: shortint end;
   R483_pointer = record _p: array[1..483] of byte; v: pointer end;
+  R487_pointer = record _p: array[1..487] of byte; v: pointer end;
   R491_byte = record _p: array[1..491] of byte; v: byte end;
   R493_byte = record _p: array[1..493] of byte; v: byte end;
   R494_byte = record _p: array[1..494] of byte; v: byte end;
@@ -89,6 +91,7 @@ type
   RA337_byte = record _p: array[1..337] of byte; a: array[0..32000] of byte end;
   RA344_byte = record _p: array[1..344] of byte; a: array[0..32000] of byte end;
   RB7_50_byte = record _p: array[1..7] of byte; a: array[0..1198, 0..49] of byte end;
+  TPV_var_longint_byte = procedure(var p0; p1: longint; p2: byte);
 W10_23_237B = record case byte of 0: (_p0: array[1..7] of byte; _w23_7abyte: array[0..32000] of byte);
       1: (_p1: array[1..16] of byte; _w23_16abyte: array[0..32000] of byte); 2: (_p2: array[1..26] of byte;
       _w23_26shortint: shortint); 3: (_p3: array[1..27] of byte; _w23_27shortint: shortint) end;
@@ -116,7 +119,9 @@ W16_23_237B = record case byte of 0: (_p0: array[1..7] of byte; _w23_7abyte: arr
   PR28_shortint = ^R28_shortint;
   PR29_byte = ^R29_byte;
   PR30_byte = ^R30_byte;
+  PR312_byte = ^R312_byte;
   PR313_byte = ^R313_byte;
+  PR314_byte = ^R314_byte;
   PR323_pointer = ^R323_pointer;
   PR327_byte = ^R327_byte;
   PR339_byte = ^R339_byte;
@@ -131,6 +136,7 @@ W16_23_237B = record case byte of 0: (_p0: array[1..7] of byte; _w23_7abyte: arr
   PR46_byte = ^R46_byte;
   PR480_shortint = ^R480_shortint;
   PR483_pointer = ^R483_pointer;
+  PR487_pointer = ^R487_pointer;
   PR491_byte = ^R491_byte;
   PR493_byte = ^R493_byte;
   PR494_byte = ^R494_byte;
@@ -165,6 +171,7 @@ var
   aA6A0_9cf4: array[0..4679] of E7_longint absolute dA6A0;
   aA6A4_30da: array[0..4679] of E7_byte absolute dA6A4;
   aA6A5_30da: array[0..4679] of E7_byte absolute dA6A5;
+  aA7E6_891c: array[0..8189] of TPV_var_longint_byte absolute dA7E6;
   b880C: byte absolute d880C;
   bA6DF: byte absolute dA6DF;
   bA6E5: byte absolute dA6E5;
@@ -173,12 +180,19 @@ var
   bA7D2: byte absolute dA7D2;
   bA7D5: byte absolute dA7D5;
   bA7D6: byte absolute dA7D6;
+  bA7D8: byte absolute dA7D8;
+  bA7DC: byte absolute dA7DC;
   bA7DE: byte absolute dA7DE;
   bA7E6: byte absolute dA7E6;
   bA7E7: byte absolute dA7E7;
   bA7E9: byte absolute dA7E9;
   bAE80: byte absolute dAE80;
+  bAEF0: byte absolute dAEF0;
+  gA9E2_6770: TPV_var_longint_byte absolute dA9E2;
+  iA7D8: integer absolute dA7D8;
+  l9CEE: longint absolute d9CEE;
   p87F8: pointer absolute d87F8;
+  p9CEE: pointer absolute d9CEE;
   p9CF2: pointer absolute d9CF2;
   pA6E0: pointer absolute dA6E0;
   pAE5D: pointer absolute dAE5D;
@@ -197,52 +211,46 @@ procedure pO0E2_0000(a0: pointer; a1: byte; a2: S40);
 var
   _f1: array[1..1] of byte;
 begin
-  asm
-  db 255,118,14,255,118,12,141,126,215,22,87,176,10,80,176,0,80
-  call pO0EC_1B08
-  db 196,126,12,38,138,133,237,1,60,7,116,8,60,6,116,4,60,8,117,2,235,114
+  {@0019-002F}
+  pO0EC_1B08(pointer(a0), a2, 10, 0);
+  case PR493_byte(a0)^.v of
+    7, 6, 8: ;
+  else
+    {@0045-0050}
+    PR493_byte(a0)^.v := a1;
+    {@0050-0059}
+    PR494_byte(a0)^.v := 0;
+    {@0059-0062}
+    PR508_byte(a0)^.v := 0;
+    {@0062-006C}
+    pO0E2_15A0(pointer(a0));
+    {@006C-0078}
+    pO0E2_04DD(13, @PV4_0_byte(a0).v);
+    if (PR494_byte(a0)^.v = 0) and (PR493_byte(a0)^.v <> 10) then
+      pO135_0F14(pointer(a0));
+    {@0099-009E}
+    pR47F_0D1A;
+    {@009E-00A3}
+    pO0EC_1BEF;
+    if b880C <> 5 then
+      pO0EC_07C0(p9CEE);
   end;
-  {@0045-0050}
-  PR493_byte(a0)^.v := a1;
-  {@0050-0059}
-  PR494_byte(a0)^.v := 0;
-  {@0059-0062}
-  PR508_byte(a0)^.v := 0;
-  {@0062-006C}
-  pO0E2_15A0(pointer(a0));
-  {@006C-0078}
-  pO0E2_04DD(13, @PV4_0_byte(a0).v);
-  if (PR494_byte(a0)^.v = 0) and (PR493_byte(a0)^.v <> 10) then
-    pO135_0F14(pointer(a0));
-  {@0099-009E}
-  pR47F_0D1A;
-  {@009E-00A3}
-  pO0EC_1BEF;
-  if b880C <> 5 then
-    asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-    end;
 end;
 
 { 00BD }
-procedure pO0E2_00BD(a0: byte; a1: pointer; a2: word; a3: word; a4: byte);
+procedure pO0E2_00BD(a0: byte; a1: pointer; a2: longint; a3: byte);
 begin
   {@00C0-00DC}
   if bAE80 <> 0 then
   begin
-    asm
-  db 196,126,12,6,87,255,118,10,255,118,8,138,70,6,80,255,30,226,169
-    end;
+    {@00C7-00DA}
+    gA9E2_6770(PR0_byte(a1)^.v, a2, a3);
     {@00DA-00DC}
     Exit;
   end;
   {@00DC-0100}
   if a0 < 127 then
-    asm
-  db 196,126,12,6,87,255,118,10,255,118,8,138,70,6,80,138,70,16,48,228,139,248,209,231,209,231,255,157
-  db 230,167
-    end;
+    aA7E6_891c[a0](PR0_byte(a1)^.v, a2, a3);
 end;
 
 { 0104 }
@@ -250,6 +258,7 @@ procedure pO0E2_0104(a0: pointer; a1: byte; a2: pointer);
 var
   v4p: pointer;
   v8p: pointer;
+  v8l: longint absolute v8p;
 begin
   {@010A-0116}
   v8p := a2;
@@ -266,11 +275,7 @@ begin
     Exit;
   {@0162-0182}
   if PR4_byte(v8p)^.v <> 0 then
-    asm
-  db 138,70,10,80,141,126,12,22,87,255,118,250,255,118,248,176,1,80
-  push cs
-  call near ptr pO0E2_00BD
-    end;
+    pO0E2_00BD(a1, @PV4_0_byte(a0).v, v8l, 1);
   {@0182-020C}
   if PR323_pointer(a0)^.v = v8p then
     PR323_pointer(a0)^.v := PR5_pointer(v8p)^.v
@@ -299,12 +304,12 @@ var
   _f1: array[1..215] of byte;
   v216b: byte;
   v220p: pointer;
-  _f2: array[1..3] of byte;
-  v224b: byte;
+  v224l: longint;
   v225b: byte;
-  _f3: array[1..1] of byte;
+  _f2: array[1..1] of byte;
   v227b: byte;
-  _f4: array[1..1] of byte;
+  _f3: array[1..1] of byte;
+  v224b: byte absolute v224l;
 begin
   if false then begin
     if LSV = [21, 45..46, 49] then;
@@ -364,11 +369,7 @@ begin
   end;
   {@03E1-0400}
   if v225b <> 0 then
-    asm
-  db 138,70,6,80,196,126,8,6,87,255,182,34,255,255,182,32,255,176,0,80
-  push cs
-  call near ptr pO0E2_00BD
-    end;
+    pO0E2_00BD(a1, @PR0_byte(a0)^.v, v224l, 0);
 end;
 
 { 0406 }
@@ -757,7 +758,19 @@ end;
 
 { 0CAF }
 procedure pO0E2_0CAF(a0: pointer; a1: byte; a2: byte);
-var loc: array[1..46] of byte;
+var
+  v1b: byte;
+  v2b: byte;
+  v6l: longint;
+  v10l: longint;
+  v11b: byte;
+  v15l: longint;
+  v16b: byte;
+  v17b: byte;
+  v10b: byte absolute v10l;
+  v6b: byte absolute v6l;
+  _fb: byte absolute a0;
+  _fw: word absolute a0;
 begin
   if false then begin
     if LV = 'starts to cough' then;
@@ -766,124 +779,149 @@ begin
     if LV = 'is Poisoned' then;
     if LV = 'is killed' then;
     if LV = 'is cut by knives' then;
+    LM2_0('is Poisoned', 'is cut by knives');
   end;
-  asm
-    db 196,126,10,38,128,189,238,1,0,117,3,233,99,4,198,6,220,167,1,255,118,12,255,118,10,176,8,80
-    db 141,126,254,22,87,141,126,255,22,87,141,126,239,22,87
-    call pO135_0D94
-    db 128,126,239,0,117,3,233,51,4,128,126,239,29,117,9,128,126,6,0,116,3,233,36,4,255,118,12,255
-    db 118,10,176,1,80
-    call pO135_0805
-    db 8,192,116,7,128,62,240,174,0,117,35,255,118,12,255,118,10
-    call pO135_0CA2
-    db 80,255,118,12,255,118,10
-    call pO135_0CCA
-    db 80,176,255,80,176,8,80
-    call pO135_0A4D
-    db 138,70,239,60,29,116,3,233,180,1,198,6,213,167,34,196,126,10,38,128,189,58,1,0,116,3,233,158
-    db 1,255,118,12,255,118,10,176,31,80,141,126,250,22,87
-    call pO0EC_27C1
-    db 8,192,116,3,233,132,1,196,126,10,38,138,133,165,1,36,24,8,192,116,3,233,115,1,255,118,12,255
-    db 118,10,176,0,80,176,0,80
-    push cs
-    call near ptr pO0E2_12C9
-    db 136,70,245,128,126,245,0,117,3,233,218,0,161,238,156,139,22,240,156,137,70,241,137,86,243,255,118,12
-    db 255,118,10,176,30,80,176,1,80,176,4,80
-    push cs
-    call near ptr pO0E2_1374
-    db 48,228,64,80,176,255,80,176,0,80,176,0,80,138,70,245,80,141,126,223,22,87,191,79,12,14,87,154
-    db 111,10,37,8
-    push cs
-    call near ptr pO0E2_2039
-    db 49,192,137,70,246,137,70,248,255,118,12,255,118,10,176,30,80,141,126,246,22,87
-    call pO0EC_27C1
-    db 8,192,116,104,176,30,80,141,126,10,22,87,255,118,252,255,118,250,176,0,80
-    push cs
-    call near ptr pO0E2_00BD
-    db 196,126,10,38,196,189,231,1,38,128,61,0,118,69,255,118,12,255,118,10,141,126,226,22,87,191,95,12
-    db 14,87,154,111,10,37,8,176,12,80,176,1,80
-    call pO0EC_1B08
-    db 255,118,12,255,118,10,196,126,10,38,196,189,231,1,38,138,5,80
-    call pO0EC_186D
-    db 255,118,12,255,118,10
-    call pO0EC_2CF6
-    db 136,70,240,139,70,241,139,86,243,163,238,156,137,22,240,156,235,125,161,238,156,139,22,240,156,137,70,241
-    db 137,86,243,255,118,12,255,118,10,176,31,80,176,1,80,176,4,80
-    push cs
-    call near ptr pO0E2_1374
-    db 48,228,64,80,176,255,80,176,0,80,176,0,80,138,70,245,80,141,126,211,22,87,191,108,12,14,87,154
-    db 111,10,37,8
-    push cs
-    call near ptr pO0E2_2039
-    db 255,118,12,255,118,10,176,31,80,141,126,250,22,87
-    call pO0EC_27C1
-    db 8,192,116,21,176,31,80,141,126,10,22,87,255,118,252,255,118,250,176,0,80
-    push cs
-    call near ptr pO0E2_00BD
-    db 139,70,241,139,86,243,163,238,156,137,22,240,156,233,42,2,60,28,116,3,233,148,1,198,6,213,167,91
-    db 196,126,10,38,128,189,238,1,0,117,3,233,126,1,196,126,10,38,138,133,165,1,36,16,8,192,116,3
-    db 233,109,1,196,126,10,38,138,133,56,1,60,0,114,94,60,4,119,90,255,118,12,255,118,10,141,126,227
-    db 22,87,191,136,12,14,87,154,111,10,37,8,176,10,80,176,0,80
-    call pO0EC_1B08
-    call pR47F_0D1A
-    db 255,118,12,255,118,10,176,55,80,49,192,80,176,255,80,176,0,80
-    push cs
-    call near ptr pO0E2_13E5
-    db 255,118,12,255,118,10,176,6,80,141,126,229,22,87,191,148,12,14,87,154,111,10,37,8
-    push cs
-    call near ptr pO0E2_0000
-    db 233,3,1,60,5,117,110,255,118,12,255,118,10,176,0,80,176,252,80
-    push cs
-    call near ptr pO0E2_12C9
-    db 8,192,117,87,255,118,12,255,118,10,141,126,227,22,87,191,136,12,14,87,154,111,10,37,8,176,10,80
-    db 176,0,80
-    call pO0EC_1B08
-    call pR47F_0D1A
-    db 255,118,12,255,118,10,176,55,80,49,192,80,176,255,80,176,0,80
-    push cs
-    call near ptr pO0E2_13E5
-    db 255,118,12,255,118,10,176,6,80,141,126,229,22,87,191,148,12,14,87,154,111,10,37,8
-    push cs
-    call near ptr pO0E2_0000
-    db 233,145,0,60,6,117,109,255,118,12,255,118,10,176,0,80,176,0,80
-    push cs
-    call near ptr pO0E2_12C9
-    db 8,192,117,87,255,118,12,255,118,10,141,126,227,22,87,191,136,12,14,87,154,111,10,37,8,176,10,80
-    db 176,0,80
-    call pO0EC_1B08
-    call pR47F_0D1A
-    db 255,118,12,255,118,10,176,55,80,49,192,80,176,255,80,176,0,80
-    push cs
-    call near ptr pO0E2_13E5
-    db 255,118,12,255,118,10,176,6,80,141,126,229,22,87,191,148,12,14,87,154,111,10,37,8
-    push cs
-    call near ptr pO0E2_0000
-    db 235,32,198,6,210,167,136,255,118,12,255,118,10,176,1,80,176,10,80
-    push cs
-    call near ptr pO0E2_13BF
-    db 80,176,0,80,176,0,80
-    push cs
-    call near ptr pO0E2_1D19
-    db 233,143,0,60,27,116,3,233,136,0,198,6,213,167,101,198,6,210,167,8,199,6,216,167,255,0,176,9
-    db 80,141,126,10,22,87
-    push cs
-    call near ptr pO0E2_04DD
-    db 196,126,10,38,128,189,238,1,0,116,97,131,62,216,167,0,116,90,128,126,8,0,116,20,255,118,12,255
-    db 118,10,176,4,80,176,0,80
-    push cs
-    call near ptr pO0E2_12C9
-    db 8,192,117,64,255,118,12,255,118,10,141,126,222,22,87,191,158,12,14,87,154,111,10,37,8,176,10,80
-    db 176,0,80
-    call pO0EC_1B08
-    call pR47F_0D1A
-    db 255,118,12,255,118,10,176,8,80,176,8,80
-    push cs
-    call near ptr pO0E2_13BF
-    db 80,176,0,80,176,0,80
-    push cs
-    call near ptr pO0E2_1D19
-    db 198,6,220,167,0
+  {@0CB5-0CC3}
+  if PR494_byte(a0)^.v = 0 then
+    Exit;
+  {@0CC3-0CC8}
+  bA7DC := 1;
+  {@0CC8-0CE5}
+  pO135_0D94(longint(a0), 8, @v2b, @v1b, @v17b);
+  if (v17b <> 0) and ((v17b <> 29) or (a2 = 0)) then
+  begin
+    {@0CFD-0D39}
+    if (pO135_0805(longint(a0), 1) = 0) or (bAEF0 = 0) then
+      asm
+  db 255,118,12,255,118,10
+  call pO135_0CA2
+  db 80,255,118,12,255,118,10
+  call pO135_0CCA
+  db 80,176,255,80,176,8,80
+  call pO135_0A4D
+      end;
+    {@0D39-1121}
+    case v17b of
+      29: begin
+        {@0D43-0D48}
+        bA7D5 := 34;
+if (PR314_byte(a0)^.v = 0) and (pO0EC_27C1(pointer(a0), 31, @v6b) = 0) and ((PR421_byte(a0)^.v
+            and 24) = 0) then
+        begin
+          {@0D81-0D94}
+          v11b := pO0E2_12C9(pointer(a0), 0, 0);
+          if v11b <> 0 then
+          begin
+            {@0D9D-0DAA}
+            v15l := l9CEE;
+            {@0DAA-0DE1}
+            pO0E2_2039(longint(a0), 30, pO0E2_1374(1, 4) + 1, 255, 0, 0, v11b, 'starts to cough');
+            {@0DE1-0DE9}
+            v10l := 0;
+            if pO0EC_27C1(pointer(a0), 30, @v10b) <> 0 then
+            begin
+              {@0E00-0E15}
+              pO0E2_00BD(30, @PV4_0_byte(a0).v, v6l, 0);
+              if PR0_byte(PR487_pointer(a0)^.v)^.v > 0 then
+              begin
+                {@0E23-0E43}
+                pO0EC_1B08(pointer(a0), 'lost a spell', 12, 1);
+                {@0E43-0E5A}
+                pO0EC_186D(pointer(a0), PR0_byte(PR487_pointer(a0)^.v)^.v);
+                {@0E5A-0E68}
+                v16b := pO0EC_2CF6(pointer(a0));
+              end;
+            end;
+            {@0E68-0E75}
+            l9CEE := v15l;
+          end
+          else
+          begin
+            {@0E77-0E84}
+            v15l := l9CEE;
+            {@0E84-0EBB}
+            pO0E2_2039(longint(a0), 31, pO0E2_1374(1, 4) + 1, 255, 0, 0, v11b, 'chokes and gags from nausea');
+            if pO0EC_27C1(pointer(a0), 31, @v6b) <> 0 then
+              pO0E2_00BD(31, @PV4_0_byte(a0).v, v6l, 0);
+            {@0EE7-0EF4}
+            l9CEE := v15l;
+          end;
+        end;
+      end;
+      28: begin
+        {@0EFE-0F03}
+        bA7D5 := 91;
+        if (PR494_byte(a0)^.v <> 0) and ((PR421_byte(a0)^.v and 16) = 0) then
+          case PR312_byte(a0)^.v of
+            0..4: begin
+              {@0F32-0F52}
+              pO0EC_1B08(pointer(a0), 'is Poisoned', 10, 0);
+              {@0F52-0F57}
+              pR47F_0D1A;
+              {@0F57-0F6D}
+              pO0E2_13E5(pointer(a0), 55, 0, 255, 0);
+              {@0F6D-0F89}
+              pO0E2_0000(pointer(a0), 6, 'is killed');
+            end;
+            5: begin
+              {@0F90-0FFB}
+              if pO0E2_12C9(pointer(a0), 0, -4) = 0 then
+              begin
+                {@0FA4-0FC4}
+                pO0EC_1B08(pointer(a0), 'is Poisoned', 10, 0);
+                {@0FC4-0FC9}
+                pR47F_0D1A;
+                {@0FC9-0FDF}
+                pO0E2_13E5(pointer(a0), 55, 0, 255, 0);
+                {@0FDF-0FFB}
+                pO0E2_0000(pointer(a0), 6, 'is killed');
+              end;
+            end;
+            6: begin
+              {@1002-106D}
+              if pO0E2_12C9(pointer(a0), 0, 0) = 0 then
+              begin
+                {@1016-1036}
+                pO0EC_1B08(pointer(a0), 'is Poisoned', 10, 0);
+                {@1036-103B}
+                pR47F_0D1A;
+                {@103B-1051}
+                pO0E2_13E5(pointer(a0), 55, 0, 255, 0);
+                {@1051-106D}
+                pO0E2_0000(pointer(a0), 6, 'is killed');
+              end;
+            end;
+          else
+            {@106F-1074}
+            bA7D2 := 136;
+            {@1074-108F}
+            pO0E2_1D19(pointer(a0), pO0E2_13BF(1, 10), 0, 0);
+          end;
+      end;
+      27: begin
+        {@1099-109E}
+        bA7D5 := 101;
+        {@109E-10A3}
+        bA7D2 := 8;
+        {@10A3-10A9}
+        wA7D8 := 255;
+        {@10A9-10B5}
+        pO0E2_04DD(9, @PV4_0_byte(a0).v);
+if (PR494_byte(a0)^.v <> 0) and (wA7D8 <> 0) and ((a1 = 0) or (pO0E2_12C9(pointer(a0), 4,
+            0) = 0)) then
+        begin
+          {@10E1-1101}
+          pO0EC_1B08(pointer(a0), 'is cut by knives', 10, 0);
+          {@1101-1106}
+          pR47F_0D1A;
+          {@1106-1121}
+          pO0E2_1D19(pointer(a0), pO0E2_13BF(8, 8), 0, 0);
+        end;
+      end;
+    end;
   end;
+  {@1121-1126}
+  bA7DC := 0;
 end;
 
 { 112C }
@@ -917,7 +955,7 @@ begin
 end;
 
 { 11C2 }
-function pO0E2_11C2(a0: pointer; a1: word; a2: word; a3: byte): byte;
+function pO0E2_11C2(a0: pointer; a1: longint; a2: byte): byte;
 var
   v2b: byte;
   v3b: byte;
@@ -928,15 +966,13 @@ begin
   v3b := 0;
   {@11CC-11D0}
   pO0E2_11C2 := 0;
-  asm
-  db 255,118,14,255,118,12
-  push cs
-  call near ptr pO0E2_1568
-  db 176,1,80,176,20,80
-  push cs
-  call near ptr pO0E2_1374
-  db 162,222,167,128,62,222,167,1,127,3,233,207,0
-  end;
+  {@11D0-11DA}
+  pO0E2_1568(pointer(a0));
+  {@11DA-11E7}
+  bA7DE := pO0E2_1374(1, 20);
+  {@11E7-11F1}
+  if sbA7DE <= 1 then
+    Exit;
   {@11F1-1204}
   if sbA7DE > 16 then
     bA7E9 := 1
@@ -948,8 +984,8 @@ begin
   {@1210-121C}
   pO0E2_04DD(10, @PV4_0_byte(a0).v);
   {@121C-1228}
-  pO0E2_04DD(16, @PV2_0_byte(a2).v);
-  if PR495_byte(pointer(a0))^.v = 0 then
+  pO0E2_04DD(16, @PV4_0_byte(a1).v);
+  if PR495_byte(a0)^.v = 0 then
   begin
     {@1233-123E}
     v2b := PR46_byte(p87F8)^.v;
@@ -963,7 +999,7 @@ begin
   else
     v2b := PR0_byte(p87F8)^.v;
   {@1276-12AA}
-  if (sbA7DE >= 0) and ((Integer(sbA7DE + PR497_byte(pointer(a0))^.v) + v2sb) >= a3) then
+  if (sbA7DE >= 0) and ((Integer(sbA7DE + PR497_byte(a0)^.v) + v2sb) >= a2) then
   begin
     {@12A2-12A6}
     v3b := 1;
@@ -1071,16 +1107,18 @@ begin
   {@14B5-14C3}
   if PR494_byte(a0)^.v = 0 then
     Exit;
-  asm
-  db 255,118,14,255,118,12
-  call pO135_0D1A
-  db 136,70,214,255,118,14,255,118,12,176,3,80,176,0,80
-  call pO135_141F
-  db 255,118,14,255,118,12,141,126,215,22,87,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 196,126,12,38,198,133,238,1,0,138,70,10,196,126,12,38,136,133,237,1,196,126,12,38,128,189,237,1
-  db 3,116,9,196,126,12,38,198,133,252,1,0
-  end;
+  {@14C3-14D1}
+  v42b := pO135_0D1A(longint(a0));
+  {@14D1-14E2}
+  pO135_141F(longint(a0), 3, 0);
+  {@14E2-14F8}
+  pO0EC_1B08(pointer(a0), a2, 10, 1);
+  {@14F8-1501}
+  PR494_byte(a0)^.v := 0;
+  {@1501-150C}
+  PR493_byte(a0)^.v := a1;
+  if PR493_byte(a0)^.v <> 3 then
+    PR508_byte(a0)^.v := 0;
   {@1520-152F}
   pO135_067C(0, 0, v42b);
   {@152F-1534}
@@ -1094,18 +1132,14 @@ begin
 end;
 
 { 1568 }
-procedure pO0E2_1568(a0: word; a1: word);
+procedure pO0E2_1568(a0: pointer);
 var
-  _f1: array[1..4] of byte;
+  v4p: pointer;
+  v4b: byte absolute v4p;
 begin
-  asm
-  db 255,118,8,255,118,6,176,25,80,141,126,252,22,87
-  call pO0EC_27C1
-  db 8,192,116,21,255,118,8,255,118,6,176,25,80,255,118,254,255,118,252
-  push cs
-  call near ptr pO0E2_0104
-  db 235,212
-  end;
+  {@156E-159A}
+  while pO0EC_27C1(pointer(a0), 25, @v4b) <> 0 do
+    pO0E2_0104(pointer(a0), 25, v4p);
 end;
 
 { 15A0 }
@@ -1125,22 +1159,24 @@ begin
 end;
 
 { 160B }
-function pO0E2_160B(a0: word; a1: word; a2: byte): byte;
-var loc: array[1..13] of byte;
+function pO0E2_160B(a0: pointer; a1: byte): byte;
+var
+  v5p: pointer;
+  v5b: byte absolute v5p;
 begin
   if false then begin
     if LV = 'is Cured' then;
   end;
-  asm
-    db 198,70,255,0,255,118,10,255,118,8,138,70,6,80,141,126,251,22,87
-    call pO0EC_27C1
-    db 8,192,116,56,255,118,10,255,118,8,141,126,242,22,87,191,2,22,14,87,154,111,10,37,8,176,10,80
-    db 176,1,80
-    call pO0EC_1B08
-    db 255,118,10,255,118,8,138,70,6,80,255,118,253,255,118,251
-    push cs
-    call near ptr pO0E2_0104
-    db 198,70,255,1
+  {@1611-1615}
+  pO0E2_160B := 0;
+  if pO0EC_27C1(pointer(a0), a1, @v5b) <> 0 then
+  begin
+    {@162D-164D}
+    pO0EC_1B08(pointer(a0), 'is Cured', 10, 1);
+    {@164D-1661}
+    pO0E2_0104(pointer(a0), a1, v5p);
+    {@1661-1665}
+    pO0E2_160B := 1;
   end;
 end;
 
@@ -1434,7 +1470,10 @@ end;
 
 { 1D19 }
 procedure pO0E2_1D19(a0: pointer; a1: word; a2: byte; a3: byte);
-var loc: array[1..594] of byte;
+var
+  v81a: string[80];
+  _f1: array[1..1] of byte;
+  v81a2: string[80] absolute v81a;
 begin
   if false then begin
     if LV = 'takes ' then;
@@ -1449,102 +1488,164 @@ begin
     if LV = ', and is Dying' then;
     if LSV = [6..8] then;
     if LV = 'is killed' then;
+    if FS = FS then;
   end;
   asm
-    db 139,70,10,163,216,167,176,6,80,141,126,12,22,87
-    push cs
-    call near ptr pO0E2_04DD
-    db 128,126,6,0,116,32,138,70,8,60,1,117,7,49,192,163,216,167,235,16,60,2,117,12,161,216,167,153
-    db 185,2,0,247,249,163,216,167,235,12,176,20,80,141,126,12,22,87
-    push cs
-    call near ptr pO0E2_04DD
-    db 131,62,216,167,0,127,3,233,183,2,196,126,12,38,128,189,238,1,0,117,3,233,169,2,131,62,216,167
-    db 1,116,62,141,190,174,253,22,87,191,102,28,14,87,154,111,10,37,8,141,190,174,254,22,87,160,216,167
-    db 80
-    call pR47F_0FB2
-    db 154,252,10,37,8,191,109,28,14,87,154,252,10,37,8,141,126,175,22,87,184,80,0,80,154,137,10,37
-    db 8,235,19,191,128,28,14,87,141,126,175,22,87,184,80,0,80,154,137,10,37,8,160,210,167,36,247,60
-    db 1,117,43,141,190,174,254,22,87,141,126,175,22,87,154,111,10,37,8,191,153,28,14,87,154,252,10,37
-    db 8,141,126,175,22,87,184,80,0,80,154,137,10,37,8,233,143,0,60,2,117,42,141,190,174,254,22,87
-    db 141,126,175,22,87,154,111,10,37,8,191,163,28,14,87,154,252,10,37,8,141,126,175,22,87,184,80,0
-    db 80,154,137,10,37,8,235,97,60,4,117,42,141,190,174,254,22,87,141,126,175,22,87,154,111,10,37,8
-    db 191,173,28,14,87,154,252,10,37,8,141,126,175,22,87,184,80,0,80,154,137,10,37,8,235,51,160,210
-    db 167,36,8,58,6,210,167,117,40,141,190,174,254,22,87,141,126,175,22,87,154,111,10,37,8,191,190,28
-    db 14,87,154,252,10,37,8,141,126,175,22,87,184,80,0,80,154,137,10,37,8,198,6,239,174,1,255,118
-    db 14,255,118,12
-    call pO0EC_0C95
-    db 255,118,14,255,118,12,176,0,80,141,126,175,22,87
-    call pO0EC_2601
-    db 255,118,14,255,118,12,255,54,216,167
-    call pO0EC_2851
-    db 128,62,12,136,5,117,96,196,126,12,38,196,189,231,1,38,198,69,1,0,196,126,12,38,196,189,231,1
-    db 38,128,61,0,118,69,255,118,14,255,118,12,141,126,161,22,87,191,201,28,14,87,154,111,10,37,8,176
-    db 12,80,176,1,80
-    call pO0EC_1B08
-    db 255,118,14,255,118,12,196,126,12,38,196,189,231,1,38,138,5,80
-    call pO0EC_186D
-    db 255,118,14,255,118,12
-    call pO0EC_2CF6
-    db 136,70,174,196,126,12,38,128,189,238,1,0,116,3,233,226,0,191,214,28,14,87,141,126,175,22,87,184
-    db 80,0,80,154,137,10,37,8,196,126,12,38,138,133,165,1,36,8,8,192,117,91,196,126,12,38,128,189
-    db 237,1,5,117,40,141,190,174,254,22,87,141,126,175,22,87,154,111,10,37,8,191,224,28,14,87,154,252
-    db 10,37,8,141,126,175,22,87,184,80,0,80,154,137,10,37,8,196,126,12,38,138,133,237,1,80,191,239
-    db 28,14,87,154,36,13,37,8,116,19,191,15,29,14,87,141,126,175,22,87,184,80,0,80,154,137,10,37
-    db 8,255,118,14,255,118,12,141,126,175,22,87,160,147,157,48,228,64,80,176,0,80
-    call pO0EC_1B08
-    db 128,62,12,136,5,116,7
-    call pR47F_0D1A
-    db 235,62,255,118,14,255,118,12
-    push cs
-    call near ptr pO0E2_15A0
-    db 176,13,80,141,126,12,22,87
-    push cs
-    call near ptr pO0E2_04DD
-    db 196,126,12,38,128,189,238,1,0,117,24,196,126,12,38,128,189,237,1,10,116,13,255,118,14,255,118,12
-    call pO135_0F14
-    db 235,5
-    call pR47F_0D1A
-    call pO0EC_1BEF
+  db 139,70,10,163,216,167
+  end;
+  asm
+  db 176,6,80,141,126,12,22,87
+  push cs
+  call near ptr pO0E2_04DD
+  end;
+  if a3 <> 0 then
+    asm
+  db 138,70,8,60,1,117,7,49,192,163,216,167,235,16,60,2,117,12,161,216,167,153,185,2,0,247,249,163
+  db 216,167
+    end
+  else
+    asm
+  db 176,20,80,141,126,12,22,87
+  push cs
+  call near ptr pO0E2_04DD
+    end;
+  {@1D64-2025}
+  if (iA7D8 > 0) and (PR494_byte(pointer(a0))^.v <> 0) then
+  begin
+    {@1D7C-1DD4}
+    if wA7D8 <> 1 then
+      v81a := 'takes ' + pR47F_0FB2(bA7D8) + ' points of damage '
+    else
+      v81a := 'takes 1 point of damage ';
+    {@1DD4-1E97}
+    case bA7D2 and 247 of
+      1: v81a := v81a2 + 'from Fire';
+      2: v81a := v81a2 + 'from Cold';
+      4: v81a := v81a2 + 'from Electricity';
+    else
+      {@1E64-1E97}
+      if (bA7D2 and 8) = bA7D2 then
+        v81a := v81a2 + 'from Magic';
+    end;
+    asm
+  db 198,6,239,174,1
+    end;
+    asm
+  db 255,118,14,255,118,12
+  call pO0EC_0C95
+    end;
+    asm
+  db 255,118,14,255,118,12,176,0,80,141,126,175,22,87
+  call pO0EC_2601
+    end;
+    asm
+  db 255,118,14,255,118,12,255,54,216,167
+  call pO0EC_2851
+    end;
+    if b880C = 5 then
+    begin
+      asm
+  db 196,126,12,38,196,189,231,1,38,198,69,1,0
+      end;
+      if PR0_byte(PR487_pointer(pointer(a0))^.v)^.v > 0 then
+      begin
+        {@1EEB-1F0B}
+        pO0EC_1B08(pointer(pointer(a0)), 'lost a spell', 12, 1);
+        asm
+  db 255,118,14,255,118,12,196,126,12,38,196,189,231,1,38,138,5,80
+  call pO0EC_186D
+        end;
+        asm
+  db 255,118,14,255,118,12
+  call pO0EC_2CF6
+  db 136,70,174
+        end;
+      end;
+    end;
+    {@1F30-2020}
+    if PR494_byte(pointer(a0))^.v = 0 then
+    begin
+      {@1F3E-1F51}
+      v81a := 'Goes Down';
+      if (PR421_byte(pointer(a0))^.v and 8) = 0 then
+      begin
+        {@1F5F-1F92}
+        if PR493_byte(pointer(a0))^.v = 5 then
+          v81a := v81a2 + ', and is Dying';
+        {@1F92-1FBA}
+        if PR493_byte(pointer(a0))^.v in [6..8] then
+          v81a := 'is killed';
+      end;
+      asm
+  db 255,118,14,255,118,12,141,126,175,22,87,160,147,157,48,228,64,80,176,0,80
+  call pO0EC_1B08
+      end;
+      if b880C <> 5 then
+        asm
+  call pR47F_0D1A
+        end
+      else
+      begin
+        asm
+  db 255,118,14,255,118,12
+  push cs
+  call near ptr pO0E2_15A0
+        end;
+        asm
+  db 176,13,80,141,126,12,22,87
+  push cs
+  call near ptr pO0E2_04DD
+        end;
+        if (PR494_byte(pointer(a0))^.v = 0) and (PR493_byte(pointer(a0))^.v <> 10) then
+          asm
+  db 255,118,14,255,118,12
+  call pO135_0F14
+          end
+        else
+          asm
+  call pR47F_0D1A
+          end;
+      end;
+    end;
+    asm
+  call pO0EC_1BEF
+    end;
   end;
 end;
 
 { 2039 }
-procedure pO0E2_2039(a0: word; a1: word; a2: byte; a3: word; a4: byte; a5: byte; a6: byte; a7: byte; a8: S40);
+procedure pO0E2_2039(a0: longint; a1: byte; a2: word; a3: byte; a4: byte; a5: byte; a6: byte; a7: S40);
 var
-  _f1: array[1..19] of byte;
+  v45p: pointer;
+  _f1: array[1..1] of byte;
+  v45b: byte absolute v45p;
 begin
   if false then begin
     if LV = 'is Unaffected' then;
   end;
   {@2052-2058}
-  bA7D1 := a2;
+  bA7D1 := a1;
   {@2058-2064}
-  pO0E2_04DD(9, @PV2_0_byte(a1).v);
-  if (bA7D1 = 0) or (a7 <> 0) and (a6 = 1) then
-    asm
-  db 255,118,24,255,118,22,141,126,196,22,87,191,43,32,14,87,154,111,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 235,109
-    end;
-  asm
-  db 255,118,24,255,118,22,138,70,20,80,141,126,211,22,87
-  call pO0EC_27C1
-  db 8,192,116,30,196,126,211,38,131,125,1,0,118,20,255,118,24,255,118,22,138,70,20,80,255,118,213,255
-  db 118,211
-  push cs
-  call near ptr pO0E2_0104
+  pO0E2_04DD(9, @PV4_0_byte(a0).v);
+  if (bA7D1 = 0) or (a6 <> 0) and (a5 = 1) then
+  begin
+    {@2077-2097}
+    pO0EC_1B08(pointer(pointer(a0)), 'is Unaffected', 10, 1);
+    {@2097-2099}
+    Exit;
   end;
-  asm
-  db 255,118,24,255,118,22,138,70,20,80,255,118,18,138,70,16,80,138,70,14,80
-  push cs
-  call near ptr pO0E2_13E5
+  {@2099-20CF}
+  if (pO0EC_27C1(pointer(pointer(a0)), a1, @v45b) <> 0) and (PR1_word(v45p)^.v > 0) then
+    pO0E2_0104(pointer(pointer(a0)), a1, v45p);
+  {@20CF-20E8}
+  pO0E2_13E5(pointer(pointer(a0)), a1, a2, a3, a4);
+  if Length(a7) <> 0 then
+  begin
+    {@20EE-2101}
+    pO0EC_2601(pointer(pointer(a0)), 1, a7);
+    {@2101-2106}
+    pO0EC_1BEF;
   end;
-  if Length(a8) <> 0 then
-    asm
-  db 255,118,24,255,118,22,176,1,80,141,126,215,22,87
-  call pO0EC_2601
-  call pO0EC_1BEF
-    end;
 end;
 
 { 212C }
@@ -1585,7 +1686,7 @@ if (PR493_byte(a0)^.v in [0..1, 4..5]) and ((PR508_byte(a0)^.v < PR178_byte(a0)^
 end;
 
 { 21FC }
-function pO0E2_21FC(a0: pointer; a1: word; a2: S40): byte;
+function pO0E2_21FC(a0: pointer; a1: byte; a2: S40): byte;
 var
   _f1: array[1..2] of byte;
 begin

@@ -45,6 +45,7 @@ type
   R343_byte = record _p: array[1..343] of byte; v: byte end;
   R347_byte = record _p: array[1..347] of byte; v: byte end;
   R348_byte = record _p: array[1..348] of byte; v: byte end;
+  R35_byte = record _p: array[1..35] of byte; v: byte end;
   R370_longint = record _p: array[1..370] of byte; v: longint end;
   R412_byte = record _p: array[1..412] of byte; v: byte end;
   R413_byte = record _p: array[1..413] of byte; v: byte end;
@@ -409,6 +410,7 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PR343_byte = ^R343_byte;
   PR347_byte = ^R347_byte;
   PR348_byte = ^R348_byte;
+  PR35_byte = ^R35_byte;
   PR370_longint = ^R370_longint;
   PR412_byte = ^R412_byte;
   PR413_byte = ^R413_byte;
@@ -751,8 +753,10 @@ var
   b880C: byte absolute d880C;
   b880D: byte absolute d880D;
   b880E: byte absolute d880E;
+  b8811: byte absolute d8811;
   b94D5: byte absolute d94D5;
   b9CEE: byte absolute d9CEE;
+  bAAD5: byte absolute dAAD5;
   bAAE6: byte absolute dAAE6;
   bAB0C: byte absolute dAB0C;
   bAB14: byte absolute dAB14;
@@ -895,7 +899,6 @@ var
 begin
   if false then begin
     if Pos('', LV) = 0 then;
-    LM1_0('');
   end;
   {@0125-012A}
   bC5C3 := 0;
@@ -915,16 +918,55 @@ begin
     {@0142-0273}
     if v17b <> 0 then
     begin
-      asm
-  db 176,1,80
-  call pR142_00D4
-  db 161,238,156,11,6,240,156,116,78,255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  db 198,6,12,18,1,198,6,54,18,1,196,62,248,135,38,128,125,47,0,176,0,118,1,64,162,96,18,160
-  db 96,18,162,138,18,198,6,180,18,1,198,6,8,19,1,198,6,50,19,0,198,6,92,19,1,198,6,134
-  db 19,1,198,6,176,19,0,235,50,198,6,12,18,0,198,6,54,18,0,198,6,96,18,0,198,6,138,18
-  db 0,198,6,180,18,0,198,6,8,19,0,198,6,50,19,1,198,6,92,19,0,198,6,134,19,0,198,6
-  db 176,19,1
+      {@014B-0153}
+      pR142_00D4(1);
+      if p9CEE <> nil then
+      begin
+        {@015C-0169}
+        pO0EC_07C0(p9CEE);
+        {@0169-016E}
+        b120C := 1;
+        {@016E-0173}
+        b1236 := 1;
+        {@0173-0184}
+        b1260 := Ord(PR47_byte(p87F8)^.v > 0);
+        {@0184-018A}
+        b128A := b1260;
+        {@018A-018F}
+        b12B4 := 1;
+        {@018F-0194}
+        b1308 := 1;
+        {@0194-0199}
+        b1332 := 0;
+        {@0199-019E}
+        b135C := 1;
+        {@019E-01A3}
+        b1386 := 1;
+        {@01A3-01A8}
+        b13B0 := 0;
+      end
+      else
+      begin
+        {@01AA-01AF}
+        b120C := 0;
+        {@01AF-01B4}
+        b1236 := 0;
+        {@01B4-01B9}
+        b1260 := 0;
+        {@01B9-01BE}
+        b128A := 0;
+        {@01BE-01C3}
+        b12B4 := 0;
+        {@01C3-01C8}
+        b1308 := 0;
+        {@01C8-01CD}
+        b1332 := 1;
+        {@01CD-01D2}
+        b135C := 0;
+        {@01D2-01D7}
+        b1386 := 0;
+        {@01D7-01DC}
+        b13B0 := 1;
       end;
       {@01DC-01E0}
       v16b := 0;
@@ -1062,21 +1104,28 @@ begin
           bC5C3 := 1;
           if (l9CF2 <> 0) or (b880E <> 0) then
           begin
-            asm
-  db 160,13,136,162,12,136,128,62,17,136,0,116,7,128,62,213,170,9,117,45,128,62,12,136,3,117,18,196
-  db 62,248,135,38,128,125,35,1,117,7
-  call pR142_0137
-  db 235,5
-  call pR142_011B
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  db 235,40,160,12,136,60,0,116,4,60,4,117,20
-  call pR142_011B
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  db 235,9,60,3,117,5
-  call pR142_0137
-            end;
+            {@0529-052F}
+            b880C := b880D;
+            if (b8811 = 0) or (bAAD5 = 9) then
+            begin
+              {@053D-055B}
+              if (b880C = 3) and (PR35_byte(p87F8)^.v = 1) then
+                pR142_0137
+              else
+                pR142_011B;
+              {@055B-0568}
+              pO0EC_07C0(p9CEE);
+            end
+            else
+              case b880C of
+                0, 4: begin
+                  {@0575-057A}
+                  pR142_011B;
+                  {@057A-0587}
+                  pO0EC_07C0(p9CEE);
+                end;
+                3: pR142_0137;
+              end;
             {@0592-0597}
             pO108_167D;
             {@0597-05A0}
@@ -1586,8 +1635,6 @@ begin
     if LV = ' out back.' then;
     if LV = ' bids you farewell.' then;
     if LV = ' breathes a sigh of relief.' then;
-    LM4_6(FS, ' breathes a sigh of relief.', ' breathes a sigh of relief.',
-    ' breathes a sigh of relief.', [LB], [LB], [LB], [LB], [LB], [LB]);
   end;
   {@23D1-23DD}
   if pO0AA_3594 = 0 then
@@ -1615,10 +1662,8 @@ if (Byte(pO108_2254('Drop ' + _w4_0string + ' forever? ', b5363)) = b5362)
         pO0EC_1AAC(_w4_0string + ' breathes a sigh of relief.');
     end;
   end;
-  asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-  end;
+  {@24D5-24E2}
+  pO0EC_07C0(p9CEE);
 end;
 
 { 2668 }
@@ -2913,7 +2958,9 @@ var
   v28b: byte;
   _f3: array[1..2] of byte;
   v34l: longint;
-  _f4: array[1..5] of byte;
+  _f4: array[1..1] of byte;
+  v36sb: shortint;
+  _f5: array[1..3] of byte;
   v40b: byte;
   v27b: byte absolute v27w;
   v18sb: shortint absolute v18b;
@@ -2927,8 +2974,6 @@ begin
     if LV = 'and a level ' then;
     if LV = 'Do you wish to train? ' then;
     if LV = 'Congratulations...' then;
-    LM4_6(FS, ' will become:', 'Do you wish to train? ', 'we only train conscious people',
-    [LB], [LB], [LB], [LB], [LB], [LB]);
   end;
   {@463F-4652}
   if (bAE87 = 0) and (pO0AA_3594 = 0) then
@@ -3012,10 +3057,8 @@ if (v18b = 2) and ((v24b = 6) or (v24b = 5) and (_w44_17byte = 17) or (v24b = 4)
         {@486B-4875}
         if v24b = 40 then
           v1b := 1;
-        {@4875-498D}
-        if v1b = 0 then
-          asm
-  db 255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70,238,80
+        asm
+  db 128,126,255,0,116,3,233,15,1,255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70,238,80
   call pO102_12D1
   db 196,126,212,38,59,149,116,1,124,15,126,3,233,233,0,38,59,133,114,1,118,3,233,223,0,138,70,238
   db 152,139,248,138,133,185,109,0,70,246,255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70
@@ -3031,7 +3074,7 @@ if (v18b = 2) and ((v24b = 6) or (v24b = 5) and (_w44_17byte = 17) or (v24b = 4)
   db 137,70,247,137,86,249,128,126,221,6,117,144,196,126,212,38,139,133,114,1,38,139,149,116,1,59,86,249
   db 127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7,124,23,59,70,251,118,18,139
   db 70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253
-          end;
+        end;
       end;
     end;
     {@4996-4AA1}
@@ -3042,25 +3085,27 @@ if (v18b = 2) and ((v24b = 6) or (v24b = 5) and (_w44_17byte = 17) or (v24b = 4)
       {@49A8-49B0}
       v9l := 0;
       for v18b := 0 to 6 do
-      begin
-        {@49B9-4A10}
-        if (a6DB9_ec3f[v18sb] and v10b) <> 0 then
-          asm
-  db 255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70,238,80
+        asm
+  db 138,70,238,152,139,248,138,133,185,109,34,70,246,8,192,116,70,255,54,240,156,255,54,238,156,138,70,232
+  db 254,192,80,138,70,238,80
   call pO102_12D1
   db 59,86,224,127,7,124,40,59,70,222,118,35,255,54,240,156,255,54,238,156,138,70,232,254,192,80,138,70
   db 238,80
   call pO102_12D1
   db 137,70,222,137,86,224,138,70,238,136,70,220
-          end;
-      end;
-      asm
-  db 131,126,224,0,127,11,125,3,233,128,0,131,126,222,0,118,122,138,70,220,152,139,248,138,133,185,109,10
-  db 70,246,136,70,246,255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70,220,80
+        end;
+      {@4A16-4AA1}
+      if v34l > 0 then
+      begin
+        {@4A27-4A37}
+        v10b := a6DB9_ec3f[v36sb] or v10b;
+        asm
+  db 255,54,240,156,255,54,238,156,138,70,232,254,192,254,192,80,138,70,220,80
   call pO102_12D1
-  db 137,70,247,137,86,249,131,126,249,0,127,8,124,67,131,126,247,0,118,61,196,126,212,38,139,133,114,1
-  db 38,139,149,116,1,59,86,249,127,7,124,41,59,70,247,114,36,139,70,247,139,86,249,59,86,253,127,7
-  db 124,23,59,70,251,118,18,139,70,247,139,86,249,45,1,0,131,218,0,137,70,251,137,86,253
+  db 137,70,247,137,86,249
+        end;
+        if (v9l > 0) and (_w44_370longint >= v9l) and (v9l > v5l) then
+          v5l := v9l - 1;
       end;
     end;
     {@4AA1-4AC9}
@@ -3384,11 +3429,13 @@ begin
       pR47F_0354(1, 3, 13, 0, 'Unable to read joystick');
       {@5830-5839}
       Delay(2000);
-      {@5839-583C}
-      Exit;
+      asm
+  db 233,246,2
+      end;
     end;
-    {@583C-5841}
-    v2w := 65535;
+    asm
+  db 199,70,254,255,255
+    end;
     asm
   db 199,70,252,255,255
     end;

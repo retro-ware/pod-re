@@ -71,6 +71,7 @@ var
   bAE65: byte absolute dAE65;
   bAE7D: byte absolute dAE7D;
   p87F8: pointer absolute d87F8;
+  p9CEE: pointer absolute d9CEE;
   p9CF2: pointer absolute d9CF2;
   s278C: string absolute d278C;
   s2D27: string absolute d2D27;
@@ -456,12 +457,9 @@ procedure pO0B2_0705(a0: byte);
 var
   v1b: byte;
   v5p: pointer;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
   if false then begin
     if LV = 'The Whole Party Is Healed' then;
-    for a0 := a0 to a0 do LM1_0('The Whole Party Is Healed');
   end;
   {@070B-070F}
   Inc(wAE7B);
@@ -487,10 +485,7 @@ begin
   {@076E-078E}
   pR47F_0354(1, 19, 10, 0, 'The Whole Party Is Healed');
   if v1b <> 0 then
-    asm
-  db 255,54,240,156,255,54,238,156
-  call pO0EC_07C0
-    end;
+    pO0EC_07C0(p9CEE);
   {@07A1-07A6}
   pR47F_0D1A;
   {@07A6-07AB}
@@ -552,11 +547,10 @@ end;
 function pO0B2_08A2(a0: pointer; a1: pointer): byte;
 var
   v2b: byte;
-  _f1: array[1..1] of byte;
+  v3b: byte;
   v4b: byte;
   v8p: pointer;
   v9b: byte;
-  _f2: array[1..13] of byte;
 begin
   if false then begin
     if LV = 'has scribed' then;
@@ -594,16 +588,14 @@ begin
             asm
   db 138,70,253,48,228,196,126,10,3,248,38,198,133,178,0,1
             end;
-            asm
-  db 255,118,12,255,118,10,255,118,250,255,118,248,138,70,253,80
-  call pO0BB_6C6B
-  db 176,0,80
-  push cs
-  call near ptr pO0B2_04FD
-  db 255,118,12,255,118,10,141,126,235,22,87,191,150,8,14,87,154,111,10,37,8,138,70,253,80
-  call pO0BB_6CF9
-  db 196,126,6,38,198,5,1
-            end;
+            {@096E-0983}
+            pO0BB_6C6B(pointer(a0), v8p, v3b);
+            {@0983-098A}
+            pO0B2_04FD(0);
+            {@098A-09A8}
+            pO0BB_6CF9(pointer(a0), 'has scribed', v3b);
+            {@09A8-09AF}
+            PR0_byte(a1)^.v := 1;
           end;
         end;
         {@09AF-09B2}
