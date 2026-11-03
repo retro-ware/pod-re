@@ -19,13 +19,15 @@ type
   E8_longint = record f: longint; _r: array[1..4] of byte end;
   E8_pointer = record f: pointer; _r: array[1..4] of byte end;
   R18_word = record _p: array[1..18] of byte; v: word end;
+  R22_byte = record _p: array[1..22] of byte; v: byte end;
   R27_byte = record _p: array[1..27] of byte; v: byte end;
   RA27_byte = record _p: array[1..27] of byte; a: array[0..32000] of byte end;
-  W0_8_04B3 = record end;
+  W2_8_04B3 = record case byte of 0: (_w8_0word: word); 1: (_p1: array[1..2] of byte; _w8_2word: word) end;
   PR18_word = ^R18_word;
+  PR22_byte = ^R22_byte;
   PR27_byte = ^R27_byte;
   PRA27_byte = ^RA27_byte;
-  PW0_8_04B3 = ^W0_8_04B3;
+  PW2_8_04B3 = ^W2_8_04B3;
 var
   a9DC4_4bfb: array[0..4094] of array[0..7] of byte absolute d9DC4;
   a9DC4_556f: array[0..4094] of E8_longint absolute d9DC4;
@@ -163,35 +165,31 @@ end;
 { 04B3 }
 procedure pO13E_04B3(a0: shortint; a1: shortint; a2: byte; a3: byte; a4: byte);
 var
-  _f1: array[1..4] of byte;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
+  v4p: pointer;
+  v4b: byte absolute v4p;
 begin
-  if false then begin
-    with LPR^ do ;
-  end;
   {@04B9-04DE}
   if a9DC4_b6a1[a4, a3] = nil then
     Exit;
   {@04DE-05B4}
-  with PW0_8_04B3(a9DC4_b6a1[a4, a3])^ do
+  with PW2_8_04B3(a9DC4_b6a1[a4, a3])^ do
   begin
-  end;
-  if a2 > 3 then
-    asm
-  db 196,126,248,38,255,53,196,126,248,38,255,117,2,184,1,0,80,176,1,80,141,126,252,22,87
-  call pR1C3_19A4
-  db 138,70,8,48,228,209,224,209,224,139,208,138,70,6,48,228,139,248,177,3,211,231,3,250,196,189,196,157
-  db 38,138,69,22,196,126,252,38,136,69,22,138,70,8,48,228,209,224,209,224,139,208,138,70,6,48,228,139
-  db 248,177,3,211,231,3,250,255,181,198,157,255,181,196,157,255,118,254,255,118,252
-  call pR1C3_0A0C
-  db 138,70,14,152,139,240,209,224,1,240,80,138,70,12,152,139,240,209,224,1,240,80,176,0,80,176,1,80
-  db 255,118,254,255,118,252,255,54,56,136,255,54,54,136
-  call pR1C3_08C0
-  db 141,126,252,22,87
-  call pR1C3_1A83
-  db 235,73
+    if a2 > 3 then
+    begin
+      {@0509-0527}
+      pR1C3_19A4(_w8_0word, _w8_2word, 1, 1, @v4b);
+      {@0527-054E}
+      PR22_byte(v4p)^.v := PR22_byte(a9DC4_b6a1[a4, a3])^.v;
+      {@054E-0579}
+      pR1C3_0A0C(pointer(a9DC4_9f5c[a4, a3]), v4p);
+      {@0579-05A8}
+      pR1C3_08C0(a0 * 3, a1 * 3, 0, 1, v4p, l8836);
+      {@05A8-05B2}
+      pR1C3_1A83(@v4b);
+      {@05B2-05B4}
+      Exit;
     end;
+  end;
   {@05B4-05FD}
   pR1C3_08C0(a0 * 3, a1 * 3, 0, 1, pointer(a9DC4_9f5c[a4, a3]), l8836);
 end;

@@ -992,8 +992,8 @@ def flag_cond(f, mn):
     if f.kind == 'test':
         if rel in ('=', '<>'):
             return Op('rel', [f.a, Const(0, f.size if isinstance(f.size, int) else 2)], 1, rel + 'z')
-        if mn in ('jbe', 'ja', 'jle', 'jg', 'jl', 'jge'):
-            # compare with 0 is compiled as or r,r
+        if mn in ('jbe', 'ja', 'jle', 'jg', 'jl', 'jge', 'jb', 'jae'):
+            # compare with 0 is compiled as or r,r (jb/jae: a for loop's unsigned start >= 0 check)
             return Op('rel', [f.a, Const(0, f.size if isinstance(f.size, int) else 2)], 1, rel)
         raise LiftError('test with ' + mn)
     if f.kind == 'in':

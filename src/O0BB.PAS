@@ -139,6 +139,7 @@ type
   R0_word = record v: word end;
   R173_byte = record _p: array[1..173] of byte; v: byte end;
   R173_shortint = record _p: array[1..173] of byte; v: shortint end;
+  R174_byte = record _p: array[1..174] of byte; v: byte end;
   R176_word = record _p: array[1..176] of byte; v: word end;
   R178_byte = record _p: array[1..178] of byte; v: byte end;
   R17_byte = record _p: array[1..17] of byte; v: byte end;
@@ -200,6 +201,7 @@ W9_20_09DE = record case byte of 0: (_p0: array[1..30] of byte; _w20_30abyte: ar
   PR0_word = ^R0_word;
   PR173_byte = ^R173_byte;
   PR173_shortint = ^R173_shortint;
+  PR174_byte = ^R174_byte;
   PR176_word = ^R176_word;
   PR178_byte = ^R178_byte;
   PR17_byte = ^R17_byte;
@@ -3911,40 +3913,71 @@ end;
 
 { 4BCE }
 procedure pO0BB_4BCE;
-var loc: array[1..12] of byte;
+var
+  v1b: byte;
+  _f1: array[1..1] of byte;
+  v6p: pointer;
+  _f2: array[1..3] of byte;
+  v10b: byte;
+  _f3: array[1..2] of byte;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
   end;
   asm
-    db 161,59,173,139,22,61,173,137,70,250,137,86,252,196,126,250,38,138,133,54,1,136,70,254,196,126,250,38
-    db 138,133,174,0,60,0,117,10,196,126,250,38,254,141,54,1,235,24,60,5,117,11,196,126,250,38,128,133
-    db 54,1,4,235,9,196,126,250,38,128,133,54,1,2,160,213,167,80,176,0,80,176,0,80,49,192,80,49
-    db 192,80,141,126,245,22,87,191,205,75,14,87,154,111,10,37,8
-    push cs
-    call near ptr pO0BB_0ED6
-    db 255,118,252,255,118,250,176,68,80,141,126,246,22,87
-    call pO0EC_27C1
-    db 8,192,116,72,176,68,80,141,126,250,22,87,49,192,49,210,82,80,176,0,80
-    call pO0E2_00BD
-    db 198,70,255,0,235,3,254,70,255,138,70,255,48,228,196,126,250,3,248,38,138,69,30,36,128,8,192,116
-    db 15,138,70,255,48,228,196,126,250,3,248,38,198,69,30,0,128,126,255,140,117,212,138,70,254,196,126,250
-    db 38,136,133,54,1
+  db 161,59,173,139,22,61,173,137,70,250,137,86,252
+  end;
+  asm
+  db 196,126,250,38,138,133,54,1,136,70,254
+  end;
+  case PR174_byte(v6p)^.v of
+    0: asm
+  db 196,126,250,38,254,141,54,1
+      end;
+    5: asm
+  db 196,126,250,38,128,133,54,1,4
+      end;
+  else
+    asm
+  db 196,126,250,38,128,133,54,1,2
+    end;
+  end;
+  asm
+  db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,245,22,87,191,205,75,14,87,154,111
+  db 10,37,8
+  push cs
+  call near ptr pO0BB_0ED6
+  end;
+  if pO0EC_27C1(v6p, 68, @v10b) <> 0 then
+  begin
+    asm
+  db 176,68,80,141,126,250,22,87,49,192,49,210,82,80,176,0,80
+  call pO0E2_00BD
+    end;
+    for v1b := 0 to 140 do
+      asm
+  db 138,70,255,48,228,196,126,250,3,248,38,138,69,30,36,128,8,192,116,15,138,70,255,48,228,196,126,250
+  db 3,248,38,198,69,30,0
+      end;
+  end;
+  asm
+  db 138,70,254,196,126,250,38,136,133,54,1
   end;
 end;
 
 { 4CAC }
 procedure pO0BB_4CAC;
-var loc: array[1..2] of byte;
+var
+  _f1: array[1..2] of byte;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
   end;
   asm
-    db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,171,76,14,87,154,111
-    db 10,37,8
-    push cs
-    call near ptr pO0BB_0ED6
+  db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,171,76,14,87,154,111
+  db 10,37,8
+  push cs
+  call near ptr pO0BB_0ED6
   end;
 end;
 
@@ -3991,16 +4024,17 @@ end;
 
 { 4DCB }
 procedure pO0BB_4DCB;
-var loc: array[1..2] of byte;
+var
+  _f1: array[1..2] of byte;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
   end;
   asm
-    db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,202,77,14,87,154,111
-    db 10,37,8
-    push cs
-    call near ptr pO0BB_0ED6
+  db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,202,77,14,87,154,111
+  db 10,37,8
+  push cs
+  call near ptr pO0BB_0ED6
   end;
 end;
 
@@ -4017,34 +4051,36 @@ end;
 
 { 4E3D }
 procedure pO0BB_4E3D;
-var loc: array[1..10] of byte;
+var
+  _f1: array[1..10] of byte;
 begin
   if false then begin
     if LV = 'is Healed' then;
   end;
   asm
-    db 255,54,61,173,255,54,59,173,176,2,80,176,4,80
-    call pO0E2_1374
-    db 48,228,64,64,80,176,0,80
-    call pO0E2_212C
-    db 8,192,116,31,255,54,61,173,255,54,59,173,176,1,80,141,126,246,22,87,191,51,78,14,87,154,111,10
-    db 37,8
-    call pO0EC_2601
+  db 255,54,61,173,255,54,59,173,176,2,80,176,4,80
+  call pO0E2_1374
+  db 48,228,64,64,80,176,0,80
+  call pO0E2_212C
+  db 8,192,116,31,255,54,61,173,255,54,59,173,176,1,80,141,126,246,22,87,191,51,78,14,87,154,111,10
+  db 37,8
+  call pO0EC_2601
   end;
 end;
 
 { 4E8B }
 procedure pO0BB_4E8B;
-var loc: array[1..2] of byte;
+var
+  _f1: array[1..2] of byte;
 begin
   if false then begin
     if Pos('', LV) = 0 then;
   end;
   asm
-    db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,138,78,14,87,154,111
-    db 10,37,8
-    push cs
-    call near ptr pO0BB_0ED6
+  db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,126,255,22,87,191,138,78,14,87,154,111
+  db 10,37,8
+  push cs
+  call near ptr pO0BB_0ED6
   end;
 end;
 
@@ -4141,23 +4177,39 @@ end;
 
 { 5142 }
 procedure pO0BB_5142;
-var loc: array[1..18] of byte;
+var
+  v4p: pointer;
 begin
   if false then begin
     if LV = 'is destroyed' then;
     if LV = 'is unaffected' then;
+    LP1('is destroyed');
   end;
   asm
-    db 161,59,173,139,22,61,173,137,70,252,137,86,254,198,6,210,167,72,199,6,216,167,255,0,176,9,80,141
-    db 126,252,22,87
-    call pO0E2_04DD
-    db 196,126,252,38,138,133,165,1,36,8,8,192,117,38,131,62,216,167,0,116,31,255,118,254,255,118,252,176
-    db 8,80,141,126,239,22,87,191,39,81,14,87,154,111,10,37,8
-    call pO0E2_0000
-    db 235,32,255,118,254,255,118,252,141,126,238,22,87,191,52,81,14,87,154,111,10,37,8,176,10,80,176,1
-    db 80
-    call pO0EC_1B08
+  db 161,59,173,139,22,61,173,137,70,252,137,86,254
   end;
+  asm
+  db 198,6,210,167,72
+  end;
+  asm
+  db 199,6,216,167,255,0
+  end;
+  asm
+  db 176,9,80,141,126,252,22,87
+  call pO0E2_04DD
+  end;
+  if ((PR421_byte(v4p)^.v and 8) = 0) and (wA7D8 <> 0) then
+  begin
+    asm
+  db 255,118,254,255,118,252,176,8,80,141,126,239,22,87,191,39,81,14,87,154,111,10,37,8
+  call pO0E2_0000
+    end;
+    asm
+  db 235,32
+    end;
+  end;
+  {@51A1-51C1}
+  pO0EC_1B08(v4p, 'is unaffected', 10, 1);
 end;
 
 { 51D1 }
@@ -4291,45 +4343,70 @@ end;
 
 { 54D9 }
 procedure pO0BB_54D9;
-var loc: array[1..20] of byte;
+var
+  v1b: byte;
+  v5p: pointer;
 begin
   if false then begin
     if LV = 'disintegrates' then;
     if LV = 'is unaffected' then;
   end;
   asm
-    db 198,6,210,167,72,161,59,173,139,22,61,173,137,70,251,137,86,253,199,6,216,167,255,0,176,9,80,141
-    db 126,251,22,87
-    call pO0E2_04DD
-    db 131,62,216,167,0,117,3,233,132,0,255,118,253,255,118,251,176,4,80,176,0,80
-    call pO0E2_12C9
-    db 136,70,255,128,126,255,0,117,72,255,118,253,255,118,251,176,6,80,141,126,237,22,87,191,189,84,14,87
-    db 154,111,10,37,8
-    call pO0E2_0000
-    db 196,126,251,38,139,133,167,1,38,11,133,169,1,116,26,255,118,253,255,118,251,196,126,251,38,255,181,169
-    db 1,38,255,181,167,1
-    call pO0EC_18EF
-    db 235,215,235,32,255,118,253,255,118,251,141,126,237,22,87,191,203,84,14,87,154,111,10,37,8,176,10,80
-    db 176,1,80
-    call pO0EC_1B08
-    db 235,32,255,118,253,255,118,251,141,126,237,22,87,191,203,84,14,87,154,111,10,37,8,176,10,80,176,1
-    db 80
-    call pO0EC_1B08
+  db 198,6,210,167,72
   end;
+  asm
+  db 161,59,173,139,22,61,173,137,70,251,137,86,253
+  end;
+  asm
+  db 199,6,216,167,255,0
+  end;
+  asm
+  db 176,9,80,141,126,251,22,87
+  call pO0E2_04DD
+  end;
+  if wA7D8 <> 0 then
+  begin
+    asm
+  db 255,118,253,255,118,251,176,4,80,176,0,80
+  call pO0E2_12C9
+  db 136,70,255
+    end;
+    if v1b = 0 then
+    begin
+      asm
+  db 255,118,253,255,118,251,176,6,80,141,126,237,22,87,191,189,84,14,87,154,111,10,37,8
+  call pO0E2_0000
+      end;
+      asm
+  db 196,126,251,38,139,133,167,1,38,11,133,169,1,116,26,255,118,253,255,118,251,196,126,251,38,255,181,169
+  db 1,38,255,181,167,1
+  call pO0EC_18EF
+  db 235,215
+      end;
+    end
+    else
+      pO0EC_1B08(v5p, 'is unaffected', 10, 1);
+    asm
+  db 235,32
+    end;
+  end;
+  {@5592-55B2}
+  pO0EC_1B08(v5p, 'is unaffected', 10, 1);
 end;
 
 { 55C0 }
 procedure pO0BB_55C0;
-var loc: array[1..256] of byte;
+var
+  _f1: array[1..256] of byte;
 begin
   if false then begin
     if LV = 'protected' then;
   end;
   asm
-    db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,190,0,255,22,87,191,37,64,30,87,154
-    db 111,10,37,8,191,182,85,14,87,154,252,10,37,8
-    push cs
-    call near ptr pO0BB_0ED6
+  db 160,213,167,80,176,0,80,176,0,80,49,192,80,49,192,80,141,190,0,255,22,87,191,37,64,30,87,154
+  db 111,10,37,8,191,182,85,14,87,154,252,10,37,8
+  push cs
+  call near ptr pO0BB_0ED6
   end;
 end;
 
@@ -4942,8 +5019,7 @@ end;
 { 6874 }
 procedure pO0BB_6874(a0: pointer; a1: pointer; a2: word);
 var
-c32: record case byte of 0: (v32a2: string[31]); 1: (v32a: string[20]); 2: (_p2: array[1..28] of byte;
-      v4b: byte) end;
+  c32: record case byte of 0: (v32a: string[31]); 1: (_p1: array[1..28] of byte; v4b: byte) end;
   _f1: array[1..3] of byte;
   _fb: byte absolute a0;
   _fw: word absolute a0;
@@ -4980,8 +5056,9 @@ begin
         asm
   db 198,70,245,9
         end;
-        {@68D1-68E4}
-        c32.v32a := 'Fire';
+        asm
+  db 191,91,104,14,87,141,126,224,22,87,184,20,0,80,154,137,10,37,8
+        end;
         if PR0_byte(a1)^.v = 83 then
           asm
   db 176,24,80,176,10,80
@@ -5049,7 +5126,7 @@ begin
       if (bAD3A > 0) and (bB16C <> 0) then
       begin
         {@6A02-6A31}
-        pO0EC_1B08(pointer(PR0_pointer(a0)^.v), 'breathes ' + c32.v32a2, 10, 1);
+        pO0EC_1B08(pointer(PR0_pointer(a0)^.v), 'breathes ' + c32.v32a, 10, 1);
         asm
   db 196,126,12,38,255,117,2,38,255,53,255,54,61,173,255,54,59,173
   call pO135_17F9

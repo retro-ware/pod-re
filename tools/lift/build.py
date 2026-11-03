@@ -149,6 +149,8 @@ def generate(results, sigs):
             cuts.add(a)
         gtypes[pr.key].update(em.types)
         absmem[pr.key].update(getattr(em, 'absmem', {}))
+    for (k, e), (decl, body) in HAND.items():
+        skel.LIFTED[(k, e)] = {'decl': decl, 'body': body}
     # GAMEDATA item cuts so every alias starts on an item
     os.makedirs('data', exist_ok=True)
     old = set()
@@ -264,6 +266,12 @@ def frame_decls(pr, fr):
             m3 = re.match(r'E(\d+)_', el)
             m4 = re.match(r'AS(\d+)_\d+$', el) or re.match(r'X(\d+)$', el)
             esz = int(m2.group(1)) + 1 if m2 else (int(m3.group(1)) if m3 else (int(m4.group(1)) if m4 else SIZE[el]))
+            if off < -L:
+                # base below the frame: the array's low bound is above 0 (array[1..] of string at [bp+di-0x818])
+                k_ = (-L - off + esz - 1) // esz
+                if off + k_ * esz > -top:
+                    raise LiftError('array base below frame')
+                off += k_ * esz; low += k_
             above = [o for o in starts if o > off]
             lim = min(above) if above else -top
             cnt = max(1, (lim - off) // esz)
@@ -718,7 +726,7 @@ def produce(st):
     results = {}
     for pr in PROCS.values():
         k = pkey(pr)
-        if st.get(k, 'ok').startswith('fail'):
+        if st.get(k, 'ok').startswith('fail') or (pr.key, pr.entry) in HAND:
             continue
         try:
             ctx, em, fr, body = render(pr)
@@ -781,6 +789,21 @@ def produce(st):
 
 
 STRIKES = {}     # verify mismatches per procedure in this run
+
+
+def load_hand():
+    """data/hand/KEY_ENTRY.pas: hand-written procedures (declarations, a line '{BODY}', then begin..end;)."""
+    out = {}
+    import glob
+    for f in sorted(glob.glob(os.path.join(ROOT, 'data', 'hand', '*.pas'))):
+        k, e = os.path.basename(f)[:-4].split('_')
+        L = open(f).read().rstrip('\n').split('\n')
+        i = L.index('{BODY}')
+        out[(k, int(e, 16))] = (L[:i], L[i + 1:])
+    return out
+
+
+HAND = load_hand()
 
 
 def sys_calls(pr):

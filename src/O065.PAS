@@ -24,7 +24,6 @@ type
   R305_byte = record _p: array[1..305] of byte; v: byte end;
   R31_byte = record _p: array[1..31] of byte; v: byte end;
   R327_byte = record _p: array[1..327] of byte; v: byte end;
-  R33_byte = record _p: array[1..33] of byte; v: byte end;
   R483_longint = record _p: array[1..483] of byte; v: longint end;
   R483_pointer = record _p: array[1..483] of byte; v: pointer end;
   R487_pointer = record _p: array[1..487] of byte; v: pointer end;
@@ -44,7 +43,6 @@ type
   PR305_byte = ^R305_byte;
   PR31_byte = ^R31_byte;
   PR327_byte = ^R327_byte;
-  PR33_byte = ^R33_byte;
   PR483_longint = ^R483_longint;
   PR483_pointer = ^R483_pointer;
   PR487_pointer = ^R487_pointer;
@@ -406,13 +404,9 @@ var
               if b821A <> 0 then
                 w5b := 4
               else
-              begin
-                {@05E9-05F9}
-                if w8b = 0 then
-                  w5b := 8
-                else
-                  w5b := 12;
-              end;
+                asm
+    db 128,126,248,0,117,6,198,70,251,8,235,4,198,70,251,12
+                end;
             end;
           end
           else
@@ -731,8 +725,7 @@ end;
 
 { 0EAD }
 procedure pO065_0EAD;
-var
-  _f1: array[1..10] of byte;
+var loc: array[1..10] of byte;
 begin
   if false then begin
     if LV = 'DungCom' then;
@@ -740,39 +733,20 @@ begin
     if LV = 'WildCom' then;
   end;
   asm
-  db 196,62,248,135,38,128,125,33,0,116,32,141,126,247,22,87,191,125,14,14,87,154,111,10,37,8,160,248
-  db 169,80,176,0,80,176,25,80
-  call pO13E_0022
-  db 235,68,196,62,248,135,38,138,69,57,80,191,133,14,14,87,154,36,13,37,8,116,13,196,62,248,135,38
-  db 138,69,57,136,70,255,235,4,198,70,255,0,141,126,247,22,87,191,165,14,14,87,154,111,10,37,8,138
-  db 70,255,80,176,0,80,176,39,80
-  call pO13E_0022
-  end;
-  asm
-  db 184,233,4,80,154,63,2,37,8,163,224,166,137,22,226,166
-  end;
-  asm
-  db 196,62,224,166,38,198,69,4,0
-  end;
-  asm
-  db 196,62,224,166,38,198,69,5,1
-  end;
-  asm
-  db 196,62,224,166,38,198,69,6,0
-  end;
-  if PR33_byte(p87F8)^.v <> 0 then
-  begin
-    asm
-  push cs
-  call near ptr pO065_065F
-    end;
-    asm
-  db 235,4
-    end;
-  end;
-  asm
-  push cs
-  call near ptr pO065_0E34
+    db 196,62,248,135,38,128,125,33,0,116,32,141,126,247,22,87,191,125,14,14,87,154,111,10,37,8,160,248
+    db 169,80,176,0,80,176,25,80
+    call pO13E_0022
+    db 235,68,196,62,248,135,38,138,69,57,80,191,133,14,14,87,154,36,13,37,8,116,13,196,62,248,135,38
+    db 138,69,57,136,70,255,235,4,198,70,255,0,141,126,247,22,87,191,165,14,14,87,154,111,10,37,8,138
+    db 70,255,80,176,0,80,176,39,80
+    call pO13E_0022
+    db 184,233,4,80,154,63,2,37,8,163,224,166,137,22,226,166,196,62,224,166,38,198,69,4,0,196,62,224
+    db 166,38,198,69,5,1,196,62,224,166,38,198,69,6,0,196,62,248,135,38,128,125,33,0,116,6
+    push cs
+    call near ptr pO065_065F
+    db 235,4
+    push cs
+    call near ptr pO065_0E34
   end;
 end;
 

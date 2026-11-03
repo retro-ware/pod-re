@@ -243,7 +243,7 @@ var
   wA7D8: word absolute dA7D8;
 
 procedure pO0A1_019C(a0: pointer; a1: longint; a2: byte); far; forward;
-procedure pO0A1_0321(a0: longint; a1: pointer; a2: byte; a3: word; a4: byte; a5: byte); far; forward;
+procedure pO0A1_0321(a0: longint; a1: pointer; a2: byte; a3: word; a4: word; a5: byte); far; forward;
 procedure pO0A1_067F(a0: pointer); far; forward;
 function pO0A1_0F85(a0: byte): byte; far; forward;
 procedure pO0A1_1403(a0: pointer; a1: pointer; a2: byte; a3: pointer; a4: longint); far; forward;
@@ -347,7 +347,7 @@ wA7D8 := LongInt(PRA505_shortint(a0)^.a[a2]) + LongInt(pO0E2_13BF(PRA501_byte(a0
 end;
 
 { 0321 }
-procedure pO0A1_0321(a0: longint; a1: pointer; a2: byte; a3: word; a4: byte; a5: byte);
+procedure pO0A1_0321(a0: longint; a1: pointer; a2: byte; a3: word; a4: word; a5: byte);
 var
 c82: record case byte of 0: (v82a2: string[81]); 1: (v82a: string[80]); 2: (_p2: array[1..81] of byte;
       v1b: byte) end;
