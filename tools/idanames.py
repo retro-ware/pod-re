@@ -12,7 +12,7 @@ order = ['seg001'] + ['stub%03d' % i for i in range(1, 32)] + ['seg031', 'stub03
          'stub036', 'seg037', 'stub038', 'seg039', 'seg040', 'seg041', 'seg042', 'seg043', 'seg044', 'seg045',
          'seg046', 'seg049', 'seg050', 'seg051']
 import struct
-o = open('orig/START.bin', 'rb').read()
+o = open('orig/GAME.bin', 'rb').read()
 # paragraph bases: walk stubs/segments by size from the listing
 last = {}
 for l in lst:

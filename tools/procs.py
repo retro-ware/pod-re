@@ -15,6 +15,8 @@ def analyze(code, init_hint=None):
         e = starts[i]
         # find the final ret of this proc: the last ret before the next prologue that is preceded by pop bp (5d)
         nxt = starts[i+1] if i+1 < len(starts) else n
+        a = code.find(b'\x55\x8b\xec', e, nxt)      # asm (external) code starts with the other mov bp,sp encoding
+        if a > 0: nxt = a
         seg = code[e:nxt]
         best = None
         for m in re.finditer(rb'\x5d(\xc3|\xcb|\xc2..|\xca..)', seg, re.S):
@@ -45,7 +47,7 @@ for u in units:
         pas = u['init'] + m.end()
     procs, tail = analyze(code[:pas])
     if procs and procs[-1]['entry'] != u.get('init', procs[-1]['entry']): print('INIT MISMATCH', u['key'])
-    out[u['key']] = {'procs': procs, 'tail': tail, 'size': len(code), 'obj': [pas, len(code)] if pas < len(code) else None}
+    out[u['key']] = {'procs': procs, 'tail': tail, 'size': len(code), 'obj': [tail, len(code)] if code[tail:].rstrip(b'\0') else None}
     tot += len(procs)
     bad = sum(1 for p in procs if p.get('bad'))
     print('%-5s %3d procs  tail %04X/%04X  bad %d' % (u['key'], len(procs), tail, len(code), bad))

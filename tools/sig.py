@@ -3,7 +3,7 @@ import json, re, struct, collections
 units = {u['key']: u for u in json.load(open('out/units.json'))}
 P = json.load(open('out/procs.json'))
 RES = [  # epilogue result loads, longest first
-    (bytes.fromhex('8b46fa8b5efc8b56fe'), 'real'), (bytes.fromhex('8b46fc8b56fe'), 'longint'), (bytes.fromhex('c446fc8cc2'), 'longint'),
+    (bytes.fromhex('8b46fa8b5efc8b56fe'), 'real'), (bytes.fromhex('8b46fc8b56fe'), 'longint'),
     (bytes.fromhex('8b46fe'), 'word'), (bytes.fromhex('8a46ff'), 'byte')]
 COPY = re.compile(rb'\xc4\x7e(.)\x06\x57(?:\x8d\x7e(.)|\x8d\xbe(..))\x16\x57\xb8(..)\x50\x9a(..)(..)', re.S)
 stats = collections.Counter()

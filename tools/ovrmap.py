@@ -1,6 +1,6 @@
-"""List TP overlay stubs in START.bin and their GAME.OVR code ranges."""
+"""List TP overlay stubs in GAME.bin and their GAME.OVR code ranges."""
 import struct, sys
-o = open('orig/START.bin', 'rb').read()
+o = open('orig/GAME.bin', 'rb').read()
 ov = open('gog/GAME.OVR', 'rb').read()
 s = 0x36
 stubs = []

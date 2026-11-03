@@ -10,7 +10,7 @@ core=normal
 cycles=max
 [autoexec]
 mount c "$D"
-mount t "$PWD/toolchain/${TPDIR:-tp55}"
+mount t "$PWD/toolchain/${TPDIR:-tp6}"
 set PATH=T:\\
 c:
 call $2

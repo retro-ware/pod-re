@@ -24,7 +24,7 @@ def main():
     if what=='start':
         seg,ofs=[int(x,16) for x in sys.argv[2].split(':')]
         length=int(sys.argv[3],16) if len(sys.argv)>3 else 0x200
-        b=open(out+'/START.bin','rb').read()
+        b=open(out+'/GAME.bin','rb').read()
         base=seg*16; lo=base+ofs; hi=lo+length
         # start.asm is a clean linear listing of the whole image (r2 with a seek desyncs)
         lines=[]

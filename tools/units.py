@@ -1,15 +1,15 @@
-"""Split START.bin + GAME.OVR into units. Writes out/units.json and out/u/<KEY>.bin (code) for every unit.
+"""Split GAME.bin + GAME.OVR into units. Writes out/units.json and out/u/<KEY>.bin (code) for every unit.
 KEY: M = main program, Rxxx = resident unit at paragraph xxx, Oxxx = overlaid unit whose stub is at paragraph xxx,
 TPL units: Dos, Crt, Overlay, System. Fixups: list of [offset_of_segment_word, target_paragraph]."""
 import struct, json, os
-o = open('orig/START.bin', 'rb').read()
+o = open('orig/GAME.bin', 'rb').read()
 ov = open('gog/GAME.OVR', 'rb').read()
-rel = [int(l, 16) for l in open('orig/START.bin.relocs')]
-DS = 0xDE2
-tpl = {0xBDB: 'Dos', 0xC07: 'Overlay', 0xC5D: 'System'}
+rel = [int(l, 16) for l in open('orig/GAME.bin.relocs')]
+import sys; sys.path.insert(0, 'tools')
+from layout import DSSEG as DS, TPL as tpl, FIRST_SEG, ENTRY
 # segment starts: main, stubs and resident code in paragraph order
 starts = []
-p = 0x44
+p = FIRST_SEG
 starts.append((0, 'M'))
 while p < DS:
     if o[p*16:p*16+2] == b'\xcd\x3f':
@@ -38,7 +38,7 @@ for i, (p, k) in enumerate(starts):
     units.append(u)
 # init offsets: main's entry calls every unit's init block (far call seg:off) in init order
 inits = {}
-q = 0x8B
+q = ENTRY
 while o[q] == 0x9A:
     off, sg = struct.unpack('<HH', o[q+1:q+5]); inits[sg] = off; q += 5
 for u in units:

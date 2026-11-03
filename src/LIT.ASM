@@ -1,0 +1,604 @@
+; LIT.OBJ: empty code with the public names of LIT.PAS
+segment CODE public class=CODE
+global $FS
+global F2
+global LP1
+global LM0_1
+global LM0_2
+global LM0_3
+global LM0_4
+global LM0_5
+global LM0_6
+global LM0_7
+global LM0_8
+global LM1_0
+global LM1_1
+global LM1_2
+global LM1_3
+global LM1_4
+global LM1_5
+global LM1_6
+global LM1_7
+global LM1_8
+global LM2_0
+global LM2_1
+global LM2_2
+global LM2_3
+global LM2_4
+global LM2_5
+global LM2_6
+global LM2_7
+global LM2_8
+global LM3_0
+global LM3_1
+global LM3_2
+global LM3_3
+global LM3_4
+global LM3_5
+global LM3_6
+global LM3_7
+global LM3_8
+global LM4_0
+global LM4_1
+global LM4_2
+global LM4_3
+global LM4_4
+global LM4_5
+global LM4_6
+global LM4_7
+global LM4_8
+global TMP1
+global TMP2
+global TMP3
+global TMP4
+global TMP5
+global TMP6
+global TMP7
+global TMP8
+global TMP9
+global TMP10
+global TMP11
+global TMP12
+global TMP13
+global TMP14
+global TMP15
+global TMP16
+global TMP17
+global TMP18
+global TMP19
+global TMP20
+global TMP21
+global TMP22
+global TMP23
+global TMP24
+global TMP25
+global TMP26
+global TMP27
+global TMP28
+global TMP29
+global TMP30
+global TMP31
+global TMP32
+global TMP33
+global TMP34
+global TMP35
+global TMP36
+global TMP37
+global TMP38
+global TMP39
+global TMP40
+global TMP41
+global TMP42
+global TMP43
+global TMP44
+global TMP45
+global TMP46
+global TMP47
+global TMP48
+global TMP49
+global TMP50
+global TMP51
+global TMP52
+global TMP53
+global TMP54
+global TMP55
+global TMP56
+global TMP57
+global TMP58
+global TMP59
+global TMP60
+global TMP61
+global TMP62
+global TMP63
+global TMP64
+global TMP65
+global TMP66
+global TMP67
+global TMP68
+global TMP69
+global TMP70
+global TMP71
+global TMP72
+global TMP73
+global TMP74
+global TMP75
+global TMP76
+global TMP77
+global TMP78
+global TMP79
+global TMP80
+global TMP81
+global TMP82
+global TMP83
+global TMP84
+global TMP85
+global TMP86
+global TMP87
+global TMP88
+global TMP89
+global TMP90
+global TMP91
+global TMP92
+global TMP93
+global TMP94
+global TMP95
+global TMP96
+global TMP97
+global TMP98
+global TMP99
+global TMP100
+global TMP101
+global TMP102
+global TMP103
+global TMP104
+global TMP105
+global TMP106
+global TMP107
+global TMP108
+global TMP109
+global TMP110
+global TMP111
+global TMP112
+global TMP113
+global TMP114
+global TMP115
+global TMP116
+global TMP117
+global TMP118
+global TMP119
+global TMP120
+global TMP121
+global TMP122
+global TMP123
+global TMP124
+global TMP125
+global TMP126
+global TMP127
+global TMP128
+global TMP129
+global TMP130
+global TMP131
+global TMP132
+global TMP133
+global TMP134
+global TMP135
+global TMP136
+global TMP137
+global TMP138
+global TMP139
+global TMP140
+global TMP141
+global TMP142
+global TMP143
+global TMP144
+global TMP145
+global TMP146
+global TMP147
+global TMP148
+global TMP149
+global TMP150
+global TMP151
+global TMP152
+global TMP153
+global TMP154
+global TMP155
+global TMP156
+global TMP157
+global TMP158
+global TMP159
+global TMP160
+global TMP161
+global TMP162
+global TMP163
+global TMP164
+global TMP165
+global TMP166
+global TMP167
+global TMP168
+global TMP169
+global TMP170
+global TMP171
+global TMP172
+global TMP173
+global TMP174
+global TMP175
+global TMP176
+global TMP177
+global TMP178
+global TMP179
+global TMP180
+global TMP181
+global TMP182
+global TMP183
+global TMP184
+global TMP185
+global TMP186
+global TMP187
+global TMP188
+global TMP189
+global TMP190
+global TMP191
+global TMP192
+global TMP193
+global TMP194
+global TMP195
+global TMP196
+global TMP197
+global TMP198
+global TMP199
+global TMP200
+global TMP201
+global TMP202
+global TMP203
+global TMP204
+global TMP205
+global TMP206
+global TMP207
+global TMP208
+global TMP209
+global TMP210
+global TMP211
+global TMP212
+global TMP213
+global TMP214
+global TMP215
+global TMP216
+global TMP217
+global TMP218
+global TMP219
+global TMP220
+global TMP221
+global TMP222
+global TMP223
+global TMP224
+global TMP225
+global TMP226
+global TMP227
+global TMP228
+global TMP229
+global TMP230
+global TMP231
+global TMP232
+global TMP233
+global TMP234
+global TMP235
+global TMP236
+global TMP237
+global TMP238
+global TMP239
+global TMP240
+global TMP241
+global TMP242
+global TMP243
+global TMP244
+global TMP245
+global TMP246
+global TMP247
+global TMP248
+global TMP249
+global TMP250
+global TMP251
+global TMP252
+global TMP253
+global TMP254
+$FS:
+F2:
+LP1:
+TMP1:
+TMP2:
+TMP3:
+TMP4:
+TMP5:
+TMP6:
+TMP7:
+TMP8:
+TMP9:
+TMP10:
+TMP11:
+TMP12:
+TMP13:
+TMP14:
+TMP15:
+TMP16:
+TMP17:
+TMP18:
+TMP19:
+TMP20:
+TMP21:
+TMP22:
+TMP23:
+TMP24:
+TMP25:
+TMP26:
+TMP27:
+TMP28:
+TMP29:
+TMP30:
+TMP31:
+TMP32:
+TMP33:
+TMP34:
+TMP35:
+TMP36:
+TMP37:
+TMP38:
+TMP39:
+TMP40:
+TMP41:
+TMP42:
+TMP43:
+TMP44:
+TMP45:
+TMP46:
+TMP47:
+TMP48:
+TMP49:
+TMP50:
+TMP51:
+TMP52:
+TMP53:
+TMP54:
+TMP55:
+TMP56:
+TMP57:
+TMP58:
+TMP59:
+TMP60:
+TMP61:
+TMP62:
+TMP63:
+TMP64:
+TMP65:
+TMP66:
+TMP67:
+TMP68:
+TMP69:
+TMP70:
+TMP71:
+TMP72:
+TMP73:
+TMP74:
+TMP75:
+TMP76:
+TMP77:
+TMP78:
+TMP79:
+TMP80:
+TMP81:
+TMP82:
+TMP83:
+TMP84:
+TMP85:
+TMP86:
+TMP87:
+TMP88:
+TMP89:
+TMP90:
+TMP91:
+TMP92:
+TMP93:
+TMP94:
+TMP95:
+TMP96:
+TMP97:
+TMP98:
+TMP99:
+TMP100:
+TMP101:
+TMP102:
+TMP103:
+TMP104:
+TMP105:
+TMP106:
+TMP107:
+TMP108:
+TMP109:
+TMP110:
+TMP111:
+TMP112:
+TMP113:
+TMP114:
+TMP115:
+TMP116:
+TMP117:
+TMP118:
+TMP119:
+TMP120:
+TMP121:
+TMP122:
+TMP123:
+TMP124:
+TMP125:
+TMP126:
+TMP127:
+TMP128:
+TMP129:
+TMP130:
+TMP131:
+TMP132:
+TMP133:
+TMP134:
+TMP135:
+TMP136:
+TMP137:
+TMP138:
+TMP139:
+TMP140:
+TMP141:
+TMP142:
+TMP143:
+TMP144:
+TMP145:
+TMP146:
+TMP147:
+TMP148:
+TMP149:
+TMP150:
+TMP151:
+TMP152:
+TMP153:
+TMP154:
+TMP155:
+TMP156:
+TMP157:
+TMP158:
+TMP159:
+TMP160:
+TMP161:
+TMP162:
+TMP163:
+TMP164:
+TMP165:
+TMP166:
+TMP167:
+TMP168:
+TMP169:
+TMP170:
+TMP171:
+TMP172:
+TMP173:
+TMP174:
+TMP175:
+TMP176:
+TMP177:
+TMP178:
+TMP179:
+TMP180:
+TMP181:
+TMP182:
+TMP183:
+TMP184:
+TMP185:
+TMP186:
+TMP187:
+TMP188:
+TMP189:
+TMP190:
+TMP191:
+TMP192:
+TMP193:
+TMP194:
+TMP195:
+TMP196:
+TMP197:
+TMP198:
+TMP199:
+TMP200:
+TMP201:
+TMP202:
+TMP203:
+TMP204:
+TMP205:
+TMP206:
+TMP207:
+TMP208:
+TMP209:
+TMP210:
+TMP211:
+TMP212:
+TMP213:
+TMP214:
+TMP215:
+TMP216:
+TMP217:
+TMP218:
+TMP219:
+TMP220:
+TMP221:
+TMP222:
+TMP223:
+TMP224:
+TMP225:
+TMP226:
+TMP227:
+TMP228:
+TMP229:
+TMP230:
+TMP231:
+TMP232:
+TMP233:
+TMP234:
+TMP235:
+TMP236:
+TMP237:
+TMP238:
+TMP239:
+TMP240:
+TMP241:
+TMP242:
+TMP243:
+TMP244:
+TMP245:
+TMP246:
+TMP247:
+TMP248:
+TMP249:
+TMP250:
+TMP251:
+TMP252:
+TMP253:
+TMP254:
+LM0_1:
+LM0_2:
+LM0_3:
+LM0_4:
+LM0_5:
+LM0_6:
+LM0_7:
+LM0_8:
+LM1_0:
+LM1_1:
+LM1_2:
+LM1_3:
+LM1_4:
+LM1_5:
+LM1_6:
+LM1_7:
+LM1_8:
+LM2_0:
+LM2_1:
+LM2_2:
+LM2_3:
+LM2_4:
+LM2_5:
+LM2_6:
+LM2_7:
+LM2_8:
+LM3_0:
+LM3_1:
+LM3_2:
+LM3_3:
+LM3_4:
+LM3_5:
+LM3_6:
+LM3_7:
+LM3_8:
+LM4_0:
+LM4_1:
+LM4_2:
+LM4_3:
+LM4_4:
+LM4_5:
+LM4_6:
+LM4_7:
+LM4_8:

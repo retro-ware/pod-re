@@ -158,9 +158,6 @@ class Body:
             if rel is None:
                 i += 1; continue
             mn, X = rel
-            if memcmp and c.operands[1].imm == 0 and lo.ins[0].operands[1].imm == 0 and mn in ('je', 'jne'):
-                # TP tests a longint against 0 with mov/or: a cmp chain is separate word tests
-                i += 1; continue
             if X == fall:
                 inv = {'je': 'jne', 'jne': 'je', 'jb': 'jae', 'jae': 'jb', 'jbe': 'ja', 'ja': 'jbe',
                        'jl': 'jge', 'jge': 'jl', 'jle': 'jg', 'jg': 'jle'}
@@ -198,14 +195,10 @@ class Body:
             sim.r['ax'] = sd[1]
             if len(sd) > 2:
                 sim.stack = list(sd[2])      # arguments pushed before the boolean value
-            for r, v in getattr(self, 'seed_regs', {}).get(blk.start, {}).items():
-                sim.r.setdefault(r, v)
         return sim
 
     def run(self, blk, sim=None):
         """Simulate a block from an idle state. Returns (statements, sim at end)."""
-        if sim is None:
-            self.preseed_bool(blk)
         sim = sim or self.seeded(blk)
         for ins in blk.ins:
             r = sim.step(ins)
@@ -255,18 +248,18 @@ class Body:
                     rg = getattr(st_, 'rng', None)
                     out.append(Seq([st_], rg[0], rg[1]) if rg else Seq([st_], None, None))
                 q = self.raw_extent(pb.at, b) if getattr(self.ctx, 'allow_raw', False) else None
-                if q is None or q <= pc:
+                if q is None:
                     raise LiftError(pb.why)
-                self.ctx.raws.append(pb.why); self.ctx.rawat = getattr(self.ctx, "rawat", []) + [(pb.at, pb.why)]
+                self.ctx.raws.append(pb.why)
                 out.append(Raw(pb.at, q))
                 pc = q
             except LiftError as ex:
                 if not getattr(self.ctx, 'allow_raw', False):
                     raise
                 q = self.raw_extent(pc, b)
-                if q is None or q <= pc:
+                if q is None:
                     raise
-                self.ctx.raws.append(str(ex)); self.ctx.rawat = getattr(self.ctx, "rawat", []) + [(pc, str(ex))]
+                self.ctx.raws.append(str(ex))
                 out.append(Raw(pc, q))
                 pc = q
         if pc != b:
@@ -345,7 +338,7 @@ class Body:
                 return out, blk.end
             raise LiftError('goto %x' % t[1])
         try:
-            cs = None if self.bool_shape(blk) else self.try_case(blk, sim, b)
+            cs = self.try_case(blk, sim, b)
         except LiftError as ex:
             if getattr(ex, 'narms', 0) > 1:
                 raise        # a real case statement with an arm that can't be lifted
@@ -440,10 +433,8 @@ class Body:
             pos = nb
         if END is None or len(arms) < 1:
             return None
-        if len(arms) == 1 and len(arms[0][0]) == 1 and not isinstance(arms[0][0][0], tuple) and \
-                not (isinstance(sel, Loc) and sel.kind in ('l', 'g', 'up') and sel.index is None):
-            return None      # one label on an expression: an if statement compiles the same (a variable
-                             # would be compared in memory by an if: cmp byte [x],k -- mov al,[x] is the case)
+        if len(arms) == 1 and len(arms[0][0]) == 1 and not isinstance(arms[0][0][0], tuple):
+            return None      # one label: an if statement compiles the same
         if nxt is None or nxt > END or END > limit:
             return None
         els = self.structure(nxt, END)
@@ -537,15 +528,8 @@ class Body:
             if exits is not None:
                 cands.append((list(tests), exits))
             nxt = self.blocks.get(cur.end)
-            inb = [x[0] for x in tests] + [getattr(x[0], 'tail', None) for x in tests]
-            if nxt is None or nxt.term[0] != 'jcc' or len(nxt.preds) == 0 or any(p not in inb for p in nxt.preds):
+            if nxt is None or nxt.term[0] != 'jcc' or len(nxt.preds) == 0 or any(p not in [x[0] for x in tests] for p in nxt.preds):
                 break
-            syn = self.bool_operand(nxt)
-            if syn is not None:
-                # an operand materialised as 0/1 and retested (cond; al := 0/1; or al,al; jcc): one test
-                tests.append(syn)
-                cur = syn[0]
-                continue
             if nxt.term[2] <= tests[0][0].start:
                 break        # jumps back to the chain's head: a loop's until test, not part of this condition
             try:
@@ -556,19 +540,6 @@ class Body:
                 break
             tests.append((nxt, s2.flags))
             cur = nxt
-        if not cands and len(tests) > 0:
-            # if c1 and c2 ... then ; (empty then: every test jumps to the chain's fallthrough)
-            T = tests[-1][0].end
-            inside = {b.start for b, f in tests}
-            if all(b.term[2] == T for b, f in tests) and \
-                    all(b.end in inside or b.end == T for b, f in tests):
-                e = None
-                for b, f in tests:
-                    c = neg(flag_cond(f, b.term[1]))
-                    e = c if e is None else _and(e, c)
-                self.last_chain_end = tests[-1][0]
-                self.last_tests = tests
-                return e, T, T
         if not cands:
             raise LiftError('condition shape')
         tests, (T, F) = cands[-1]
@@ -670,71 +641,6 @@ class Body:
             return memo[i]
         return expr(0)
 
-    def preseed_bool(self, J):
-        """J joins the 0/1 arms of a boolean value: seed al there now (the until test reads it before the body
-        is structured)."""
-        if J.start in getattr(self, 'seed', {}):
-            return
-        if len(J.preds) != 2:
-            return
-        for tb in J.preds:
-            if tb.term[0] != 'jmp' or tb.term[1] != J.start or len(tb.ins) != 1:
-                continue
-            x = self.block_before(tb.start)
-            if x is not None and x.end == tb.start and self.bool_shape(x):
-                try:
-                    sx = self.run(x)     # statements before the test are emitted when x itself is structured
-                    e, T, F = self.chain(x, sx)
-                    stk = self.chain_stack
-                    if self.bool_value(x, e, T, F, sx) is not None and stk:
-                        self.seed[J.start] = self.seed[J.start] + (stk,)
-                except LiftError:
-                    pass
-                return
-
-    def bool_operand(self, nxt):
-        """nxt: jcc choosing  mov al,0 / mov al,1  arms that join at  or al,al; jcc  -> (synthetic block, flags)."""
-        if not self.bool_shape(nxt):
-            return None
-        tb, fb = self.blocks.get(nxt.end), self.blocks.get(nxt.term[2])
-        if tb.term[0] != 'jmp' or tb.end != fb.start or fb.term[0] != 'fall':
-            return None
-        J = fb.end
-        jb = self.blocks.get(J)
-        if jb is None or tb.term[1] != J or jb.term[0] != 'jcc' or any(p not in (tb, fb) for p in jb.preds) or \
-                len(jb.ins) not in (1, 2) or jb.ins[0].mnemonic != 'or' or jb.ins[0].op_str != 'al, al':
-            return None
-        try:
-            s2 = self.run(nxt)
-        except LiftError:
-            return None
-        if s2.out or s2.busy() or s2.flags is None:
-            return None
-        c = flag_cond(s2.flags, nxt.term[1])       # true: the jump to fb is taken
-        kf = fb.ins[0].operands[1].imm
-        v = c if kf == 1 else neg(c)
-        # TP5.5 materialises a comparison inside a short-circuit chain only for Boolean(Ord(cond))
-        from rtl import Builtin
-        v = Builtin('Boolean', [Builtin('Ord', [v], 1)], 1)
-        import types
-        from sim import Flags
-        sb = types.SimpleNamespace(start=nxt.start, end=jb.end, term=jb.term, preds=nxt.preds, ins=nxt.ins + jb.ins, tail=jb)
-        return sb, Flags('cond', v, size=1)
-
-    def bool_shape(self, blk):
-        """blk's jump selects between  mov al,0 / mov al,1  arms (a boolean value, never a case statement)."""
-        if blk.term[0] != 'jcc':
-            return False
-        tb, fb = self.blocks.get(blk.end), self.blocks.get(blk.term[2])
-        if tb is None or fb is None or len(tb.ins) != 1 or len(fb.ins) != 1:
-            return False
-        ks = set()
-        for x in (tb.ins[0], fb.ins[0]):
-            if not (x.mnemonic == 'mov' and x.op_str.startswith('al, ') and x.operands[1].type == x86.X86_OP_IMM):
-                return False
-            ks.add(x.operands[1].imm)
-        return ks == {0, 1}
-
     def bool_value(self, blk, e, T, F, sim):
         """cond; T: mov al,1; jmp J; F: mov al,0; J:  ->  al := Ord(cond) at J (and the reverse 0/1 order)."""
         tb, fb = self.blocks.get(T), self.blocks.get(F)
@@ -758,10 +664,6 @@ class Body:
             self.seed = {}
         st0 = sim.stmt_start if not sim.idle_after and sim.stmt_start is not None else blk.start
         self.seed[J] = (st0, Op('zext', [Builtin('Ord', [c], 1)], 2, False))
-        # values computed before the boolean (an index or product in the same expression) stay live
-        if not hasattr(self, 'seed_regs'):
-            self.seed_regs = {}
-        self.seed_regs[J] = {r: v for r, v in sim.r.items() if r in ('cx', 'dx', 'bx', 'si', 'bxcx')}
         self.cache.pop(J, None) if isinstance(self.cache, dict) else None
         return J
 
@@ -903,7 +805,7 @@ class Body:
                 head_part = True
         # the head's own test jumps into the chain: the loop is 'statements; until <all tests>'
         if head_part and head.term[0] == 'jcc' and (any(head.term[2] == x.start for x in chain_blocks) or
-                                                    head.term[2] == src.end or head.term[2] == head.start):
+                                                    head.term[2] == src.end):
             cb = [head] + chain_blocks
             tests = [(x, self.run(x).flags) for x in cb]
             if self.exits_until(tests, head.start):
@@ -1108,12 +1010,6 @@ def flag_cond(f, mn):
     if f.kind == 'val':
         if rel in ('=', '<>'):
             return Op('rel', [f.a, Const(0, f.size)], 1, rel + 'z')
-    if f.kind == 'cond':
-        # a boolean value tested with or al,al: f.a is the condition itself
-        if rel == '<>':
-            return f.a
-        if rel == '=':
-            return neg(f.a)
     raise LiftError('flags %s %s' % (f.kind, mn))
 
 

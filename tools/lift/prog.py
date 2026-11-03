@@ -65,35 +65,8 @@ for k, v in P.items():
 
 def code_of(key, _cache={}):
     if key not in _cache:
-        c = bytearray(open('out/u/%s.bin' % key, 'rb').read())
-        # bytes the shipped game patched after linking (jcc -> jmp): lift and verify the compiler's original byte
-        pp = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'unit_patches.json')
-        if os.path.exists(pp):
-            for off, orig, shipped in json.load(open(pp)).get(key, []):
-                assert c[off] == int(shipped, 16), 'unit patch %s %04X' % (key, off)
-                c[off] = int(orig, 16)
-        _cache[key] = bytes(c)
+        _cache[key] = open('out/u/%s.bin' % key, 'rb').read()
     return _cache[key]
-
-
-TAILPROCS = {}
-def tail_proc(k, ofs):
-    """A far routine in a unit's asm tail, declared external with word/pointer params (skel.tail_sig)."""
-    if (k, ofs) in TAILPROCS: return TAILPROCS[(k, ofs)]
-    lab = skel.tail_labels(k).get(ofs)
-    sg = skel.tail_sig(k, ofs) if lab else None
-    pr = None
-    if sg is not None and bool(lab[1]) == ((k, ofs) not in skel.TAILNEAR):
-        pr = Proc(k, {'entry': ofs, 'far': bool(lab[1]), 'retn': sum(sg), 'result': skel.TAILFUNC.get((k, ofs))})
-        pr.name = lab[0]
-        pr.tail = True
-        o = 6 if lab[1] else 4; sl = []
-        for j, z in enumerate(reversed(sg)):
-            t = skel.slot_t(k, ofs, z, len(sg) - 1 - j); q = Param(o, z); q.kind = 'var' if t == 'var' else 'val'; q.ptype = t; sl.append(q); o += z
-        pr.params = list(reversed(sl))
-        pr.link = None
-    TAILPROCS[(k, ofs)] = pr
-    return pr
 
 
 def far_target(key, at):
@@ -112,8 +85,6 @@ def far_target(key, at):
     if 'entries' in U[k]:
         ofs = U[k]['entries'][(ofs - 0x20) // 5]
     p = PROCS.get((k, ofs))
-    if p is None:
-        p = tail_proc(k, ofs)
     if p is None:
         raise LiftError('far target %s:%04X' % (k, ofs))
     return ('proc', p, None)
@@ -203,106 +174,28 @@ def analyse():
 analyse()
 
 
-def detect_var_params():
-    """TP 5.5 pushes an address argument for a var parameter as  lea/mov di,X; push ss|ds; push di  but a pointer
-    value @X as  mov ax,X; mov dx,ss|ds; push dx; push ax.  A 4-byte slot fed with the first form at any call site is
-    an untyped var parameter."""
-    for (k, e), pr in list(PROCS.items()):
-        code = code_of(k)
-        a, b = pr.p['body']
-        L = list(md.disasm(code[a:b], a))
-        for j, ins in enumerate(L):
-            callee = None
-            if ins.mnemonic == 'call' and ins.operands[0].type == x86.X86_OP_IMM:
-                callee = PROCS.get((k, ins.operands[0].imm))
-            elif ins.mnemonic == 'lcall' and ins.operands[0].type == x86.X86_OP_IMM:
-                try:
-                    t = far_target(k, ins.address)
-                except LiftError:
-                    continue
-                callee = t[1] if t[0] == 'proc' else None
-            if callee is None or not callee.params:
-                continue
-            # pushes before the call, last pushed first; skip the static link / push cs of near calls to far procs
-            pushes = []
-            i = j - 1
-            while i >= 0 and len(pushes) < 2 * len(callee.params) + 2:
-                x = L[i]
-                if x.mnemonic in ('call', 'lcall', 'ret', 'retf', 'jmp') or x.mnemonic.startswith('j') or x.mnemonic.startswith('loop'):
-                    break
-                if x.mnemonic == 'push':
-                    pushes.append(i)
-                i -= 1
-            if ins.mnemonic == 'call' and callee.far and pushes and L[pushes[0]].op_str == 'cs':
-                pushes = pushes[1:]
-            if callee.nested and pushes:
-                pushes = pushes[1:]
-            q = 0
-            for prm in reversed(callee.params):        # last parameter is pushed last
-                if prm.size == 4:
-                    if q + 1 >= len(pushes):
-                        break
-                    po, ps = L[pushes[q]], L[pushes[q + 1]]
-                    if po.op_str == 'di' and ps.op_str in ('ss', 'ds') and pushes[q + 1] == pushes[q] - 1 and pushes[q] >= 2:
-                        ld = L[pushes[q + 1] - 1]
-                        if not prm.copy and ld.mnemonic in ("lea", "mov") and ld.op_str.startswith("di,") and \
-                                (ld.mnemonic == 'lea' or ld.operands[1].type == x86.X86_OP_IMM):
-                            prm.var = True
-                    elif po.op_str == 'di' and ps.op_str == 'es' and pushes[q + 1] == pushes[q] - 1 and pushes[q] >= 2:
-                        # les di,p; push es; push di: p^ (or an element reached through it) passed as a var argument
-                        ld = L[pushes[q + 1] - 1]
-                        if not prm.copy and ld.mnemonic == 'les' and ld.op_str.startswith('di,'):
-                            prm.var = True
-                    q += 2
-                else:
-                    q += 1
-
-
-detect_var_params()
-
-
 def detect_oplus():
-    """TP 5.5: a code literal passed to a procedure of a unit compiled {$O+} is first copied into a stack temp
-    (StrLoad), because that unit's code may be overlaid (TP6 decided this per caller). Resident units seen
-    receiving such copies are compiled {$O+}."""
+    """Resident procedures compiled {$O+}: a code literal is copied into a stack temp (StrLoad) and passed on."""
     for (k, e), pr in PROCS.items():
+        if 'entries' in U[k] or k in skel.OPLUS:
+            continue
         code = code_of(k)
         a, b = pr.p['body']
         L = list(md.disasm(code[a:b], a))
         for j in range(len(L) - 4):
-            if not (L[j].mnemonic == 'mov' and L[j].op_str.startswith('di,') and L[j + 1].op_str == 'cs' and
-                    L[j + 2].op_str == 'di' and L[j + 3].mnemonic == 'lcall'):
-                continue
-            try:
-                t = far_target(k, L[j + 3].address)
-            except LiftError:
-                continue
-            if t[1] != '@$basg$qm6Stringt1':
-                continue
-            # the call that receives the temp: the next far call after the remaining argument pushes
-            for x in L[j + 4:j + 40]:
-                if x.mnemonic in ('call', 'lcall'):
+            if L[j].mnemonic == 'mov' and L[j].op_str.startswith('di,') and L[j + 1].op_str == 'cs' and \
+                    L[j + 2].op_str == 'di' and L[j + 3].mnemonic == 'lcall':
+                try:
+                    t = far_target(k, L[j + 3].address)
+                except LiftError:
+                    continue
+                if t[1] != '@$basg$qm6Stringt1':
+                    continue
+                nx = L[j + 4]
+                t2 = far_target(k, nx.address)[1] if nx.mnemonic == 'lcall' else None
+                if t2 is None or 'Concat' not in t2:
+                    skel.OPLUS_PROCS.add((k, e))
                     break
-                if x.mnemonic.startswith('j') or x.mnemonic in ('ret', 'retf'):
-                    x = None
-                    break
-            else:
-                x = None
-            if x is None or x.mnemonic != 'lcall':
-                continue
-            try:
-                t2 = far_target(k, x.address)
-            except LiftError:
-                continue
-            if t2[0] == 'proc' and 'entries' not in U[t2[1].key]:
-                skel.OPLUS.add(t2[1].key)
-            elif t2[0] == 'tpl' and ('Dos', t2[1]) in {(u, n) for (u, _), n in skel.TPLNAMES.items()} and 'entries' not in U[k]:
-                # the library Dos unit is {$O+}-capable, so the copy is the caller's {$O+} (Overlay is never copied
-                # for); TP5.5 only takes $O at the top of a unit, so the whole unit
-                skel.OPLUS.add(k)
-
-
-detect_oplus()
 
 
 def is_oplus(pr):

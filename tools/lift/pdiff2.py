@@ -12,7 +12,7 @@ def dis(c, a, b):
     r = subprocess.run(['ndisasm', '-b16', '-o', str(a), '-'], input=c[a:b], capture_output=True).stdout.decode().splitlines()
     return [(l[:8], l[28:].strip()) for l in r]
 x = dis(oc, p['entry'], p['end']); y = dis(bc, p['entry'] + d, p['end'] + d + 40)
-norm = lambda s: re.sub(r'^(j\w+|call|jmp)\s+(word\s+)?(0x[0-9a-f]+|S)(:word 0x[0-9a-f]+)?', r'\1 X', re.sub(r'0x[0-9a-f]+:word', 'S:word', s))
+norm = lambda s: re.sub(r'^(j\w+|call|jmp)\s+(word\s+)?0x[0-9a-f]+(:word 0x[0-9a-f]+)?', r'\1 X', re.sub(r'0x[0-9a-f]+:word', 'S:word', s))
 for i in range(min(len(x), len(y))):
     if norm(x[i][1]) != norm(y[i][1]):
         for j in range(max(0, i - 4), min(len(x), i + 8)):

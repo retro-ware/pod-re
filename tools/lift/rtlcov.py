@@ -19,7 +19,7 @@ for (k, e), pr in PROCS.items():
     fx = {f: s for f, s in skel.U[k]['fixups']}
     rr = raws(k, e)
     for f, s in fx.items():
-        if a < f < b and s == 0xC5D and code[f-3] == 0x9a:
+        if a < f < b and s == 0x825 and code[f-3] == 0x9a:
             o = struct.unpack('<H', code[f-2:f])[0]
             at = f - 3
             inr = [r for r in rr if r[0] <= at < r[1]]

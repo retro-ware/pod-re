@@ -41,12 +41,6 @@ class LinkPtr(E):
         self.depth = depth
 
 
-class DSBase(E):
-    """The data segment as a with-pointer base: the element address is the (index + DS offset) in Ptr.add."""
-    def __init__(self):
-        pass
-
-
 class Ptr(E):
     """Value in es:di: a pointer expression (32-bit) possibly offset by an index added to di."""
     def __init__(self, v, add=None):
@@ -171,16 +165,6 @@ class Sim:
             return Loc('g', disp & 0xFFFF, size)
         if base is None and seg == 'es' and isinstance(self.r.get('esseg'), Const):
             return Loc('mem', disp & 0xFFFF, size, index=self.r['esseg'])
-        if base == 'di' and seg == 'es' and 'es_val' in self.r and \
-                (self.r.get('di') is not None or getattr(self, 'didxax', None) is not None):
-            # push SEG; mov di,OFS; pop es; [es:di]: Mem[SEG:OFS] used directly (store target);
-            # a 32-bit offset (mov di,ax after add/adc) is truncated by TP to its low word
-            ofs = self.r.get('di')
-            if ofs is None:
-                ofs, self.didxax = self.didxax, None
-            l = Loc('mem', 0, size, index=self.r['es_val'], ptr=ofs)
-            l.memform = True
-            return l
         if base == 'di' and seg == 'es':
             p = self.r.get('esdi')
             if not isinstance(p, Ptr):
@@ -237,36 +221,9 @@ class Sim:
             raise LiftError('half 32-bit store')
         if type(v).__name__ == 'ReadChar':
             v.f.tio = getattr(v.f, 'tio', []) + [Addr(dst)]
-            v.f.tio_types = getattr(v.f, 'tio_types', []) + (['char'] if v.size == 1 else ['word'])
-            return
-        cur = getattr(self, 'cur', None)
-        last = self.out[-1] if self.out else None
-        if cur is not None and isinstance(v, Const) and v.size == 2 and isinstance(dst, Loc) and dst.kind == 'deref' and \
-                dst.size == 2 and isinstance(last, Assign) and isinstance(last.src, Const) and last.src.size == 2 and \
-                isinstance(last.dst, Loc) and last.dst.kind == 'deref' and last.dst.size == 2 and \
-                (last.dst.off + 2) & 0xFFFF == dst.off & 0xFFFF and repr(last.dst.ptr) == repr(dst.ptr) and \
-                repr(last.dst.index) == repr(dst.index) and getattr(self, 'store_end', None) == cur.address:
-            # two word constants through the same es:di with no reload between: one longint constant store
-            ld = last.dst
-            self.out[-1] = Assign(Loc(ld.kind, ld.off, 4, index=ld.index, scale=ld.scale, ptr=ld.ptr, depth=ld.depth),
-                                  Const(last.src.v | v.v << 16, 4))
-            self.store_end = None
-            return
-        if cur is not None and isinstance(v, Const) and v.size == 2 and v.v == 0 and isinstance(dst, Loc) and \
-                dst.kind in ('l', 'g') and dst.size == 2 and dst.index is None and cur.mnemonic == 'mov' and \
-                cur.op_str.startswith('word ptr') and cur.op_str.endswith(', 0') and \
-                isinstance(last, Assign) and isinstance(last.src, Const) and last.src.size == 2 and \
-                isinstance(last.dst, Loc) and last.dst.kind == dst.kind and last.dst.size == 2 and \
-                last.dst.index is None and (last.dst.off + 2) & 0xFFFF == dst.off & 0xFFFF and \
-                getattr(self, 'store_end', None) == cur.address:
-            # mov word [x],imm; mov word [x+2],0: a word 0 would be xor ax,ax; mov -- a longint constant
-            ld = last.dst
-            self.out[-1] = Assign(Loc(ld.kind, ld.off, 4, depth=ld.depth), Const(last.src.v, 4))
-            self.store_end = None
+            v.f.tio_types = getattr(v.f, 'tio_types', []) + ['char']
             return
         self.emit(Assign(dst, v))
-        if cur is not None:
-            self.store_end = cur.address + cur.size
 
     # ---------------- arithmetic helpers
     def binop(self, op, a, b, size):
@@ -276,8 +233,6 @@ class Sim:
     def step(self, ins):
         """Execute one instruction. Returns None, or ('jcc', mnemonic, target), ('jmp', target), ('call', ...)."""
         self.flush32(ins)
-        if ins.mnemonic == 'xor' and ins.op_str == 'ax, ax':
-            self.zero32 = None      # a fresh zero: the next word store is its own statement (longint 0 has one xor)
         if ins.mnemonic not in ('adc', 'sbb'):
             self.flush_mem()
         if getattr(self, 'stmt_start', None) is None or self.idle_after:
@@ -297,7 +252,6 @@ class Sim:
         fx = self.ctx.fixup_in(ins.address, ins.size)
         if fx is not None and mn != 'lcall':
             return self.seg_imm(ins, ops, fx)
-        self.cur = ins
         h = getattr(self, 'i_' + mn, None)
         if h is None:
             raise LiftError('insn %s %s' % (mn, ins.op_str))
@@ -328,47 +282,6 @@ class Sim:
         d, s = ops
         if d.type == x86.X86_OP_REG:
             r = R[d.reg]
-            if r == 'dx' and s.type == x86.X86_OP_REG and R[s.reg] == 'es' and getattr(self, 'lesax', None) is not None:
-                # TP5.5 pointer load: les ax,[m] ; mov dx,es
-                v = self.lesax
-                self.lesax = None
-                self.set('dxax', v)
-                return
-            if r == 'bx' and s.type == x86.X86_OP_REG and R[s.reg] == 'es' and getattr(self, 'lescx', None) is not None:
-                v = self.lescx
-                self.lescx = None
-                self.set('bxcx', v)
-                return
-            if r == 'di' and s.type == x86.X86_OP_REG and R[s.reg] == 'ax' and 'dxax' in self.r:
-                # pointer function result dereferenced: call f; mov di,ax; mov es,dx
-                self.didxax = self.r['dxax']
-                self.kill('di')
-                return
-            if r == 'es' and s.type == x86.X86_OP_REG and R[s.reg] == 'dx' and getattr(self, 'didxax', None) is not None:
-                v = self.didxax
-                self.didxax = None
-                self.kill('dxax')
-                self.r['esdi'] = Ptr(v)
-                self.r['di'] = EsDi(0)
-                return
-            if r == 'dx' and s.type == x86.X86_OP_REG and R[s.reg] == 'ds' and isinstance(self.r.get('ax'), Const):
-                # mov ax,X; mov dx,ds: @X (a DS variable's address as a pointer value)
-                a = self.address('ds', AddrOf('imm', self.r['ax'].v))
-                self.kill('ax'); self.kill('dx')
-                self.r['dxax'] = a
-                return
-            if r == 'dx' and s.type == x86.X86_OP_REG and R[s.reg] == 'ax' and 'ax' in self.r and 'dxax' not in self.r:
-                # Ptr(seg, ofs): the segment is evaluated first and parked in dx
-                self.set('dx', self.r['ax'])
-                self.ptrhi = self.r['dx']
-                return
-            pe = self.r.get('esdi')
-            if r == 'ax' and s.type == x86.X86_OP_REG and R[s.reg] in ('es', 'di') and isinstance(pe, Ptr) and \
-                    pe.add is None and isinstance(self.r.get('di'), EsDi) and self.r['di'].off == 0:
-                # les di,p; mov ax,es / mov ax,di: Seg(p^) / Ofs(p^)
-                from rtl import Builtin as B_
-                self.set('ax', B_('Seg' if R[s.reg] == 'es' else 'Ofs', [Loc('deref', 0, 1, ptr=pe.v)], 2))
-                return
             if s.type == x86.X86_OP_REG and R[s.reg] in ('es', 'ds', 'ss', 'cs'):
                 raise LiftError('seg reg move')
             if r == 'es' and s.type == x86.X86_OP_REG and isinstance(self.r.get(R[s.reg]), Const):
@@ -394,12 +307,6 @@ class Sim:
                 self.kill('bx')
                 self.r['bx'] = v
                 self.r['bxcx'] = Const(c.v | v.v << 16, 4)
-                return
-            # mov cx,ax; mov bx,dx: the dx:ax value moved to bx:cx (e.g. a word zero-extended with xor dx,dx)
-            if r == 'bx' and isinstance(v, Half) and isinstance(c, Half) and v.part == 'hi' and c.part == 'lo' and v.v is c.v:
-                self.kill('bx')
-                self.r['bx'] = v
-                self.r['bxcx'] = v.v
                 return
             # mov cx,[m] ; mov bx,[m+2] -> 32-bit second operand
             if r == 'bx' and isinstance(v, Loc) and isinstance(c, Loc) and c.kind == v.kind and c.off + 2 == v.off \
@@ -440,26 +347,6 @@ class Sim:
                     self.r['creal'] = Loc(c.kind, c.off, 6, ptr=c.ptr, depth=c.depth)
             self.set(r, v)
             return
-        if s.type == x86.X86_OP_REG and R[s.reg] == 'ds' and self.p32 and self.p32[1] is None and \
-                self.p32[0].off + 2 == ins.operands[0].mem.disp - 0 and 'di' in self.r and not isinstance(self.r['di'], EsDi):
-            # mov [tmp],di went to p32 (a stale es:di pointer): the di value is the DS element address
-            ld = self.p32[0]; self.p32 = None
-            self.out.append(Assign(Loc(ld.kind, ld.off, 2, depth=ld.depth), self.r['di']))
-        if s.type == x86.X86_OP_REG and R[s.reg] == 'ds' and self.out and isinstance(self.out[-1], Assign):
-            # with over a DS array element: lea/add di (index*k + base) ; mov [tmp],di ; mov [tmp+2],ds
-            dst = self.mem(ins, d)
-            last = self.out[-1]
-            ld = last.dst
-            if isinstance(ld, Loc) and ld.kind == 'l' == dst.kind and ld.off + 2 == dst.off and ld.size == 2 and \
-                    ld.index is None and ld.depth == dst.depth:
-                self.out.pop()
-                tmp = Loc('l', ld.off, 4, depth=ld.depth)
-                self.emit(WithSave(tmp, Ptr(DSBase(), last.src)))
-                tmp.at = ins.address
-                if not any(t.off == tmp.off for t in self.ctx.temps_for):
-                    self.ctx.temps_for.append(tmp)
-                return
-            raise LiftError('store ds')
         if s.type == x86.X86_OP_REG and R[s.reg] == 'es':
             # with-pointer save: mov [tmp],di ; mov [tmp+2],es
             dst = self.mem(ins, d)
@@ -480,24 +367,6 @@ class Sim:
             return
         if s.type == x86.X86_OP_REG and R[s.reg] == 'di' and isinstance(self.r.get('esdi'), Ptr):
             self.p32 = (dst, None)
-            return
-        if s.type == x86.X86_OP_REG and R[s.reg] == 'ax' and 'dxax' not in self.r and 'ax' in self.r and \
-                getattr(self, 'ptrhi', None) is not None and self.r.get('dx') is self.ptrhi and self.r['ax'] is not self.ptrhi:
-            # possibly Ptr(seg, ofs): only if dx goes to the next word right after (else dx was a saved value)
-            self.store(dst, self.r['ax'])
-            self.ptrcand = (dst, self.ptrhi, self.r['ax'], len(self.out))
-            self.ptrhi = None
-            return
-        pc_ = getattr(self, 'ptrcand', None)
-        self.ptrcand = None
-        if pc_ and s.type == x86.X86_OP_REG and R[s.reg] == 'dx' and self.r.get('dx') is pc_[1] and pc_[3] == len(self.out) \
-                and pc_[0].kind == dst.kind and pc_[0].off + 2 == dst.off and repr(pc_[0].index) == repr(dst.index) \
-                and repr(pc_[0].ptr) == repr(dst.ptr) and pc_[0].depth == dst.depth:
-            from rtl import Builtin
-            pd = pc_[0]
-            self.out.pop()
-            self.store(Loc(pd.kind, pd.off, 4, index=pd.index, scale=pd.scale, ptr=pd.ptr, depth=pd.depth),
-                       Builtin('Ptr', [pc_[1], pc_[2]], 4))
             return
         if s.type == x86.X86_OP_REG and R[s.reg] in ('ax',) and 'dxax' in self.r:
             if self.p32:
@@ -581,13 +450,6 @@ class Sim:
             sp.val = self.r.pop('es_val')
             self.stack.append(sp)
             return
-        if o.type == x86.X86_OP_REG and R[o.reg] == 'es' and 'esseg' in self.r:
-            # mov si,$B800; mov es,si; ... push es; push di: Mem[$B800:ofs] passed by address
-            sp = SegPush('es')
-            sp.val = self.r['esseg']
-            sp.late = True       # es loaded after the offset: an array absolute $SEG:0 (Mem[] pushes the segment first)
-            self.stack.append(sp)
-            return
         if o.type == x86.X86_OP_REG and R[o.reg] in ('ss', 'ds', 'cs', 'es'):
             self.stack.append(SegPush(R[o.reg]))
             return
@@ -600,10 +462,7 @@ class Sim:
         if o.type == x86.X86_OP_REG and R[o.reg] == 'di' and self.stack and isinstance(self.stack[-1], SegPush):
             sp = self.stack.pop()
             di = self.r.get('di')
-            a_ = self.address(sp.seg, di, getattr(sp, 'val', None))
-            if getattr(sp, 'late', False) and isinstance(a_, Addr):
-                a_.loc.memform = False
-            self.stack.append(a_)
+            self.stack.append(self.address(sp.seg, di, getattr(sp, 'val', None)))
             return
         if o.type == x86.X86_OP_REG and 'real' in self.r and R[o.reg] in ('dx', 'bx', 'ax'):
             seq = getattr(self, 'rpush', '') + R[o.reg][0]
@@ -716,18 +575,6 @@ class Sim:
 
     def i_les(self, ins, ops):
         d, s = ops
-        self.r.pop('es_val', None)
-        if R[d.reg] in ('ax', 'cx'):
-            # TP 5.5 pointer load: les ax,[m]; mov dx,es  /  les cx,[m]; mov bx,es
-            p = self.mem(ins, s)
-            p.size = 4
-            self.kill('esdi')
-            self.kill(R[d.reg])
-            if R[d.reg] == 'ax':
-                self.lesax = p
-            else:
-                self.lescx = p
-            return
         if R[d.reg] != 'di':
             raise LiftError('les ' + ins.op_str)
         p = self.mem(ins, s)
@@ -787,21 +634,6 @@ class Sim:
 
     def arith(self, op, ins, ops):
         d, s = ops
-        if op in ('and', 'or', 'xor') and d.type == x86.X86_OP_REG and s.type != x86.X86_OP_REG:
-            # 32-bit logic op on dx:ax:  and ax,lo ; and dx,hi
-            if R[d.reg] == 'ax' and 'dxax' in self.r and getattr(self, 'pend_log', None) is None:
-                self.pend_log = (op, self.val(ins, s))
-                return
-            pl = getattr(self, 'pend_log', None)
-            if R[d.reg] == 'dx' and pl is not None and pl[0] == op:
-                self.pend_log = None
-                v = Op(op, [self.r['dxax'], merge32(pl[1], self.val(ins, s))], 4)
-                self.kill('ax'); self.kill('dx')
-                self.r['dxax'] = v
-                self.flags = Flags('val', v, size=4)
-                return
-        if getattr(self, 'pend_log', None) is not None:
-            raise LiftError('half 32-bit logic op')
         if d.type == x86.X86_OP_REG:
             r = R[d.reg]
             a = self.get(r)
@@ -845,10 +677,6 @@ class Sim:
     def i_add(self, ins, ops):
         d, s = ops
         # 32-bit add: add ax,X ; adc dx,Y
-        if d.type == x86.X86_OP_REG and R[d.reg] == 'ax' and 'dxax' in self.r and s.type == x86.X86_OP_REG and \
-                R[s.reg] == 'cx' and 'bxcx' in self.r:
-            self.pend_add = ('+', 'bxcx')      # add ax,cx; adc dx,bx: + the 32-bit value in bx:cx
-            return
         if d.type == x86.X86_OP_REG and R[d.reg] == 'ax' and 'dxax' in self.r:
             self.pend_add = ('+', self.val(ins, s))
             return
@@ -868,14 +696,8 @@ class Sim:
         if d.type == x86.X86_OP_REG and R[d.reg] == 'dx' and getattr(self, 'pend_add', None):
             op, lo = self.pend_add
             self.pend_add = None
-            if isinstance(lo, str) and lo == 'bxcx':
-                if not (s.type == x86.X86_OP_REG and R[s.reg] == 'bx'):
-                    raise LiftError('adc operand')
-                b = self.r['bxcx']
-                self.kill('bxcx')
-            else:
-                hi = self.val(ins, s)
-                b = merge32(lo, hi)
+            hi = self.val(ins, s)
+            b = merge32(lo, hi)
             v = Op(op, [self.r['dxax'], b], 4)
             self.kill('ax'); self.kill('dx')
             self.r['dxax'] = v
@@ -1005,8 +827,13 @@ class Sim:
         if d.type == x86.X86_OP_REG:
             r = R[d.reg]
             a = self.get(r)
-            # TP 5.5: inc/dec only for +-1 (x + 2 is add ax,2), so inc; inc is x + 1 + 1
-            v = Op(op, [a, Const(1, d.size)], d.size)
+            # TP emits inc/dec for +-1 and +-2 only: a third inc starts a new addition
+            if isinstance(a, Op) and a.op in ('+', '-') and getattr(a, 'incs', False) and isinstance(a.args[1], Const) \
+                    and a.args[1].v < 2 and a.op == op:
+                k = a.args[1].v * (1 if a.op == '+' else -1) + (1 if op == '+' else -1)
+                v = Op('+' if k >= 0 else '-', [a.args[0], Const(abs(k), d.size)], d.size)
+            else:
+                v = Op(op, [a, Const(1, d.size)], d.size)
             v.incs = True
             self.set(r, v)
             self.flags = Flags('val', v, size=d.size)
@@ -1056,9 +883,7 @@ class Sim:
             return
         if op == 'shl' and isconst(n) and (not bycl or byte_count):
             # 'shl r,1' and 'mov cl,k; shl r,cl' come from multiplications by constants (TP strength reduction)
-            v = mulconst(a, 1 << n.v)
-            v.bycl = byte_count      # mov cl,k; shl: TP's own element scaling (an explicit *k/shl k uses mov cx,k)
-            self.set(r, v)
+            self.set(r, mulconst(a, 1 << n.v))
             return
         if op == 'shr' and isconst(n) and bycl and byte_count:
             # 'mov cl,k; shr r,cl': unsigned division by 2^k
@@ -1074,23 +899,11 @@ class Sim:
             # TP: word * word in ax (dx unused; longint products go through the RTL)
             self.kill('dx')
             if isinstance(b, Const):
-                v = Op('*', [a, b], 2, False)
-                # mov dx,K; mul dx: TP scaling an index by a K-byte element (an explicit x*K uses mov cx,K)
-                v.bycl = s.type == x86.X86_OP_REG and R[s.reg] == 'dx'
-                self.set('ax', v)
+                self.set('ax', Op('*', [a, b], 2, False))
             else:
                 self.set('ax', Op('*', [a, b], 2, False))
             return
         raise LiftError('mul8')
-
-    def i_imul(self, ins, ops):
-        if len(ops) != 1 or ops[0].size != 2:
-            raise LiftError('imul form')
-        b = self.val(ins, ops[0])
-        a = self.get('ax')
-        # TP 5.5: integer * integer in ax (imul; dx unused)
-        self.kill('dx')
-        self.set('ax', Op('*', [a, b], 2, True))
 
     def i_div(self, ins, ops):
         return self.divide(ins, ops, False)
@@ -1125,23 +938,8 @@ class Sim:
         r = R[ops[0].reg]
         self.set(r, Op('not', [self.get(r)], ops[0].size))
 
-    def i_jns(self, ins, ops):
-        # inline Abs(integer):  or ax,ax; jns L; neg ax; L:
-        c = self.ctx.code; a = ins.address + ins.size
-        if ops[0].imm == a + 2 and c[a:a + 2] == b'\xf7\xd8' and self.flags is not None and \
-                self.flags.kind == 'test' and self.flags.size == 2:
-            self.abs_pending = True
-            return None
-        raise LiftError('insn jns %x' % ops[0].imm)
-
     def i_neg(self, ins, ops):
         r = R[ops[0].reg]
-        if getattr(self, 'abs_pending', False) and r == 'ax':
-            self.abs_pending = False
-            from rtl import Builtin
-            self.set('ax', Builtin('Abs', [self.get('ax')], 2))
-            self.r['ax'].signed = True
-            return
         # 32-bit negation: neg ax; adc dx,0; neg dx
         if r == 'ax' and 'dxax' in self.r:
             self.neg32 = self.r['dxax']
@@ -1166,15 +964,12 @@ class Sim:
         self.set('ax', Op('zext', [Builtin('Ord', [c], 1)], 2, False))
 
     def i_in(self, ins, ops):
-        if ops[0].type != x86.X86_OP_REG or R[ops[0].reg] != 'al':
+        if ops[0].type != x86.X86_OP_REG or R[ops[0].reg] != 'al' or ops[1].type != x86.X86_OP_REG:
             raise LiftError('in form')
-        port = Const(ops[1].imm, 2) if ops[1].type == x86.X86_OP_IMM else self.get('dx')
-        self.set('al', Loc('port', 0, 1, index=port))
+        self.set('al', Loc('port', 0, 1, index=self.get('dx')))
 
     def i_out(self, ins, ops):
-        if ops[1].type != x86.X86_OP_REG or R[ops[1].reg] != 'al':
-            raise LiftError('out form')
-        port = Const(ops[0].imm, 2) if ops[0].type == x86.X86_OP_IMM else self.get('dx')
+        port = self.get('dx')
         v = self.get('al')
         self.emit(Assign(Loc('port', 0, 1, index=port), v))
 
@@ -1265,8 +1060,7 @@ def pop_args(self, sizes, callee=None):
                 self.stack[-1].size == 4 and k + 1 < len(sizes) and list(reversed(sizes))[k + 1] == 2:
             import prog
             pi = len(sizes) - 1 - k
-            if getattr(callee, 'tail', False) or \
-                    (callee.key, callee.entry, callee.params[pi - 1].off) in prog.NOMERGE or \
+            if (callee.key, callee.entry, callee.params[pi - 1].off) in prog.NOMERGE or \
                     (callee.key, callee.entry, callee.params[pi].off) in prog.NOMERGE:
                 # two word parameters fed from the halves of one 32-bit variable (push [x+2]; push [x])
                 v4 = self.stack.pop()
@@ -1290,13 +1084,6 @@ def pop_args(self, sizes, callee=None):
             if not self.stack:
                 raise LiftError('missing hi word')
             hi = self.stack.pop()
-            if isinstance(hi, Loc) and hi.size == 4 and isinstance(v, Loc) and v.size == 2 and hi.index is None and \
-                    hi.kind == v.kind and hi.off == ((v.off + 2) & 0xFFFF if v.kind not in ('l', 'up') else v.off + 2):
-                # push [x+4]; push [x+2]; push [x] were merged greedily as ([x+4]:[x+2]) [x]: the 4-byte
-                # argument is [x+2]:[x], the word above it a separate argument
-                self.stack.append(Loc(hi.kind, hi.off + 2 if hi.kind in ('l', 'up') else (hi.off + 2) & 0xFFFF, 2,
-                                      ptr=hi.ptr, depth=hi.depth))
-                hi = Loc(hi.kind, hi.off, 2, ptr=hi.ptr, depth=hi.depth)
             try:
                 v = merge32(v, hi)
             except LiftError:
@@ -1351,30 +1138,6 @@ class ProcVarCall(E):
         self.var, self.args, self.size = var, args, None
 
 
-def procvar_result(self, ins):
-    """A call through a function variable: the result size read by the next instruction (None: procedure)."""
-    import prog
-    code = prog.code_of(self.ctx.pr.key)
-    a = ins.address + ins.size
-    nx = next(prog.md.disasm(code[a:a + 16], a), None)
-    if nx is None:
-        return None
-    rd = {nx.reg_name(r) for r in nx.regs_access()[0]}
-    for o in nx.operands:
-        if o.type == x86.X86_OP_REG and nx.mnemonic not in ('mov', 'les', 'lea', 'pop') or \
-                o.type == x86.X86_OP_REG and nx.mnemonic == 'mov' and o is nx.operands[-1]:
-            rd.add(nx.reg_name(o.reg))
-    if nx.mnemonic == 'xor' and len(nx.operands) == 2 and nx.op_str.split(',')[0].strip() == nx.op_str.split(',')[1].strip():
-        return None
-    if 'dx' in rd and 'ax' in rd:
-        return 4
-    if 'ax' in rd:
-        return 2
-    if 'al' in rd:
-        return 1
-    return None
-
-
 def i_lcall(self, ins, ops):
     if ops[0].type == x86.X86_OP_MEM:
         var = self.mem(ins, ops[0])
@@ -1387,16 +1150,7 @@ def i_lcall(self, ins, ops):
             args.insert(0, v)
         for r in ('ax', 'bx', 'cx', 'dx', 'si', 'di', 'esdi'):
             self.kill(r)
-        c = ProcVarCall(var, args)
-        res = procvar_result(self, ins)
-        if res == 1:
-            c.size = 1; self.r['al'] = c
-        elif res == 2:
-            c.size = 2; self.r['ax'] = c
-        elif res == 4:
-            c.size = 4; self.r['dxax'] = c
-        else:
-            self.emit(CallS(c))
+        self.emit(CallS(ProcVarCall(var, args)))
         return
     kind, t, ofs = self.ctx.far(ins.address)
     if kind == 'proc':

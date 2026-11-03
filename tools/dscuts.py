@@ -17,6 +17,6 @@ for k, v in P.items():
             if prev is not None and prev.mnemonic == 'mov' and prev.bytes[0] in (0xbf, 0xbe, 0xb8) and ins.bytes == b'\x1e':
                 cuts.add(struct.unpack('<H', prev.bytes[1:3])[0])
             prev = ins
-cuts = sorted(c for c in cuts if 2 <= c < 0x5958 or 0x59A2 <= c < 0xA6EC)
+cuts = sorted(c for c in cuts if 2 <= c < 0x7D8C or 0x7DDE <= c < 0xFB76)
 open('data/cuts.txt', 'w').write('\n'.join('%04X' % c for c in cuts) + '\n')
 print(len(cuts), 'cuts')

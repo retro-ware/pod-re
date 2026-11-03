@@ -1,4 +1,4 @@
-"""dd.py UNIT START END: side-by-side disassembly orig vs build for a unit range (overlay code from START.OVR)."""
+"""dd.py UNIT START END: side-by-side disassembly orig vs build for a unit range (overlay code from GAME.OVR)."""
 import sys, subprocess, json, struct
 sys.argv += [] 
 k, a, b = sys.argv[1], int(sys.argv[2], 16), int(sys.argv[3], 16)

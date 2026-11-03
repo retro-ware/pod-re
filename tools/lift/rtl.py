@@ -206,8 +206,6 @@ def rtl_call(sim, name):
         if not isinstance(t, TempRef) or not isinstance(src, Addr):
             raise LiftError('set load')
         t.value = src.loc
-        if isinstance(w, Const):
-            t.value.setsize = w.v            # packed set: first byte << 8 | width
         t.set = True
         kill(sim)
         return
@@ -216,14 +214,6 @@ def rtl_call(sim, name):
         s, x = pop(sim), pop(sim)
         kill(sim)
         sim.flags = Flags('in', x, s)
-        return
-    if name in ('@$brlsh$q7Longint7Integer', '@$brrsh$q7Longint7Integer'):
-        # longint shl/shr: value in dx:ax, count in cx (bx cleared)
-        a, n = sim.r.get('dxax'), sim.r.get('cx')
-        if a is None or n is None:
-            raise LiftError('long shift operands')
-        kill(sim)
-        sim.r['dxax'] = Op('shl' if 'lsh' in name else 'shr', [a, n], 4)
         return
     if name in ('@$brmul$q7Longintt1', '@$brdiv$q7Longintt1', '@$brmod$q7Longintt1'):
         a = sim.r.get('dxax')
@@ -388,13 +378,6 @@ def rtl_call(sim, name):
         kill(sim)
         sim.r['al'] = ReadChar(f)
         return
-    if name == '@Read$qm4Text7Longint':
-        # integer item: the result (ax) is stored to the variable, the file stays pushed
-        need(sim, 1)
-        f = st[-1]
-        kill(sim)
-        sim.r['ax'] = ReadChar(f, 2)
-        return
     if name in TEXTEND:
         need(sim, 1)
         f = pop(sim)
@@ -415,8 +398,8 @@ class Width(E):
 
 
 class ReadChar(E):
-    def __init__(self, f, size=1):
-        self.f, self.size = f, size
+    def __init__(self, f):
+        self.f, self.size = f, 1
 
 
 REALOPS = {'@$brmul$q4Realt1': '*', '@$brdiv$q4Realt1': '/', '@$brplu$q4Realt1': '+', '@$brmin$q4Realt1': '-'}

@@ -13,8 +13,6 @@ from sim import Sim, TempRef
 import rtl
 from cfg import Body
 from emit import Emitter, tname, pstr
-_LSP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data", "local_signed.json")
-LOCAL_SIGNED = {k: set(v) for k, v in json.load(open(_LSP)).items()} if os.path.exists(_LSP) else {}
 
 Sim.rtl_dummy = None
 
@@ -68,7 +66,7 @@ class ProcCtx:
             elif isinstance(v, Lit):
                 # $O-: a literal loaded into a temp for a concatenation is 256 bytes, but a temp whose 256 bytes
                 # would reach into the parameter copies can only be the literal's size
-                top = sum((c['n'] + 1) if c['rtl'] == 0x644 else c['n'] for c in pr.p.get('copies', []))
+                top = sum((c['n'] + 1) if c['rtl'] == 0xA89 else c['n'] for c in pr.p.get('copies', []))
                 if -t.off - sz < top:
                     sz = len(v.text) + 1
             cand = -t.off - sz
@@ -110,7 +108,7 @@ class ProcCtx:
         from capstone import x86
         from sim import md, R
         a, b = pr.p['body']
-        deep = sum((c['n'] + 1) if c['rtl'] == 0x644 else c['n'] for c in pr.p.get('copies', []))
+        deep = sum((c['n'] + 1) if c['rtl'] == 0xA89 else c['n'] for c in pr.p.get('copies', []))
         deep += {'byte': 1, 'word': 2, 'longint': 4, 'real': 6, None: 0}[pr.result]
         temps = {t.off for t in self.temps if t.value is not None}
         tregions = [(t.off, t.off + t.size) for t in self.temps_for]
@@ -145,10 +143,6 @@ class ProcCtx:
                 raise LiftError('stub offset')
             ofs = skel.U[k]['entries'][(ofs - 0x20) // 5]
         p = PROCS.get((k, ofs))
-        if p is None and ofs in skel.tail_labels(k):
-            # a label of the unit's linked asm tail (declared external XUUU_OOOO)
-            import types
-            return types.SimpleNamespace(name='X%s_%04X' % (k, ofs), key=k, entry=ofs, tail=True)
         if p is None:
             raise LiftError('procedure address %s:%04X' % (k, ofs))
         return p
@@ -158,7 +152,7 @@ class ProcCtx:
         for _ in range(depth):
             pr = pr.parent
         for p in pr.params:
-            if p.copy and p.copy['dst'] == off and p.copy['rtl'] == 0x644:
+            if p.copy and p.copy['dst'] == off and p.copy['rtl'] == 0xA89:
                 return '%s%d' % (chr(ord('a') + skel.depth(pr.key, pr.entry)), pr.params.index(p))
         return None
 
@@ -189,7 +183,7 @@ class ProcCtx:
         return prog.far_target(self.key, at)
 
     def near(self, t):
-        p = PROCS.get((self.key, t)) or prog.tail_proc(self.key, t)
+        p = PROCS.get((self.key, t))
         if p is None:
             raise LiftError('near target %x' % t)
         return p
@@ -268,14 +262,12 @@ class Frame:
         for p in pr.params:
             if p.copy and p.copy['dst'] == off:
                 nm = '%s%d' % (self.pl, pr.params.index(p))
-                if p.copy['rtl'] == 0x644 and t is None and l.size == 1:
+                if p.copy['rtl'] == 0xA89 and t is None and l.size == 1:
                     return 'Length(%s)' % nm          # s[0]
                 return nm
         rs = {'byte': 1, 'word': 2, 'longint': 4, 'real': 6, None: 0}[pr.result]
         if rs and off == -rs:
             raise LiftError('function result read/written as variable')
-        if t is None and l.size == 2 and off in LOCAL_SIGNED.get('%s:%04X' % (pr.key, pr.entry), ()):
-            signed = True     # hand-checked: an integer local only ever added/stored (no signed instruction)
         typ = t or tname(l.size, signed)
         k = (off, typ)
         if pr.init:
@@ -298,24 +290,6 @@ class Frame:
         sz = {'byte': 1, 'shortint': 1, 'char': 1, 'boolean': 1, 'word': 2, 'integer': 2, 'longint': 4,
               'pointer': 4, 'real': 6}.get(typ)
         d = l.off - p.off
-        B1 = ('byte', 'shortint', 'char', 'boolean')
-        i_ = self.pr.params.index(p)
-        sig_ = skel.SIGS.get((self.pr.key, self.pr.entry))
-        dt = sig_[0][i_] if sig_ and i_ < len(sig_[0]) else getattr(p, 'ptype', None)
-        if d == 0 and sz == 1 and dt in B1:
-            # a parameter declared as a 1-byte type in its 2-byte slot: the variable itself (or a same-size cast)
-            nm = '%s%d' % (self.pl, i_)
-            return nm if dt == typ else '%s(%s)' % (typ, nm)
-        if typ.startswith('ARRAY ') and d == 0 and not getattr(p, 'copy', None):
-            # a small array passed by value (pushed on the stack, at most 4 bytes): typecast to an array type
-            el = typ[6:]
-            esz = {'byte': 1, 'shortint': 1, 'char': 1, 'word': 2, 'integer': 2}.get(el)
-            if esz and p.size % esz == 0:
-                n = 'TA%d_%s' % (p.size, el)
-                CUR_EM.types[n] = 'array[0..%d] of %s' % (p.size // esz - 1, el)
-                if getattr(p, 'ptype', None) is None:
-                    p.ptype = {2: 'word', 4: 'longint'}.get(p.size)
-                return '%s(%s%d)' % (n, self.pl, self.pr.params.index(p))
         if sz is None or d + sz > p.size or getattr(p, 'copy', None):
             raise LiftError('param view')
         n = 'PV%d_%d_%s' % (p.size, d, typ)
@@ -338,11 +312,6 @@ class Frame:
         if p.size != want and not (p.size == 4 and typ == 'pointer'):
             raise LiftError('param access size')
         p.ptype = getattr(p, 'ptype', None) or typ
-        sig_ = skel.SIGS.get((self.pr.key, self.pr.entry))
-        dt = sig_[0][i] if sig_ and i < len(sig_[0]) else None
-        if dt in ('word', 'integer') and typ in ('byte', 'shortint'):
-            # declared word, read as a byte (mov al,[bp+N]): a byte view, the bare name would be a word operand
-            return self.pview(p, l, signed, t)
         if p.ptype != typ:
             if {p.ptype, typ} <= {'byte', 'word'} or {p.ptype, typ} <= {'shortint', 'integer'}:
                 pass
@@ -426,23 +395,8 @@ def pointer_locs(stmts):
 
 
 def render(pr):
-    import signal
-    def _to(*a):
-        raise LiftError('lift timeout')
-    old = signal.signal(signal.SIGALRM, _to)
-    signal.alarm(int(os.environ.get('LIFT_TIMEOUT', '30')))
-    try:
-        return render_(pr)
-    finally:
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, old)
-
-
-def render_(pr):
     global LAST_STMTS
-    global LAST_CTX
     ctx, stmts = lift(pr)
-    LAST_CTX = ctx
     LAST_STMTS = stmts
     global CUR_EM
     em = CUR_EM = Emitter(ctx)
@@ -561,20 +515,10 @@ def kind_of(a):
 
 def save_merges():
     if prog.MERGE_REQ - prog.MERGE or prog.UNMERGE:
-        import fcntl
-        with open('data/.merge.lock', 'w') as lk:
-            fcntl.flock(lk, fcntl.LOCK_EX)
-            def ld(f):
-                try:
-                    return {tuple(x) for x in json.load(open(f))}
-                except Exception:
-                    return set()
-            nom = ld('data/param_nomerge.json') | prog.NOMERGE | prog.UNMERGE
-            allm = (ld('data/param_merge.json') | prog.MERGE | prog.MERGE_REQ) - prog.UNMERGE - nom
-            json.dump([list(x) for x in sorted(nom)], open('data/param_nomerge.json.tmp', 'w'))
-            os.replace('data/param_nomerge.json.tmp', 'data/param_nomerge.json')
-            json.dump([list(x) for x in sorted(allm)], open('data/param_merge.json.tmp', 'w'))
-            os.replace('data/param_merge.json.tmp', 'data/param_merge.json')
+        nom = sorted(prog.NOMERGE | prog.UNMERGE)
+        json.dump([list(x) for x in nom], open('data/param_nomerge.json', 'w'))
+        allm = sorted((prog.MERGE | prog.MERGE_REQ) - prog.UNMERGE - prog.NOMERGE)
+        json.dump([list(x) for x in allm], open('data/param_merge.json', 'w'))
         print('param merges requested:', len(prog.MERGE_REQ - prog.MERGE))
 
 

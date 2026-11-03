@@ -17,7 +17,7 @@ RTLSEG = DSSEG + 0x1000
 mem = bytearray(16 * (RTLSEG + 0x1000))
 rtl = {}
 funcs = []
-ds = open('orig/START.bin', 'rb').read()[0xDE20:]
+ds = open('orig/GAME.bin', 'rb').read()[0xABE0:]
 mem[DSSEG * 16:DSSEG * 16 + len(ds)] = ds
 for k in UNITS:
     c = bytearray(code_of(k))

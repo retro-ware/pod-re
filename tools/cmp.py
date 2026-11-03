@@ -1,4 +1,4 @@
-"""Compare a build (build/full/START.EXE + START.OVR) with the original, unit by unit.
+"""Compare a build (build/full/GAME.EXE + GAME.OVR) with the original, unit by unit.
 
 usage: cmp.py [-v] [UNIT...]
 Prints per unit: size orig/built, number of differing bytes, first diff offset (and the proc containing it).
@@ -24,15 +24,15 @@ def units_of(img, ovr, relocs, init_calls_at):
 
 U = json.load(open('out/units.json'))
 P = json.load(open('out/procs.json'))
-h, img, rel = load_exe(D + '/START.EXE')
-ov = open(D + '/START.OVR', 'rb').read()
+h, img, rel = load_exe(D + '/GAME.EXE')
+ov = open(D + '/GAME.OVR', 'rb').read()
 # segments from the MAP file
 segmap = {}
-for l in open(D + '/START.MAP'):
+for l in open(D + '/GAME.MAP'):
     p = l.split()
     if len(p) == 5 and p[4] == 'CODE' and p[0].endswith('H'):
         segmap[p[3]] = (int(p[0][:-1], 16), int(p[2][:-1], 16))
-NAMEMAP = {'START': 'M', 'DOS': 'Dos', 'CRT': 'Crt', 'OVERLAY': 'Overlay', 'SYSTEM': 'System'}
+NAMEMAP = {'GAME': 'M', 'DOS': 'Dos', 'CRT': 'Crt', 'OVERLAY': 'Overlay', 'SYSTEM': 'System'}
 built = {}
 for name, (start, size) in segmap.items():
     key = NAMEMAP.get(name, name)
@@ -45,10 +45,10 @@ for name, (start, size) in segmap.items():
         built[key] = (img[start:start+size], sorted(a - start for a in rel if start <= a < start + size), None, size)
 
 # segment -> key maps (orig / build)
-OSEG = {u['seg']: u['key'] for u in U}; OSEG[0xDE2] = "DS"
+OSEG = {u['seg']: u['key'] for u in U}; OSEG[0x9E7] = 'DS'
 BSEG = {}
 for name, (start, size) in segmap.items(): BSEG[start // 16] = NAMEMAP.get(name, name)
-for l in open(D + '/START.MAP'):
+for l in open(D + '/GAME.MAP'):
     p = l.split()
     if len(p) == 5 and p[4] == 'DATA': BSEG[int(p[0][:-1], 16) // 16] = 'DS'
 def resolve(segs, seg, ofs, op):
@@ -75,11 +75,11 @@ for u in U:
     badfix = 0
     for f, s in u['fixups']:
         op = oc[f-3] if f >= 3 else 0
-        if OSEG.get(s) == 'System': continue
+        if OSEG.get(s) == 'System' or f < 3: continue
         if f not in bset or f + 2 > len(bc) or f + 2 > len(oc): badfix += 1; continue
         bs = struct.unpack('<H', bc[f:f+2])[0]
-        ro = resolve(OSEG, s, struct.unpack('<H', oc[f-2:f])[0] if f >= 2 else 0, op)
-        rb = resolve(BSEG, bs, struct.unpack('<H', bc[f-2:f])[0] if f >= 2 else 0, bc[f-3] if f >= 3 else 0)
+        ro = resolve(OSEG, s, struct.unpack('<H', oc[f-2:f])[0], op)
+        rb = resolve(BSEG, bs, struct.unpack('<H', bc[f-2:f])[0], bc[f-3] if f >= 3 else 0)
         if ro == rb:
             oc[f:f+2] = bc[f:f+2] = b'\0\0'
             if op == 0x9a: oc[f-2:f] = bc[f-2:f] = b'\0\0'
@@ -87,7 +87,7 @@ for u in U:
     # compiler-generated System calls: offsets differ until System links the same routines
     for f in bfix:
         if f >= 3 and f + 2 <= n and bc[f-3] == 0x9a and oc[f-3] == 0x9a and BSEG.get(struct.unpack('<H', bc[f:f+2])[0]) == 'System' \
-                and struct.unpack('<H', oc[f:f+2])[0] == 0xC5D:
+                and struct.unpack('<H', oc[f:f+2])[0] == 0x825:
             oc[f-2:f+2] = bc[f-2:f+2] = b'\0\0\0\0'
     diff = [i for i in range(n) if oc[i] != bc[i]]
     ofix = [f for f, s in u['fixups'] if OSEG.get(s) != 'System']

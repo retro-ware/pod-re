@@ -65,7 +65,7 @@ def infer_sigs(results):
         for i, p in enumerate(pr.params):
             if p.copy:
                 c = p.copy
-                if c['rtl'] == 0x644:
+                if c['rtl'] == 0xA89:
                     types.append('string' if c['n'] == 255 else 'S%d' % c['n'])
                 else:
                     types.append('B%d' % c['n'])
@@ -74,8 +74,6 @@ def infer_sigs(results):
             e = ev.get((pr, i), set())
             if p.size == 6:
                 types.append('real')
-            elif p.size == 4 and getattr(p, 'var', False):
-                types.append('var')
             elif p.size == 4:
                 if 'const' in e:
                     types.append('longint')
@@ -85,7 +83,7 @@ def infer_sigs(results):
                 types.append('shortint' if pt == 'shortint' else 'byte')
             else:
                 types.append('integer' if pt == 'integer' else 'word')
-        res = 'pointer' if (pr.result == 'longint' and (pr in rptr or (pr.key, pr.entry) in skel.PTRRES)) else pr.result
+        res = 'pointer' if (pr.result == 'longint' and pr in rptr) else pr.result
         if pr in rsigned or pr in lift.SIGNED_RESULTS:
             res = {'byte': 'shortint', 'word': 'integer'}.get(res, res)
         sigs[pr] = (types, res)
@@ -139,22 +137,7 @@ def generate(results, sigs):
     gtypes = collections.defaultdict(dict)
     absmem = collections.defaultdict(dict)
     cuts = set()
-    wcanon = collections.defaultdict(dict)     # unit -> {record body: type name}: identical with-records shared
     for pr, (ctx, em, fr, body, stmts) in results.items():
-        ren = {}
-        for t, d in type_order(dict(em.types)):
-            if not re.match(r'W\d+_\d+_[0-9A-F]{4}$', t):
-                continue
-            d2 = re.sub(r'\b(%s)\b' % '|'.join(map(re.escape, ren)), lambda m: ren[m.group(1)], d) if ren else d
-            c = wcanon[pr.key].setdefault(d2, t)
-            if c != t:
-                ren[t] = c; ren['P' + t] = 'P' + c
-        if ren:
-            rx = re.compile(r'\b(%s)\b' % '|'.join(map(re.escape, ren)))
-            em.types = {t: rx.sub(lambda m: ren[m.group(1)], d) for t, d in em.types.items() if t not in ren}
-            body = [rx.sub(lambda m: ren[m.group(1)], l) for l in body]
-            fr.decls = [rx.sub(lambda m: ren[m.group(1)], l) for l in fr.decls]
-            em.globals = {g: (a, rx.sub(lambda m: ren[m.group(1)], t)) for g, (a, t) in em.globals.items()}
         loc = fr.decls
         for f in [lift.FRAMES.get(q) for q in [pr] + ancestors(pr)]:
             if f is not None and getattr(f, 'renames', None):
@@ -171,7 +154,7 @@ def generate(results, sigs):
     old = set()
     if os.path.exists('data/cuts.txt'):
         old = {int(x, 16) for x in open('data/cuts.txt').read().split()}
-    allc = sorted(old | {c for c in cuts if 2 <= c < 0xA6EC})
+    allc = sorted(old | {c for c in cuts if 2 <= c < 0xFB76})
     open('data/cuts.txt', 'w').write('\n'.join('%04X' % c for c in allc) + '\n')
     subprocess.run([sys.executable, '-I', 'tools/gendata.py'], check=True, capture_output=True)
     skel.DSITEMS = None
@@ -195,7 +178,7 @@ def generate(results, sigs):
     for k in [k for k in skel.UNITS if k not in skel.TPL and k != 'M']:
         L = skel.gen_unit(k)
         open('src/%s.PAS' % k, 'w', newline='\r\n').write('\n'.join(L) + '\n')
-    open('src/START.PAS', 'w', newline='\r\n').write('\n'.join(skel.gen_main()) + '\n')
+    open('src/GAME.PAS', 'w', newline='\r\n').write('\n'.join(skel.gen_main()) + '\n')
     # base variant: same interfaces, skeleton bodies (always compiles) -> TPUs for per-unit error hunting
     keep = skel.LIFTED, skel.SKEL_FRAMES, skel.DEAD_EXTRA
     skel.LIFTED, skel.SKEL_FRAMES = {}, {}
@@ -244,7 +227,7 @@ def ancestors(pr):
 def frame_decls(pr, fr):
     """var section placing referenced locals at their exact bp offsets (TP allocates downwards in order)."""
     rs = {'byte': 1, 'word': 2, 'longint': 4, 'real': 6, None: 0}[pr.result]
-    top = rs + sum((c['n'] + 1) if c['rtl'] == 0x644 else c['n'] for c in pr.p.get('copies', []))
+    top = rs + sum((c['n'] + 1) if c['rtl'] == 0xA89 else c['n'] for c in pr.p.get('copies', []))
     L = pr.p['locals'] if getattr(fr.ctx, 'full_frame', False) else fr.ctx.locals_end(pr)
     fr.renames = {}
     refs = [(off, t, n) for (off, t), n in fr.refs.items()]
@@ -254,8 +237,7 @@ def frame_decls(pr, fr):
             any(o_ == off + 1 for o_, t2, n2 in refs) else (off, t, n) for off, t, n in refs]
     if refs:
         # a 'temp' that overlaps referenced locals was really a local: the locals reach at least that deep
-        deep = [-off for off, t, n in refs if not (off < -pr.p['locals'] and t.startswith('ARRAY '))]
-        L = min(max([L] + deep), pr.p['locals'])
+        L = min(max(L, max(-off for off, t, n in refs)), pr.p['locals'])
     if not refs:
         fv = getattr(fr.ctx, 'filler_vars', [])
         base = [] if L <= top else ['  _f1: array[1..%d] of byte;' % (L - top)]
@@ -282,10 +264,6 @@ def frame_decls(pr, fr):
             m3 = re.match(r'E(\d+)_', el)
             m4 = re.match(r'AS(\d+)_\d+$', el) or re.match(r'X(\d+)$', el)
             esz = int(m2.group(1)) + 1 if m2 else (int(m3.group(1)) if m3 else (int(m4.group(1)) if m4 else SIZE[el]))
-            if off < -pr.p['locals'] and low == 0:
-                # the displacement folds the low bound (array[lb..] whose element 0 would lie below the frame)
-                low = -((off + pr.p['locals']) // esz)
-                off += low * esz
             above = [o for o in starts if o > off]
             lim = min(above) if above else -top
             cnt = max(1, (lim - off) // esz)
@@ -333,13 +311,6 @@ def frame_decls(pr, fr):
             pad = '_p%d: array[1..%d] of byte; ' % (i, off - pl[0]) if off > pl[0] else ''
             pl[2].append('%d: (%s%s: %s)' % (i, pad, n, t))
             fr.renames[n] = cn + '.' + n
-            # TP sizes the record by its largest variant: a sized view grows the record
-            vsz = view_size(t)
-            if vsz is None:
-                raise LiftError('view of unknown size in overlap record')
-            if off + vsz > pl[0] + pl[1]:
-                k = placed.index(pl)
-                placed[k] = pl = (pl[0], off + vsz - pl[0], pl[2], pl[3])
             continue
         aliases.append((n, t, b))
     placed = [(o, sz, 'record case byte of %s end' % '; '.join(t) if isinstance(t, list) else t, n)
@@ -386,12 +357,12 @@ def unit_errors():
     from concurrent.futures import ThreadPoolExecutor
     shutil.rmtree('build/base', ignore_errors=True)
     os.makedirs('build/base')
-    for f in glob.glob('build/src_base/*.PAS') + ['src/LIT.PAS', 'src/GAMEDATA.PAS', 'src/START.PAS']:
+    for f in glob.glob('build/src_base/*.PAS') + ['src/LIT.PAS', 'src/GAMEDATA.PAS', 'src/GAME.PAS']:
         t = open(f, encoding='latin-1', newline='').read().replace('{$A-,B-,D+', '{$A-,B-,D-')
         open('build/base/' + os.path.basename(f), 'w', encoding='latin-1', newline='').write(t)
     for f in glob.glob('src/*.OBJ'):
         shutil.copy(f, 'build/base/')
-    open('build/base/B.BAT', 'w').write('TPC /B /L START.PAS > OUT.TXT\r\n')
+    open('build/base/B.BAT', 'w').write('TPC /B /L GAME.PAS > OUT.TXT\r\n')
     run_dos('build/base', 'B.BAT')
     out = open('build/base/OUT.TXT', encoding='latin-1').read().replace('\r', '\n')
     if 'Error' in out:
@@ -424,7 +395,7 @@ def compile_all():
     m = re.search(r'(\w+)\.PAS\((\d+)\): Error (\d+): ([^\n]*)', out)
     if m:
         return ('error', m.group(1), int(m.group(2)), m.group(4))
-    if not os.path.exists('build/full/START.EXE'):
+    if not os.path.exists('build/full/GAME.EXE'):
         return ('error', None, 0, out[-300:])
     return ('ok',)
 
@@ -464,7 +435,7 @@ MAPLINES = None
 def map_lines():
     """{unit: sorted [(line, offset)]} from the $D+ detailed map."""
     global MAPLINES
-    txt = open('build/full/START.MAP', encoding='latin-1').read().replace('\r', '\n')
+    txt = open('build/full/GAME.MAP', encoding='latin-1').read().replace('\r', '\n')
     out = {}
     for m in re.finditer(r'Line numbers for (\w+)\(\w+\.PAS\) segment \w+\s*\n(.*?)(?=\n\s*\n\s*(?:Line numbers|Program entry))', txt, re.S):
         out[m.group(1)] = sorted((int(a), int(c, 16)) for a, b, c in re.findall(r'(\d+) ([0-9A-F]{4}):([0-9A-F]{4})', m.group(2)))
@@ -520,36 +491,6 @@ def locate_search(key, built):
     return pos
 
 
-def view_size(t):
-    """Byte size of a view type when its name gives it (X<n> layout records, strings)."""
-    m = re.fullmatch(r'X(\d+)', t)
-    if m: return int(m.group(1))
-    m = re.fullmatch(r'string\[(\d+)\]', t)
-    if m: return int(m.group(1)) + 1
-    if t == 'string': return 256
-    dos = {'ComStr': 128, 'PathStr': 80, 'DirStr': 68, 'NameStr': 9, 'ExtStr': 5}     # Dos unit string types
-    if t in dos: return dos[t]
-    return {'byte': 1, 'shortint': 1, 'char': 1, 'boolean': 1, 'word': 2, 'integer': 2, 'pointer': 4, 'longint': 4}.get(t)
-
-
-FRAMEONLY = set()
-FRAMETRIES = {}
-FRAMEFIX = json.load(open('data/frame_fix.json')) if os.path.exists('data/frame_fix.json') else {}
-
-
-def save_framefix():
-    json.dump(FRAMEFIX, open('data/frame_fix.json', 'w'), indent=0, sort_keys=True)
-
-
-def frame_size(b):
-    """push bp; mov bp,sp; sub sp,N -> N (either mov encoding)."""
-    if len(b) < 6 or b[0] != 0x55 or bytes(b[1:3]) not in (b'\x8b\xec', b'\x89\xe5'):
-        return None
-    if b[3] == 0x83 and b[4] == 0xec: return b[5] if b[5] < 0x80 else None
-    if b[3] == 0x81 and b[4] == 0xec and len(b) >= 7: return b[5] | b[6] << 8
-    return None
-
-
 def verify(results):
     """Per-procedure byte comparison of lifted procs. Returns {proc: reason} for mismatches."""
     global MAPLINES
@@ -563,15 +504,6 @@ def verify(results):
         oc = lift.code_of(key)
         bc = built[key][0]
         pos = locate(key, built)
-        # the asm tail (linked OBJ) moves with the code before it: locate it by its bytes so near calls into it
-        # normalise like calls to procedures
-        if skel.P[key].get('obj') and skel.tail_labels(key):
-            ta, tb = skel.P[key]['obj']
-            sig = oc[ta:min(tb, ta + 48)]
-            i = bc.find(sig)
-            if len(sig) >= 16 and i >= 0 and bc.find(sig, i + 1) < 0:
-                for t in skel.tail_labels(key):
-                    pos.setdefault(t, i - ta)
         order = sorted((p for p in skel.P[key]['procs'] if 'body' in p), key=lambda p: p['entry'])
         nxt = {order[i]['entry']: order[i + 1]['entry'] for i in range(len(order) - 1)}
         for pr in prs:
@@ -585,19 +517,8 @@ def verify(results):
             ob = bytearray(oc[a:b]); bb = bytearray(bc[a + d:b + d + 64])
             mask_fixups(key, ob, bb, a, d, built)
             normalize(key, ob, bb, a, d, pos)
-            if sized and ob == bb[:len(ob)]:
-                # own bytes identical: the shift comes after this procedure (the next one's pool or code) and is
-                # charged to that procedure, which is checked on its own
-                sized = False
             if sized or ob != bb[:len(ob)]:
                 off = first_diff(ob, bb)
-                fo, fb = frame_size(ob), frame_size(bb)
-                if fo is not None and fb is not None and fo != fb:
-                    # the frame size differs (statement temps TP allocates differently; the temps' bp offsets follow
-                    # from it): feed it back to the filler and retry
-                    FRAMEFIX[pkey(pr)] = FRAMEFIX.get(pkey(pr), 0) + fo - fb
-                    save_framefix()
-                    FRAMEONLY.add(pr)
                 bad[pr] = ('size differs by %d' % (pos[n] - d)) if sized else 'bytes differ at +%X' % off
                 DIFFAT[pr] = a + d + off      # build offset of the first differing instruction
     return bad
@@ -659,8 +580,6 @@ def mask_fixups(key, ob, bb, a, delta, built):
         if not 0 <= i < len(ob):
             continue
         lo = i - 2 if i >= 3 and ob[i - 3] == 0x9a else i
-        if i >= 4 and ob[i - 1] == 0xba and ob[i - 4] == 0xb8:
-            lo = i - 3          # procedure address  mov ax,ofs; mov dx,seg
         for j in range(lo, i + 2):
             if 0 <= j < len(ob):
                 ob[j] = 0
@@ -797,12 +716,9 @@ def produce(st):
             _, key, e = k.split(':')
             lift.FORCE_RAW[(key, int(e, 16))] = {tuple(int(x, 16) for x in r.split('-')) for r in v}
     results = {}
-    only = set(filter(None, os.environ.get('LIFT_UNITS', '').split(',')))
     for pr in PROCS.values():
         k = pkey(pr)
-        if only and pr.key not in only:
-            continue
-        if st.get(k, 'ok').startswith(('fail', 'parked')):
+        if st.get(k, 'ok').startswith('fail'):
             continue
         try:
             ctx, em, fr, body = render(pr)
@@ -839,9 +755,8 @@ def produce(st):
     skel.DEAD_EXTRA = {k: v for k, v in skel.DEAD_EXTRA.items() if not getattr(v, 'auto', False)}
     for pr in list(results):
         ctx = results[pr][0]
-        fx = FRAMEFIX.get(pkey(pr), 0)
         if ctx.raws and not pr.init:
-            n = pr.p['locals'] - ctx.locals_end(pr) + fx
+            n = pr.p['locals'] - ctx.locals_end(pr)
             line = filler(pr, ctx, n)
             if line:
                 skel.DEAD_EXTRA[(pr.key, pr.entry)] = AutoStr(line)
@@ -869,16 +784,10 @@ STRIKES = {}     # verify mismatches per procedure in this run
 
 
 def sys_calls(pr):
-    """Offsets of every instruction a raw (inline) statement cannot hold under TP 5.5: anything with a fixup (far
-    calls, procedure addresses, segment words) and near calls."""
+    """Offsets of far calls into System in a procedure body."""
     c = lift.code_of(pr.key)
     a, b = pr.p['body']
-    out = set()
-    fx = [f for f, sg in skel.U[pr.key]['fixups'] if a <= f < b]
-    for off, ln, txt in skel.disasm(c, a, b):
-        if any(off <= f < off + ln for f in fx) or (c[off] == 0xe8 and ln == 3):
-            out.add(off)
-    return sorted(out)
+    return sorted(f - 3 for f, sg in skel.U[pr.key]['fixups'] if a < f < b and sg == 0x825 and c[f - 3] == 0x9A)
 
 
 def main():
@@ -905,8 +814,6 @@ def main():
                     print('unattributed error', unit, line, msg)
                     continue
                 rk = 'raw:%s:%04X' % (pr.key, pr.entry)
-                if os.environ.get('LIFT_VERBOSE'):
-                    print('  unit error %s(%d) %s: %s %s' % (unit, line, pkey(pr), msg, mk), flush=True)
                 if mk and '%04X-%04X' % mk not in st.get(rk, []):
                     st.setdefault(rk, []).append('%04X-%04X' % mk)
                 else:
@@ -934,19 +841,8 @@ def main():
             save_status(st)
             continue
         DIFFAT.clear()
-        FRAMEONLY.clear()
         bad = verify(results)
-        if os.environ.get('LIFT_ONCE'):
-            for pr, why in bad.items():
-                print('  mismatch %s: %s at %s' % (pkey(pr), why, DIFFAT.get(pr)))
-            raise SystemExit('LIFT_ONCE: stopped after the first verify (build left in place)')
         for pr, why in bad.items():
-            if os.environ.get('LIFT_VERBOSE'):
-                print('  mismatch %s: %s at %s' % (pkey(pr), why, DIFFAT.get(pr)), flush=True)
-            if pr in FRAMEONLY and FRAMETRIES.get(pr, 0) < 3 and results[pr][0].raws:
-                # frame size fed back to the filler: retry before demoting anything
-                FRAMETRIES[pr] = FRAMETRIES.get(pr, 0) + 1
-                continue
             ln = line_at(pr.key, DIFFAT[pr]) if pr in DIFFAT else None
             mk = stmt_mark(pr.key, ln) if ln else None
             rk = 'raw:%s:%04X' % (pr.key, pr.entry)

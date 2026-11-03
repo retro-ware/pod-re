@@ -5,7 +5,6 @@ from sim import Half, TempRef
 from rtl import Builtin, StrVal, CharStr, SetCons
 from sim import IncOp
 
-import types
 import json as _json
 CHARSETS = set()
 try:
@@ -32,10 +31,8 @@ TPLTYPES = {'Doserror': 'integer', 'Heapend': 'pointer', 'Ovrresult': 'integer',
             'Ovrheaporg': 'word', 'Ovrheapptr': 'word', 'Ovrheapend': 'word', 'Ovrtrapcount': 'word',
             'Ovrloadcount': 'word', 'Ovrfilemode': 'byte', 'Ovremspages': 'word', 'Input': 'text', 'Output': 'text', 'Heaperror': 'pointer', 'Exitproc': 'pointer', 'Exitcode': 'integer', 'Randseed': 'longint',
             'Filemode': 'byte', 'Textattr': 'byte', 'Checkbreak': 'boolean', 'Directvideo': 'boolean',
-            'Lastmode': 'word', 'Prefixseg': 'word', 'Heaporg': 'pointer', 'Heapptr': 'pointer', 'Freelist': 'pointer',
-            'Freeptr': 'pointer', 'Freemin': 'word', 'Ovrreadbuf': 'ovrfunc', 'Ovrdebugptr': 'pointer',
-            'Ovrcodelist': 'word', 'Ovrloadlist': 'word', 'Ovrdoshandle': 'word', 'Ovremshandle': 'word'}
-BTYPES = {'Ptr': ['word', 'word'], 'Abs': ['integer'], 'Intr': [None, 'Registers'], 'FindFirst': [None, None, 'SearchRec'], 'FindNext': ['SearchRec'],
+            'Lastmode': 'word', 'Prefixseg': 'word', 'Heaporg': 'pointer', 'Heapptr': 'pointer', 'Freelist': 'pointer'}
+BTYPES = {'Intr': [None, 'Registers'], 'FindFirst': [None, None, 'SearchRec'], 'FindNext': ['SearchRec'],
           'Insert': [None, 'string'], 'Delete': ['string'], 'UpCase': ['char'], 'Copy': ['string'],
           'MkDir': ['string'], 'Pos': ['string', 'string']}
 BOOLB = {'KeyPressed', 'Eof', 'Eoln'}
@@ -65,30 +62,14 @@ class Emitter:
 
     # ---------------- locations
     def isptr(self, l):
-        if isinstance(l, Builtin) and l.name == 'Ptr':
-            return True
         if isinstance(l, Call) and l.size == 'longint':
             import skel
-            if (l.target.key, l.target.entry) in skel.PTRRES:
-                return True
             sig = skel.SIGS.get((l.target.key, l.target.entry))
             return bool(sig) and sig[1] == 'pointer'
         if not (isinstance(l, Loc) and l.size == 4):
             return False
         import lift
-        if lift.lkey(l) in getattr(self, 'ptrs', ()):
-            return True
-        if l.kind == 'l' and l.off > 0 and l.depth == 0 and l.index is None:
-            # a parameter declared pointer
-            import skel
-            pr = self.ctx.pr
-            sig = skel.SIGS.get((pr.key, pr.entry))
-            for i, p in enumerate(pr.params):
-                if p.off == l.off and p.size == 4:
-                    if sig and i < len(sig[0]):
-                        return sig[0][i] == 'pointer'
-                    return getattr(p, 'ptype', None) == 'pointer' or 'les' in p.access   # as build.sigs decides
-        return False
+        return lift.lkey(l) in getattr(self, 'ptrs', ())
 
     def with_tmp(self, l):
         p = getattr(l, 'ptr', None)
@@ -173,13 +154,8 @@ class Emitter:
                 return '%s[%s:$%X]' % (arr, sg, o_.off)
             return '%s[%s:%s]' % (arr, sg, self.expr(o_))
         if l.kind == 'mem':
-            # mov si,SEG; mov es,si; [es:OFS]: a variable declared absolute SEG:OFS
-            if not hasattr(self, 'absmem'):
-                self.absmem = {}
-            tn = force or tname(l.size, s)
-            n = 'V%04X_%04X_%s' % (l.index.v, l.off, re.sub(r'\W', '_', tn))
-            self.absmem[n] = '%s absolute $%X:$%X' % (tn, l.index.v, l.off)
-            return n
+            arr = {1: 'Mem', 2: 'MemW', 4: 'MemL'}[l.size]
+            return '%s[$%X:$%X]' % (arr, l.index.v, l.off)
         if l.kind == 'upidx':
             # array in a parent frame (same shapes as local arrays)
             if self.ctx.strparam(l.off, l.depth) and l.size == 1 and l.scale == 1:
@@ -194,27 +170,6 @@ class Emitter:
             raise LiftError('parent array element size')
         if l.kind == 'lidx' and self.ctx.strparam(l.off) and l.size == 1 and l.scale == 1:
             return 'Ord(%s[%s])' % (self.ctx.strparam(l.off), self.expr(l.index))
-        cp_ = None
-        if l.kind == 'lidx' and l.scale and l.size and l.scale >= l.size:
-            for p_ in self.ctx.pr.params:
-                c_ = p_.copy
-                if c_ and c_['rtl'] != 0x644 and c_['dst'] - l.scale < l.off < c_['dst'] + c_['n'] and l.off != c_['dst']:
-                    cp_ = c_
-        if cp_ is not None:
-            # an array inside a value-copied parameter (the displacement folds the low bound): a same-size
-            # typecast of the parameter to a record holding the array
-            D, n_, k = cp_['dst'], cp_['n'], l.scale
-            lb = max(0, -((l.off - D) // k))
-            pad = l.off + k * lb - D
-            cnt = (n_ - pad) // k
-            tail = n_ - pad - cnt * k
-            rt = self.elemrec(k, force or tname(l.size, s)) if k > l.size else (force or tname(l.size, s))
-            tn = 'TC%d_%d_%d_%s' % (n_, pad, lb, re.sub(r'\W', '_', rt))
-            self.types[tn] = 'record %sa: array[%d..%d] of %s;%s end' % (
-                '_p: array[1..%d] of byte; ' % pad if pad else '', lb, lb + cnt - 1, rt,
-                ' _q: array[1..%d] of byte;' % tail if tail else '')
-            nm = self.ctx.local_name(Loc('l', D, 1), None)
-            return '%s(%s).a[%s]%s' % (tn, nm, self.expr(l.index), '.f' if k > l.size else '')
         if l.kind == 'lidx' and l.scale and l.size and l.scale > l.size and not self.ctx.strparam(l.off):
             # local array of records: the accessed field first in a scale-byte element record
             rt = self.elemrec(l.scale, force or tname(l.size, s))
@@ -223,7 +178,7 @@ class Emitter:
         if l.kind == 'lidx' and l.scale == l.size and l.size in (2, 4):
             # a value-copied array parameter (declared as bytes) indexed with wider elements: same-size typecast
             for p_ in self.ctx.pr.params:
-                if p_.copy and p_.copy['dst'] == l.off and p_.copy['rtl'] != 0x644 and p_.copy['n'] % l.size == 0:
+                if p_.copy and p_.copy['dst'] == l.off and p_.copy['rtl'] != 0xA89 and p_.copy['n'] % l.size == 0:
                     elem = tname(l.size, s)
                     tn = 'TA%d_%s' % (p_.copy['n'], elem)
                     self.types[tn] = 'array[0..%d] of %s' % (p_.copy['n'] // l.size - 1, elem)
@@ -235,14 +190,6 @@ class Emitter:
                 raise LiftError('local array element size')
             n = self.ctx.local_name(Loc('l', l.off, l.size), s, 'ARRAY ' + elem)
             return '%s[%s]' % (n, self.expr(l.index))
-        nd = self.ndim_index(l) if l.kind == 'idx' and l.scale in (None, 1) else None
-        if nd is not None:
-            # a[i, j, k, ...]: three or more index terms, each scaled by TP (mov dx,K; mul dx)
-            terms, esz = nd
-            elem = force or tname(esz, s)
-            dims = ['0..%d' % (terms[i][1] // terms[i + 1][1] - 1) for i in range(len(terms) - 1)]
-            t = 'array[0..%d, %s] of %s' % (max(0, 32760 // terms[0][1] - 1), ', '.join(dims), elem)
-            return '%s[%s]' % (self.galias(l.off, t, 'a'), ', '.join(self.expr(x) for x, k in terms) + '')
         if l.kind == 'idx' and l.size and l.size > 1 and l.scale in (None, 1) and isinstance(l.index, Op) and \
                 l.index.op == '+' and len(l.index.args) == 2:
             # i*rowbytes + j*elemsize (both terms already scaled): a two-dimensional array of elements
@@ -293,11 +240,6 @@ class Emitter:
             return '%s[%s]' % (self.galias(l.off + l.size, t, 'a'), self.expr(l.index))
         if l.kind == 'idx':
             elem = force or ('pointer' if l.size == 4 and self.isptr(l) else tname(l.size, s))
-            if l.scale == l.size and l.off < 2 and (2 - l.off) % l.size == 0:
-                # array at the very start of the game data: its low bound folds the base below DS:0002
-                lb = (2 - l.off) // l.size
-                t = 'array[%d..%d] of %s' % (lb, lb + 32760 // l.size - 1, elem)
-                return '%s[%s]' % (self.galias(2, t, 'a'), self.expr(l.index))
             if l.scale == l.size:
                 t = 'array[0..%d] of %s' % (max(0, 32760 // l.scale - 1), elem)
                 return '%s[%s]' % (self.galias(l.off, t, 'a'), self.expr(l.index))
@@ -311,27 +253,6 @@ class Emitter:
             # a constant added to the index belongs to the displacement (array start inside the record)
             c_ = l.index.args[1].v
             l = Loc('deref', (l.off + c_) & 0xFFFF, l.size, index=l.index.args[0], scale=l.scale, ptr=l.ptr)
-        nd = self.ndim_index(l, True) if l.kind == 'deref' and l.index is not None and l.scale in (None, 1) else None
-        if nd is not None:
-            # pointer to an N-dimensional byte array; the displacement folds -(lb1*K1 + lb2*K2 + ...)
-            terms, esz = nd
-            so = (l.off & 0xFFFF) - (0x10000 if l.off & 0x8000 else 0)
-            if so <= 0:
-                rem, lbs = -so, []
-                for x_, k_ in terms:
-                    lbs.append(rem // k_)
-                    rem %= k_
-                ok = all(lbs[i] < terms[i - 1][1] // terms[i][1] for i in range(1, len(terms)))
-                if ok:
-                    elem = force or tname(1, s)
-                    dims = ['%d..%d' % (lbs[0], lbs[0] + 60000 // terms[0][1] - 1)]
-                    dims += ['%d..%d' % (lbs[i], lbs[i] + terms[i - 1][1] // terms[i][1] - 1) for i in range(1, len(terms))]
-                    rec = 'RN_%s_%s' % ('_'.join('%d' % k for x, k in terms[:-1]), '_'.join('%d' % b for b in lbs))
-                    rec += '_' + re.sub(r'\W', '_', elem)
-                    if rec not in self.types:
-                        self.types[rec] = 'record a: array[%s] of %s end' % (', '.join(dims), elem)
-                        self.types['P' + rec] = '^' + rec
-                    return '%s.a[%s]' % (self.pd(rec, l.ptr), ', '.join(self.expr(x) for x, k in terms))
         if l.kind == 'deref' and l.index is not None:
             # pointer to an array: es:[di + index + disp]; disp folds the low bound (or a leading pad)
             elem = force or tname(l.size, s)
@@ -349,17 +270,6 @@ class Emitter:
                 if type(r0).__name__ == 'MulK' or (isinstance(r0, Op) and r0.op == '*' and isinstance(r0.args[1], Const)):
                     rx, rk = (r0.x, r0.k) if type(r0).__name__ == 'MulK' else (r0.args[0], r0.args[1].v)
                     sz_ = l.size or 1
-                    so2 = (l.off & 0xFFFF) - (0x10000 if l.off & 0x8000 else 0)
-                    if getattr(r0, 'bycl', False) and rk % sz_ == 0 and so2 < 0 and so2 % rk == 0 and -so2 <= 8 * rk:
-                        # rows from lb > 0 (displacement folds -lb*k), variable column
-                        elem2 = force or tname(sz_, s)
-                        lb = -so2 // rk
-                        rec = 'RB%d_%d_%s' % (lb, rk, re.sub(r'\W', '_', elem2))
-                        if rec not in self.types:
-                            self.types[rec] = 'record a: array[%d..%d, 0..%d] of %s end' % (
-                                lb, lb + 60000 // rk - 1, rk // sz_ - 1, elem2)
-                            self.types['P' + rec] = '^' + rec
-                        return '%s.a[%s, %s]' % (self.pd(rec, l.ptr), self.expr(rx), self.expr(sc.args[1]))
                     if rk % sz_ == 0 and (l.off & 0xFFFF) < 0x8000:
                         elem2 = force or tname(sz_, s)
                         d = l.off & 0xFFFF
@@ -369,22 +279,7 @@ class Emitter:
                             self.types[rec] = 'record %sa: array[0..%d, 0..%d] of %s end' % (
                                 pad, max(0, (60000 - d) // rk - 1), rk // sz_ - 1, elem2)
                             self.types['P' + rec] = '^' + rec
-                        return '%s.a[%s, %s]' % (self.pd(rec, l.ptr), self.expr(rx), self.expr(sc.args[1]))
-            so = (l.off & 0xFFFF) - (0x10000 if l.off & 0x8000 else 0)
-            if type(sc).__name__ in ('MulK', 'Op') and getattr(sc, 'bycl', False) and k_ > (l.size or 1) and \
-                    k_ % (l.size or 1) == 0 and -8 * k_ <= so < k_ * 8:
-                # row index scaled by TP itself (mov cl,k / mov dx,k; mul dx): an array of k-byte rows starting at
-                # row lb (the displacement folds -lb*k), element d of row x
-                sz_ = l.size or 1
-                elem2 = force or tname(sz_, s)
-                lb = -(so // k_); col = so % k_
-                if col % sz_:
-                    raise LiftError('row element misaligned')
-                rec = 'RB%s_%d_%s' % (('m%d' % -lb) if lb < 0 else lb, k_, re.sub(r'\W', '_', elem2))
-                if rec not in self.types:
-                    self.types[rec] = 'record a: array[%d..%d, 0..%d] of %s end' % (lb, lb + 60000 // k_ - 1, k_ // sz_ - 1, elem2)
-                    self.types['P' + rec] = '^' + rec
-                return '%s.a[%s, %d]' % (self.pd(rec, l.ptr), self.expr(x_), col // sz_)
+                        return 'P%s(%s)^.a[%s, %s]' % (rec, self.ptr(l.ptr), self.expr(rx), self.expr(sc.args[1]))
             if l.size and l.size > 1:
                 if k_ != l.size:
                     raise LiftError('pointer array index scale %s for %s-byte elements' % (k_, l.size))
@@ -396,13 +291,13 @@ class Emitter:
                     pad = '_p: array[1..%d] of byte; ' % d if d else ''
                     self.types[rec] = 'record %sa: array[0..%d] of %s end' % (pad, max(0, 32000 // l.size), elem)
                     self.types['P' + rec] = '^' + rec
-                return '%s.a[%s]' % (self.pd(rec, l.ptr), self.expr(l.index))
+                return 'P%s(%s)^.a[%s]' % (rec, self.ptr(l.ptr), self.expr(l.index))
             low = 0x10000 - d
             at = 'AL%d_%s' % (low, re.sub(r'\W', '_', elem))
             if at not in self.types:
                 self.types[at] = 'array[%d..%d] of %s' % (low, min(65519, low + 32000), elem)
                 self.types['P' + at] = '^' + at
-            return '%s[%s]' % (self.pd(at, l.ptr), self.expr(l.index))
+            return 'P%s(%s)^[%s]' % (at, self.ptr(l.ptr), self.expr(l.index))
         if l.kind == 'deref':
             ft = force or ('pointer' if self.isptr(l) else tname(l.size, s))
             rec = 'R%d_%s' % (l.off, re.sub(r'\W', '_', ft))
@@ -410,7 +305,7 @@ class Emitter:
                 pad = '_p: array[1..%d] of byte; ' % l.off if l.off else ''
                 self.types[rec] = 'record %sv: %s end' % (pad, ft)
                 self.types['P' + rec] = '^' + rec
-            return '%s.v' % self.pd(rec, l.ptr)
+            return 'P%s(%s)^.v' % (rec, self.ptr(l.ptr))
         raise LiftError('loc kind ' + l.kind)
 
     def u7(self, x):
@@ -459,21 +354,11 @@ class Emitter:
                 v += ':' + self.expr(a.w)
             return v
         if isinstance(a, Addr):
-            if t is None and a.loc.kind == 'g' and a.loc.index is None:
-                try:
-                    return self.loc_view(a.loc, 'byte')
-                except LiftError as ex:
-                    m = re.match(r'(\w+) used as byte$', str(ex))
-                    if not m:
-                        raise
-                    return m.group(1)     # untyped var argument: a Text/file/record variable as itself
             return self.loc_view(a.loc, t or 'byte')
         if isinstance(a, TempRef) and a.value is None:
             return self.loc_view(Loc('l', a.off, None), t or 'byte')
         if t == 'char':
             return self.charexpr(a)
-        if t == 'integer' and getattr(a, 'size', None) == 2:
-            return self.expr(a, 0, True)     # Abs(word expr) would be widened to longint
         return self.expr(a)
 
     def elemrec(self, size, field):
@@ -483,44 +368,13 @@ class Emitter:
             self.types[n] = 'record f: %s; _r: array[1..%d] of byte end' % (field, size - fs)
         return n
 
-    def varparam(self, p):
-        """Index of the untyped var parameter whose address p is (None: an ordinary pointer)."""
-        self.vp_owner = self.ctx.pr
-        if isinstance(p, Loc) and p.kind in ('l', 'up') and p.off > 0 and p.index is None:
-            pr = self.ctx.pr
-            if p.kind == 'up':
-                # a var parameter of an enclosing procedure (reached through the static link)
-                for _ in range(p.depth or 0):
-                    pr = pr.parent
-            for i, q in enumerate(pr.params):
-                if q.off == p.off and getattr(q, 'var', False):
-                    self.vp_owner = pr
-                    return i
-        return None
-
-    def pd(self, t, p):
-        """The variable of type t that pointer p points to: PT(p)^, or the typecast T(a) of an untyped var param."""
-        i = self.varparam(p)
-        if i is not None:
-            import skel
-            o_ = self.vp_owner
-            pl = chr(ord('a') + skel.depth(o_.key, o_.entry))
-            return '%s(%s%d)' % (t, pl, i)
-        return 'P%s(%s)^' % (t, self.ptr(p))
-
     def ptr(self, p):
-        if self.varparam(p) is not None:
-            raise LiftError('address of an untyped var parameter')
         if isinstance(p, Loc) and p.size == 4:
             p2 = Loc(p.kind, p.off, 4, index=p.index, scale=p.scale, ptr=p.ptr, depth=p.depth)
             if p.kind in ('g', 'l', 'up'):
                 return self.loc_typed(p2, 'pointer')
             return self.loc(p2, force='pointer')
         if isinstance(p, Call) and p.size == 'longint':
-            # a pointer function dereferenced directly; a longint typecast to pointer goes through a 4-byte temp
-            import skel
-            if (p.target.key, p.target.entry) in skel.PTRRES or self.isptr(p):
-                return self.expr(p)
             return 'pointer(%s)' % self.expr(p)
         raise LiftError('pointer expr %r' % (p,))
 
@@ -531,38 +385,8 @@ class Emitter:
             return self.ctx.local_name(l, None, t)
         raise LiftError('typed loc ' + l.kind)
 
-    def ndim_index(self, l, need_bycl=False):
-        # flatten i*K1 + j*K2 + ... + z (z unscaled = element index of a byte array); needs 3+ terms
-        if not (isinstance(l.index, Op) and l.index.op == '+') or (l.size or 1) != 1:
-            return None
-        flat, st = [], [l.index]
-        while st:
-            t = st.pop()
-            if isinstance(t, Op) and t.op == '+':
-                st.extend(reversed(t.args))
-            else:
-                flat.append(t)
-        terms, plain = [], []
-        for t in flat:
-            if need_bycl and type(t).__name__ in ('MulK', 'Op') and not getattr(t, 'bycl', False):
-                plain.append(t)
-            elif type(t).__name__ == 'MulK':
-                terms.append((t.x, t.k))
-            elif isinstance(t, Op) and t.op == '*' and isinstance(t.args[1], Const):
-                terms.append((t.args[0], t.args[1].v))
-            else:
-                plain.append(t)
-        if len(plain) != 1 or len(terms) < 2:
-            return None
-        terms.sort(key=lambda x: -x[1])
-        terms.append((plain[0], 1))
-        for i in range(len(terms) - 1):
-            if terms[i][1] % terms[i + 1][1] or terms[i][1] == terms[i + 1][1]:
-                return None
-        return terms, 1
-
     def galias(self, addr, t, prefix='g'):
-        if not (2 <= addr < 0x5958 or 0x59A2 <= addr < 0xA6EC):
+        if not (2 <= addr < 0x7D8C or 0x7DDE <= addr < 0xFB76):
             n = TPLVARS.get(addr)
             if n is None:
                 # inside a TPL variable: a record view at the offset
@@ -579,9 +403,7 @@ class Emitter:
             have = TPLTYPES.get(n)
             if have == t:
                 return n
-            if have == 'ovrfunc' and t == 'pointer':
-                return '@' + n                        # TP5.5: @procvar is its value, also assignable
-            SZ = {'byte': 1, 'shortint': 1, 'boolean': 1, 'char': 1, 'word': 2, 'integer': 2, 'longint': 4, 'pointer': 4, 'ovrfunc': 4}
+            SZ = {'byte': 1, 'shortint': 1, 'boolean': 1, 'char': 1, 'word': 2, 'integer': 2, 'longint': 4, 'pointer': 4}
             if have in SZ and t in SZ:
                 if SZ[have] == SZ[t]:
                     return '%s(%s)' % (t, n)          # same-size variable typecast
@@ -626,8 +448,6 @@ class Emitter:
                 v -= 0x10000
             if sg and e.size == 1 and v >= 0x80:
                 v -= 0x100
-            if e.size == 4 and v >= 0x80000000:
-                v -= 0x100000000            # longint is signed: a mask like $FFFF0000
             return str(v)
         if isinstance(e, Loc):
             return self.loc(e, signed)
@@ -688,12 +508,7 @@ class Emitter:
                     ps.append('p%d: %s' % (i, t_))
                     args.append(self.expr(a))
             tn = 'TPV_' + '_'.join(re.sub(r'\W', '', p_.split(':')[-1] if ':' in p_ else 'var') for p_ in ps)
-            rt = {1: 'byte', 2: 'word', 4: 'longint'}.get(e.size)
-            if rt:
-                tn = 'TFV_%s_' % rt + tn[4:]
-                self.types[tn] = 'function(%s): %s' % ('; '.join(ps), rt) if ps else 'function: %s' % rt
-            else:
-                self.types[tn] = 'procedure(%s)' % '; '.join(ps) if ps else 'procedure'
+            self.types[tn] = 'procedure(%s)' % '; '.join(ps) if ps else 'procedure'
             fn = self.loc_typed(e.var, tn) if e.var.kind in ('g', 'l', 'up') else self.loc(e.var, force=tn)
             return '%s(%s)' % (fn, ', '.join(args)) if args else fn
         if isinstance(e, Builtin):
@@ -708,10 +523,6 @@ class Emitter:
                 # inc al / dec al before the extension: arithmetic in the byte type
                 x = e.args[0]
                 return '%s(%s)' % ('Succ' if x.op == '+' else 'Pred', self.expr(x.args[0], 0, op == 'sext'))
-            if op in ('+', '-') and e.size == 1 and getattr(e, 'incs', False) and isinstance(e.args[1], Const) and \
-                    e.args[1].v == 1 and getattr(e.args[0], 'size', None) == 1:
-                # inc al / dec al: byte arithmetic (x - 1 would be computed in integer: xor ah,ah; dec ax)
-                return '%s(%s)' % ('Succ' if op == '+' else 'Pred', self.expr(e.args[0], 0, signed))
             if op == 'toreal':
                 return self.expr(e.args[0], prec, signed)
             if op == '/':
@@ -719,10 +530,6 @@ class Emitter:
                 return '(%s)' % r if prec > 2 else r
             if op == 'lo8' and isinstance(e.args[0], Op) and getattr(e.args[0], 'u7', False):
                 return 'Byte(%s)' % self.expr(e.args[0])      # byte view of an unsigned div/mod result
-            if op == 'lo8' and getattr(e.args[0], 'size', None) == 4 and not isinstance(e.args[0], Loc):
-                return 'Lo(%s)' % self.expr(e.args[0])        # byte test of a longint expr (or al,al after 32-bit and)
-            if op == 'lo8' and isinstance(e.args[0], Op) and e.args[0].size == 2 and e.args[0].op in ('and', 'or', 'xor', 'div', 'mod'):
-                return 'Lo(%s)' % self.expr(e.args[0])        # byte test of a word and/or (or al,al after and ax)
             if op in ('zext', 'sext', 'zext32', 'sext32', 'lo8', 'lo16'):
                 return self.expr(e.args[0], prec, signed=(op.startswith('s') or None))
             if op == 'rel' and e.signed in ('=z', '<>z') and isinstance(e.args[0], Builtin) and e.args[0].name in BOOLB:
@@ -761,8 +568,6 @@ class Emitter:
                     # a set of characters: the element must be a char
                     lv = self.expr(x, 3)
                     lv = lv[4:-1] if lv.startswith('Ord(') and lv.endswith(')') else self.charexpr(x)
-                elif isinstance(x, Op) and x.op == 'lo8' and getattr(x.args[0], 'size', None) == 2:
-                    lv = 'Byte(%s)' % self.expr(x.args[0])     # word tested against a byte set: mov al,[w]
                 else:
                     lv = self.expr(x, 3)
                 s = '%s in %s' % (lv, sv)
@@ -786,33 +591,17 @@ class Emitter:
                     x = x.args[0]
                 parts.insert(0, x)
                 return 'Concat(%s)' % ', '.join(self.strexpr(p_) for p_ in parts)
-            if op in ('and', 'or') and e.size == 1 and all(isinstance(a, Op) and a.op in ('rel', 'in', 'and', 'or', 'not', 'odd') or
-                                                         isinstance(a, Builtin) and a.name == 'Boolean' for a in e.args):
+            if op in ('and', 'or') and e.size == 1 and all(isinstance(a, Op) and a.op in ('rel', 'in', 'and', 'or', 'not') for a in e.args):
                 p = PREC[op]
                 s = (' %s ' % op).join(self.expr(a, p + 1) for a in e.args)
                 return '(%s)' % s if prec > p or prec == 0 and False else s
             p = PREC.get(op)
             if p is None:
                 raise LiftError('op ' + op)
-            if len(e.args) > 2:
-                raise LiftError('n-ary ' + op)
-            if op in ('div', 'mod') and e.signed is True and signed is None and e.size == 2:
-                signed = True       # idiv: integer operands (a word view would compile to xor dx,dx; div)
             a = self.expr(e.args[0], p, signed)
             b = self.expr(e.args[1], p + 1, signed)
             if op in ('div', 'mod') and getattr(e, 'u7', False):
                 a = self.u7(e.args[0]) or a
-            elif e.signed is False and e.size == 2 and isinstance(e.args[1], Const) and isinstance(e.args[0], Op) and \
-                    (op in ('div', 'mod') and e.args[0].op == 'zext' or op == '*' and e.args[0].op == 'sext') and \
-                    not getattr(e, 'bycl', False):
-                # byte div K / shortint * K: TP computes in integer (idiv/imul); the original's div/mul = a word operand
-                a = 'Word(%s)' % self.expr(e.args[0], 0, e.args[0].op == 'sext' or None)
-            if e.size == 4:
-                # pointer operands of longint arithmetic: LongInt(p) (a same-size typecast, no code)
-                if self.isptr(e.args[0]):
-                    a = 'LongInt(%s)' % self.expr(e.args[0])
-                if self.isptr(e.args[1]):
-                    b = 'LongInt(%s)' % self.expr(e.args[1])
             if e.size == 4 and op in ('+', '-', '*', 'div', 'mod'):
                 # word/integer operands extended to longint: TP needs the cast to compute in 32 bits
                 ext = lambda x: isinstance(x, Op) and x.op in ('zext32', 'sext32')
@@ -821,20 +610,12 @@ class Emitter:
                     a = 'LongInt(%s)' % self.expr(e.args[0].args[0], 0, sg_(e.args[0]))
                 if ext(e.args[1]):
                     b = 'LongInt(%s)' % self.expr(e.args[1].args[0], 0, sg_(e.args[1]))
-            if op in ('+', '-', 'and', 'or', 'xor') and e.size == 2:
+            if op in ('+', '-') and e.size == 2:
                 # shortint/integer mixed with word arithmetic: TP would widen to longint; cast the word side
-                def sx(x, d=0):
-                    if type(x).__name__ == 'MulK':
-                        return isinstance(x.x, Op) and x.x.op == 'sext'
-                    return isinstance(x, Op) and (x.op == 'sext' or x.op in ('*', 'div', 'mod') and x.signed is True or
-                                                  x.op == '*' and isinstance(x.args[0], Op) and x.args[0].op == 'sext' and
-                                                  isinstance(x.args[1], Const) or
-                                                  d < 3 and op in ('and', 'or', 'xor') and
-                                                  x.op in ('+', '-') and any(sx(y, d + 1) for y in x.args))
-                sa = sx(e.args[0])
-                sb = sx(e.args[1])
+                sa = isinstance(e.args[0], Op) and e.args[0].op == 'sext'
+                sb = isinstance(e.args[1], Op) and e.args[1].op == 'sext'
                 def unsigned_word(x):
-                    return isinstance(x, Op) and x.op in ('+', '-', '*') and x.size == 2 and not x.signed or \
+                    return isinstance(x, Op) and x.op in ('+', '-') and x.size == 2 and not x.signed or \
                         isinstance(x, Loc) and x.size == 2 and not x.signed
                 if sa and unsigned_word(e.args[1]):
                     b = 'Integer(%s)' % self.expr(e.args[1])
@@ -856,14 +637,6 @@ class Emitter:
             import skel
             item, k = skel.dsname(s.off)
             if k == 0:
-                w = getattr(s, 'setsize', None)
-                if w:
-                    # declared as bytes (cuts may be shorter than the set): an absolute alias of the set type;
-                    # $bctr width word = first byte << 8 | byte count
-                    lo, n = w >> 8, w & 0xFF
-                    tn = 'TS%d_%d' % (lo, n)
-                    self.types[tn] = 'set of %d..%d' % (8 * lo, 8 * (lo + n) - 1)
-                    return self.galias(s.off, tn)
                 return item           # a typed set constant/variable by its own name
             return self.loc(s)
         raise LiftError('set value')
@@ -871,8 +644,6 @@ class Emitter:
     def arg(self, a, p, callee=None):
         t = self.ptype(callee, p)
         isaddr = isinstance(a, Addr) or (isinstance(a, TempRef) and a.value is None)
-        if not isaddr and t == 'var':
-            raise LiftError('value for an untyped var parameter')
         if not isaddr:
             sv = a.value if isinstance(a, TempRef) and a.value is not None else a
             if (t == 'string' or t.startswith('S')) and isinstance(sv, SetLit) and sv.data[:1] in (b'\x00', [0]):
@@ -891,8 +662,6 @@ class Emitter:
                 return '%s(%s)' % (t, self.expr(a))
             return self.expr(a)
         loc = a.loc if isinstance(a, Addr) else Loc('l', a.off, None)
-        if t == 'var':
-            return self.barg(a) if isinstance(a, Addr) else self.loc_view(loc, 'byte')
         if t == 'pointer':
             return '@' + self.loc_view(loc, 'byte')
         if t == 'string' or t.startswith('S'):
@@ -911,15 +680,11 @@ class Emitter:
 
     def ptype(self, callee, p):
         import skel
-        if getattr(callee, 'tail', False):
-            return p.ptype
         sig = skel.SIGS.get((callee.key, callee.entry)) if callee else None
         if sig:
             return sig[0][callee.params.index(p)]
         if p.copy:
-            return 'string' if p.copy['rtl'] == 0x644 else 'B%d' % p.copy['n']
-        if p.size == 4 and getattr(p, 'var', False):
-            return 'var'
+            return 'string' if p.copy['rtl'] == 0xA89 else 'B%d' % p.copy['n']
         if p.size == 4:
             return 'pointer' if 'les' in p.access else 'longint'
         return 'word'
@@ -938,10 +703,8 @@ class Emitter:
                 l.index.op == '+' and len(l.index.args) == 2:
             # i*rowbytes + j*k: a local two-dimensional array of string[k-1]
             r_, c_ = l.index.args
-            if isinstance(c_, Op) and c_.op == '*' and isinstance(c_.args[1], Const):
-                c_ = types.SimpleNamespace(k=c_.args[1].v, x=c_.args[0], mulk=True)
-            if (type(c_).__name__ == 'MulK' or getattr(c_, 'mulk', False)) and isinstance(r_, Op) and r_.op == '*' and \
-                    isinstance(r_.args[1], Const) and r_.args[1].v % c_.k == 0:
+            if type(c_).__name__ == 'MulK' and isinstance(r_, Op) and r_.op == '*' and isinstance(r_.args[1], Const) \
+                    and r_.args[1].v % c_.k == 0:
                 R, k = r_.args[1].v, c_.k
                 rt = 'AS%d_%d' % (R, k)
                 self.types[rt] = 'array[0..%d] of string[%d]' % (R // k - 1, k - 1)
@@ -994,13 +757,6 @@ class Emitter:
                     rx, rk = r0.args[1], r0.args[0].v
                 elif type(r0).__name__ == 'MulK':
                     rx, rk = r0.x, r0.k
-                c1 = o_.args[1]
-                if rk and type(c1).__name__ == 'MulK' and c1.k in (2, 4) and rk % c1.k == 0 and not c1.bycl:
-                    # rows of rk bytes with TP-scaled k-byte elements (shl): a two-dimensional absolute word array
-                    et = {2: 'word', 4: 'longint'}[c1.k]
-                    n = 'M%04X_%d_%s' % (l.index.v, rk, et)
-                    self.absmem[n] = 'array[0..%d, 0..%d] of %s absolute $%X:0' % (65000 // rk - 1, rk // c1.k - 1, et, l.index.v)
-                    return '%s[%s, %s]' % (n, self.expr(rx), self.expr(c1.x))
                 if rk:
                     # rows of rk bytes: a two-dimensional absolute array
                     n = 'M%04X_%d' % (l.index.v, rk)
@@ -1046,23 +802,8 @@ class Emitter:
     def with_target(self, s, tn):
         """Pascal designator the with statement opens: P(p)^ or P(p)^[i] / [i, j] (k-byte elements)."""
         if s.ptr.add is None:
-            return self.pd(tn, s.ptr.v), None
+            return 'P%s(%s)^' % (tn, self.ptr(s.ptr.v)), None
         terms, c = self.with_index(s.ptr.add)
-        if type(s.ptr.v).__name__ == 'DSBase':
-            # a DS array element: an absolute array alias at the constant part (row/element 0 there)
-            # (TP5.5 rejects a variable typecast of another size, so an absolute alias of the array type)
-            c &= 0xFFFF
-            if len(terms) == 1:
-                (x, k), = terms
-                t = 'array[0..%d] of %s' % (max(1, 32000 // k), tn)
-                return '%s[%s]' % (self.galias(c, t, 'a'), self.expr(x)), k
-            if len(terms) == 2:
-                (x, k1), (y, k) = sorted(terms, key=lambda t: -t[1])
-                if k1 % k:
-                    raise LiftError('with 2d shape')
-                t = 'array[0..%d, 0..%d] of %s' % (max(1, 32000 // k1), k1 // k - 1, tn)
-                return '%s[%s, %s]' % (self.galias(c, t, 'a'), self.expr(x), self.expr(y)), k
-            raise LiftError('with DS element')
         if len(terms) == 1:
             (x, k), = terms
             if -c % k:
@@ -1091,7 +832,7 @@ class Emitter:
         an = 'A' + tn
         self.types[an] = 'array[%s] of %s' % (', '.join('%d..%d' % d for d in dims), tn)
         self.types['P' + an] = '^' + an
-        return '%s[%s]' % (self.pd(an, s.ptr.v), ', '.join(self.expr(i) for i in idx)), k
+        return 'P%s(%s)^[%s]' % (an, self.ptr(s.ptr.v), ', '.join(self.expr(i) for i in idx)), k
 
     def with_stmt(self, s, rest, ind):
         from sim import Ptr
@@ -1263,27 +1004,20 @@ class Emitter:
             from sim import Ptr
             if not isinstance(s.ptr, Ptr):
                 raise LiftError('with pointer')
-            if self.varparam(s.ptr.v) is None and type(s.ptr.v).__name__ != 'DSBase':
-                self.ptr(s.ptr.v)
+            self.ptr(s.ptr.v)
             if s.ptr.add is not None:
-                t = dict(self.types); g = dict(self.globals)
+                t = dict(self.types)
                 try:
                     self.with_target(s, 'WTEST')
                 finally:
-                    self.types = t; self.globals = g
+                    self.types = t
             return [pad + '{with}']
         if isinstance(s, Assign):
             if isinstance(s.dst, Loc) and s.dst.kind == 'l' and self.ctx.is_result(s.dst):
                 import skel
                 sig = skel.SIGS.get((self.ctx.pr.key, self.ctx.pr.entry))
                 signed = True if sig and sig[1] in ('shortint', 'integer') else None
-                rv = self.expr(s.src, 0, signed)
-                if sig and sig[1] == 'pointer':
-                    if isinstance(s.src, Const) and s.src.v == 0:
-                        rv = 'nil'
-                    elif not (isinstance(s.src, Loc) and self.isptr(s.src)) and not rv.startswith(('pointer(', 'Ptr(', 'nil', '@')):
-                        rv = 'pointer(%s)' % rv
-                return [pad + '%s := %s' % (self.ctx.pr.name, rv)]
+                return [pad + '%s := %s' % (self.ctx.pr.name, self.expr(s.src, 0, signed))]
             pr = self.ctx.pr
             d = s.dst
             if pr.strfunc and isinstance(d, Loc) and d.kind == 'deref' and d.off == 0 and d.index is None and \
@@ -1305,8 +1039,6 @@ class Emitter:
                 return [pad + 'GetMem(%s, %s)' % (d_, self.expr(s.src.args[0]))]
             if isinstance(s.src, IncOp):
                 d = self.expr(s.src.dst)
-                if self.isptr(s.src.dst):
-                    d = 'LongInt(%s)' % d        # Inc/Dec take no pointer in TP 5.5
                 if s.src.op == 'inc':
                     return [pad + 'Inc(%s)' % d]
                 if s.src.op == 'dec':
@@ -1322,9 +1054,6 @@ class Emitter:
             if self.isptr(s.dst) and isinstance(s.src, Const) and s.src.v == 0:
                 return [pad + '%s := nil' % d]
             sv = self.expr(s.src)
-            if isinstance(s.src, Addr) and getattr(s.dst, 'size', None) == 4 and not sv.startswith('@'):
-                # p := @X  (mov ax,ofs X; mov dx,ds)
-                return [pad + '%s := @%s' % (d, sv)]
             if getattr(s.dst, 'size', None) == 4 and not isinstance(s.src, Const):
                 dp, sp = self.isptr(s.dst), self.isptr(s.src)
                 if dp and not sp:
@@ -1364,13 +1093,11 @@ class Emitter:
                 self.ctx.raw_ranges.append((s.a, s.b))
             key = self.ctx.key
             code = self.ctx.code
-            # TP 5.5 inline() cannot carry relocations or name procedures: raw code must be fixup- and call-free
-            if any(s.a <= f < s.b for f, sg in skel.U[key]['fixups']):
-                raise LiftError('raw statement with fixup')
-            for off, ln, txt in skel.disasm(code, s.a, s.b):
-                if code[off] == 0xe8 and ln == 3:
-                    raise LiftError('raw statement with near call')
-            return [pad + l for l in skel.inline_lines(code[s.a:s.b])]
+            nears = {p['entry']: (skel.NAME[(key, p['entry'])], p.get('far')) for p in skel.P[key]['procs']
+                     if skel.NAME.get((key, p['entry']))}
+            nears.update(skel.tail_labels(key))
+            lines = skel.body_asm(key, code, s.a, s.b, skel.U[key]['fixups'], nears)
+            return [pad + 'asm'] + [l for l in lines] + [pad + 'end']
         if isinstance(s, Case):
             sel_ = self.expr(s.sel)
             if getattr(s, 'bytesel', False) and isinstance(s.sel, Op) and s.sel.op == 'lo8' and \
@@ -1388,8 +1115,7 @@ class Emitter:
                 labs = ', '.join(('%d..%d' % it) if isinstance(it, tuple) else str(it) for it in items)
                 bl = self.block(body, ind + 1) if body else [pad + '    ']
                 bl[0] = pad + '  ' + labs + ': ' + bl[0].strip()
-                if not bl[-1].endswith(';'):      # inline(...); already ends the arm (';;' is an empty arm statement)
-                    bl[-1] += ';'
+                bl[-1] += ';'
                 out += bl
             if s.els:
                 out.append(pad + 'else')
@@ -1401,17 +1127,6 @@ class Emitter:
                 if not hasattr(self.ctx, 'live_for'):
                     self.ctx.live_for = set()
                 self.ctx.live_for.add(s.temp.off)
-            sg = None
-            if isinstance(s.start, Const) and isinstance(s.stop, Const) and getattr(s.var, 'size', None) in (1, 2):
-                # constant bounds that run backwards unsigned (254 to 2) are a signed loop (-2 to 2): TP would
-                # drop an empty constant loop as dead code
-                if (s.start.v > s.stop.v) != bool(s.down):
-                    sg = True
-            if sg:
-                m = 0x80 if s.var.size == 1 else 0x8000
-                sv = lambda c: str(c.v - 2 * m if c.v >= m else c.v)
-                return [pad + 'for %s := %s %s %s do' % (self.expr(s.var, 0, True), sv(s.start),
-                                                         'downto' if s.down else 'to', sv(s.stop))] + self.block(s.body, ind)
             return [pad + 'for %s := %s %s %s do' % (self.expr(s.var), self.expr(s.start), 'downto' if s.down else 'to',
                                                      self.expr(s.stop))] + self.block(s.body, ind)
         if isinstance(s, While):
