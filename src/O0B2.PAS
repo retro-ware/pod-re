@@ -88,7 +88,7 @@ var
 procedure pO0B2_0000(a0: byte; a1: byte); far; forward;
 procedure pO0B2_01E9(a0: pointer); far; forward;
 procedure pO0B2_02B5; far; forward;
-procedure pO0B2_038A(a0: byte; a1: shortint); far; forward;
+procedure pO0B2_038A(a0: byte; a1: byte); far; forward;
 function pO0B2_0472(a0: byte): S40; far; forward;
 procedure pO0B2_04FD(a0: shortint); far; forward;
 function pO0B2_05F1: byte; far; forward;
@@ -303,7 +303,7 @@ begin
 end;
 
 { 038A }
-procedure pO0B2_038A(a0: byte; a1: shortint);
+procedure pO0B2_038A(a0: byte; a1: byte);
 var loc: array[1..4] of byte;
 begin
   asm

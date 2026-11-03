@@ -14,7 +14,7 @@ function pO102_0E0C(a0: pointer): byte;
 function pO102_0BA1(a0: pointer): byte;
 function pO102_0C12(a0: pointer): byte;
 function pO102_1276(a0: pointer; a1: shortint): byte;
-function pO102_12D1(a0: longint; a1: byte; a2: shortint): longint;
+function pO102_12D1(a0: longint; a1: byte; a2: byte): longint;
 procedure pO102_0000(a0: pointer);
 
 implementation
@@ -851,7 +851,7 @@ begin
 end;
 
 { 12D1 }
-function pO102_12D1(a0: longint; a1: byte; a2: shortint): longint;
+function pO102_12D1(a0: longint; a1: byte; a2: byte): longint;
 begin
   asm
     db 199,70,252,255,255,199,70,254,255,127,128,126,8,41,115,111,128,126,8,12,115,40,138,70,8,48,228,209

@@ -2486,21 +2486,20 @@ c219: record case byte of 0: (v219a: array[0..0] of X3); 1: (v219b: byte); 2: (_
     {@358C-3595}
     c219.v219b := 1;
     {@3595-35D4}
-  pO130_08D7(pO135_0CA2(longint(pointer(a0))), pO135_0CCA(longint(pointer(a0))), 255, 255,
-        pO135_0CF2(longint(pointer(a0))));
+    pO130_08D7(pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)), 255, 255, pO135_0CF2(longint(a0)));
     {@35D4-35DD}
     c219.v218b := 0;
     for w1b := 1 to bA6E4 do
     begin
       {@35F5-361C}
       w5p := aA583_9f8b[aA6E2_fd21[w1b].f];
-      if pO0A1_0FAE(pointer(pointer(a0)), w5p, 0) <> 0 then
+      if pO0A1_0FAE(pointer(a0), w5p, 0) <> 0 then
       begin
         {@3638-3640}
         Inc(c219.v218b);
         {@3640-3677}
         c219.v219a[c219.v218b] := aA6E2_89af[w1b];
-        if w5p = PR9_pointer(PR487_pointer(pointer(a0))^.v)^.v then
+        if w5p = PR9_pointer(PR487_pointer(a0)^.v)^.v then
           c219.v219b := c219.v218b;
       end;
     end;
@@ -2510,7 +2509,7 @@ c219: record case byte of 0: (v219a: array[0..0] of X3); 1: (v219b: byte); 2: (_
     call near ptr pO0A1_3344
     db 139,126,6,54,137,133,28,255,54,137,149,30,255
     end;
-    if v228p <> pointer(a0) then
+    if v228p <> a0 then
     begin
       {@36E3-36E8}
       bAB0D := 255;
@@ -2536,8 +2535,8 @@ begin
   if c219.v217b = 255 then
   begin
     {@3753-3785}
-    if PR427_pointer(pointer(a0))^.v <> nil then
-      c219.v217b := a94E2_3981[PR46_byte(PR427_pointer(pointer(a0))^.v)^.v].f
+    if PR427_pointer(a0)^.v <> nil then
+      c219.v217b := a94E2_3981[PR46_byte(PR427_pointer(a0)^.v)^.v].f
     else
       c219.v217b := 1;
   end;
@@ -2545,9 +2544,9 @@ begin
   if (c219.v217b = 0) or (c219.v217b = 255) then
     c219.v217b := 1;
   {@3798-37A7}
-  v235b := pO135_0CA2(longint(pointer(a0)));
+  v235b := pO135_0CA2(longint(a0));
   {@37A7-37B6}
-  v236b := pO135_0CCA(longint(pointer(a0)));
+  v236b := pO135_0CCA(longint(a0));
   {@37B6-37C5}
   pO135_0429(v235b, v236b);
   {@37C5-37CA}
@@ -2564,7 +2563,7 @@ begin
   while v232b = 0 do
   begin
     {@3800-3836}
-    v229b := pO0A1_2ABB(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, v230b, v233b, v234b);
+    v229b := pO0A1_2ABB(pointer(a0), v228p, c219.v217b, a2, a3, a4, v230b, v233b, v234b);
     if bAAE6 = 0 then
       case v229b of
         0: begin
@@ -2581,7 +2580,7 @@ begin
         end;
         2: begin
           {@3883-38C1}
-pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, @PR0_byte(a6)^.v, v233b,
+pO0A1_2DE8(pointer(a0), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, @PR0_byte(a6)^.v, v233b,
               v234b);
           {@38C1-38D3}
           v228p := PR0_pointer(a6)^.v;
@@ -2604,7 +2603,7 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
             {@3936-393D}
             PR0_byte(a5)^.v := 1;
             if a2 = 1 then
-              pO0A1_2CA5(pointer(pointer(a0)), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
+              pO0A1_2CA5(pointer(a0), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
             {@3963-398A}
             if PR0_byte(a5)^.v = 0 then
             begin
@@ -2617,12 +2616,12 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
           else
           begin
             {@398C-39AB}
-            if (pointer(a0) <> nil) and (v231b = 0) then
+            if (a0 <> nil) and (v231b = 0) then
             begin
               {@399B-39A0}
               bAEEF := 1;
               {@39A0-39AB}
-              pO0EC_0C95(pointer(pointer(a0)));
+              pO0EC_0C95(pointer(a0));
             end;
             {@39AB-39B0}
             bAAE5 := 3;
@@ -2640,7 +2639,7 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
           {@39FA-3A01}
           PR0_byte(a5)^.v := 1;
           if a2 = 1 then
-            pO0A1_2CA5(pointer(pointer(a0)), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
+            pO0A1_2CA5(pointer(a0), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
           {@3A27-3A4E}
           if PR0_byte(a5)^.v = 0 then
           begin

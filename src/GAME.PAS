@@ -65,7 +65,8 @@ begin
     call pO06E_203E
     db 160,13,136,162,12,136
     call pO0EC_2ED1
-    db 128,62,222,125,1,117,5,198,6,14,136,1
+    cmp byte ptr d7DDE, 1
+    db 117,5,198,6,14,136,1
     call pR5A0_0098
     db 184,16,0,80,184,16,0,80,191,30,210,30,87
     call pR1C3_1F24
@@ -87,7 +88,8 @@ begin
     call pO12A_0156
     call pO040_2A30
     call pO079_08A7
-    db 128,62,14,136,0,116,108,255,54,232,61
+    db 128,62,14,136,0,116,108
+    push word ptr d3DE8
     call pR5A0_0000
     call pO03D_00FC
     call pR5A0_001B
