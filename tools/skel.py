@@ -47,6 +47,7 @@ for (k, e), n in list(NAME.items()):
 
 DEAD_EXTRA = {}
 OPLUS = {'R182'}
+DMINUS = {'O075'}   # D- frees local symbols ("Too many symbols"); costs the map line numbers used to locate mismatches
 OPLUS_PROCS = set()   # (key, entry) of procedures compiled {$O+} inside $O- units (set by tools/lift/prog.py)   # resident units compiled overlay-safe ($O+: literal arguments copied to stack temps)
 EXTRA_USES = {}
 MAIN_SWAP = [('O06E', 'O075')]   # pairs listed in swapped order in the main program's uses clause
@@ -387,7 +388,7 @@ def gen_unit(key):
         return p['locals'] - rs - cs
     L = []
     L.append('{ %s: generated skeleton (original bytes in BASM) }' % key)
-    L.append('{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O%s,R-,S-,V-,X-}' % ('+' if ovl or key in OPLUS else '-'))
+    L.append('{$A-,B-,D%s,E-,F+,G-,I-,L-,N-,O%s,R-,S-,V-,X-}' % ('-' if key in DMINUS else '+', '+' if ovl or key in OPLUS else '-'))
     L.append('unit %s;' % key)
     L.append('')
     L.append('interface')
