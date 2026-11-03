@@ -26,3 +26,8 @@
 The shipped code has 3 patched bytes no Pascal produces: O049+02E7 `74`->`EB` (until-exit jz made jmp)
 and O049+0300..0301 `75 06`->`90 90` (always success). Source is the honest
 `until (b7FEE = 3) or (s7EEE = s7DEE)`; `tools/release.sh` applies these 3 bytes after linking (tools/release.py CRACK), then packs with EP405 and compares with gog/.
+
+## Parity reached
+`tools/release.sh` rebuilds gog/GAME.EXE and gog/GAME.OVR byte-identical (all 479 relocs, all overlay fixups).
+Resident units R182, R47F, R030, R5C3, R1C3 are {$O+} (string literals copied to temps before far calls).
+Remaining `db` blocks contain no System calls (e.g. O075:5700 calls the AL-returning XR716_01DC via asm).

@@ -1,5 +1,5 @@
 { R1C3: generated skeleton (original bytes in BASM) }
-{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O-,R-,S-,V-,X-}
+{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
 unit R1C3;
 
 interface
@@ -79,7 +79,6 @@ W28_62_1421 = record case byte of 0: (_w62_0word: word); 1: (_p1: array[1..2] of
       2: (_p2: array[1..22] of byte; _w62_22byte: byte); 3: (_p3: array[1..27] of byte;
       _w62_27abyte: array[0..32000] of byte) end;
   W2_21_0EEB = record end;
-  W2_23_0CC4 = record case byte of 0: (_w23_0word: word); 1: (_p1: array[1..2] of byte; _w23_2word: word) end;
 W2_4_1A83 = record case byte of 0: (_p0: array[1..8] of byte; _w4_8word: word);
       1: (_p1: array[1..18] of byte; _w4_18word: word); 2: (_p2: array[1..20] of byte; _w4_20word: word);
       3: (_p3: array[1..23] of byte; _w4_23pointer: pointer) end;
@@ -124,7 +123,6 @@ W8_19_0A0C = record case byte of 0: (_w19_0word: word); 1: (_p1: array[1..2] of 
   PW26_62_1421 = ^W26_62_1421;
   PW28_62_1421 = ^W28_62_1421;
   PW2_21_0EEB = ^W2_21_0EEB;
-  PW2_23_0CC4 = ^W2_23_0CC4;
   PW2_4_1A83 = ^W2_4_1A83;
   PW30_62_1421 = ^W30_62_1421;
   PW33_550_00B9 = ^W33_550_00B9;
@@ -137,29 +135,19 @@ var
   a88F6_2fc5: array[0..16379] of word absolute d88F6;
   a8A46_2fc5: array[0..16379] of word absolute d8A46;
   a8B96_2fc5: array[0..16379] of word absolute d8B96;
-  a8F86_2fc5: array[0..16379] of word absolute d8F86;
   a9116_2fc5: array[0..16379] of word absolute d9116;
   a9DC4_9f5c: array[0..4094, 0..1] of longint absolute d9DC4;
   a9DC4_b6a1: array[0..4094, 0..1] of pointer absolute d9DC4;
   aD51E_eec0: array[0..10919] of array[0..2] of byte absolute dD51E;
   aD81E_ec3f: array[0..32759] of byte absolute dD81E;
-  b3DBC: byte absolute d3DBC;
-  b3DBD: byte absolute d3DBD;
-  b3DBE: byte absolute d3DBE;
-  b3DBF: byte absolute d3DBF;
   b8818: byte absolute d8818;
   b8819: byte absolute d8819;
   b8832: byte absolute d8832;
   b8833: byte absolute d8833;
   b8834: byte absolute d8834;
-  b884E: byte absolute d884E;
-  b8A46: byte absolute d8A46;
-  b8B96: byte absolute d8B96;
   g8818_6095: Registers absolute d8818;
-  p8836: pointer absolute d8836;
   pAEE0: pointer absolute dAEE0;
   sbB16D: shortint absolute dB16D;
-  w8F96: word absolute d8F96;
 
 {$L R1C3A.OBJ}
 procedure XR1C3_2170(a0,a1,a2: word; a3,a4: pointer); near; external;
@@ -330,26 +318,24 @@ end;
 
 { 0352 }
 procedure pR1C3_0352(a0: string; a1: byte; a2: byte; a3: byte; a4: pointer);
-var loc: array[1..12] of byte;
+type
+  PP = ^pointer;
+var
+  sz: word;
+  p: pointer;
 begin
   if false then begin
     if LV = '.dax' then;
   end;
-  asm
-    db 196,126,6,38,139,5,38,11,69,2,116,9,196,126,6,6,87
-    push cs
-    call near ptr pR1C3_1A83
-    db 141,190,0,255,22,87,141,190,245,254,22,87,191,77,3,14,87,154,111,10,37,8,138,70,14,80,141,190
-    db 254,254,22,87,141,190,250,254,22,87
-    call pR5C3_0915
-    db 131,190,254,254,0,117,2,235,67,141,190,250,254,22,87,138,70,12,80,138,70,10,80,128,62,52,136,2
-    db 176,0,116,1,64,80,255,182,254,254,196,126,6,6,87
-    push cs
-    call near ptr pR1C3_00B9
-    db 128,62,52,136,2,116,17,255,182,252,254,255,182,250,254,255,182,254,254
-    call pR5C0_0000
-    call pR670_0311
-  end;
+  if PP(a4)^ <> nil then
+    pR1C3_1A83(@PP(a4)^);
+  pR5C3_0915(a0, '.dax', a1, @sz, @p);
+  if sz = 0 then
+    Exit;
+  pR1C3_00B9(@p, a2, a3, byte(b8834 <> 2), sz, @PP(a4)^);
+  if b8834 <> 2 then
+    pR5C0_0000(p, sz);
+  pR670_0311;
 end;
 
 { 03FF }
@@ -661,6 +647,10 @@ end;
 
 { 0CC4 }
 procedure pR1C3_0CC4(a0: word; a1: word; a2: pointer);
+type
+  PB = ^byte;
+  W2_23_0CC4 = record case byte of 0: (_w23_0word: word); 1: (_p1: array[1..2] of byte; _w23_2word: word) end;
+  PW2_23_0CC4 = ^W2_23_0CC4;
 var
   v2i: integer;
   v4i: integer;
@@ -668,40 +658,29 @@ var
   v8w: word;
   v10w: word;
   v12w: word;
-  _f1: array[1..2] of byte;
+  v14w: word;
   v16w: word;
   v18w: word;
   _f2: array[1..1] of byte;
   v4w: word absolute v4i;
   _fb: byte absolute a0;
-  _fw: word absolute a0;
 begin
   if false then begin
     with LPR^ do with LPR^ do for _fb := _fb to _fb do ;
   end;
-  {@0CCA-0CD5}
   if a2 = nil then
     Exit;
-  {@0CD5-0EE5}
   with PW2_23_0CC4(a2)^ do
   begin
     case b8834 of
       0: begin
-        {@0CE8-0CED}
         v18w := 0;
-        {@0CED-0CF7}
         v8w := a1 * 8;
-        {@0CF7-0D04}
         v12w := v8w + _w23_0word - 1;
-        {@0D04-0D0A}
         v6w := a0;
-        {@0D0A-0D18}
         v10w := v6w + _w23_2word - 1;
-        {@0D18-0D1E}
         Port[974] := 5;
-        {@0D1E-0D24}
         Port[975] := 0;
-        {@0D24-0D2A}
         Port[974] := 4;
         for v4i := v8w to v12w do
           for v2i := v6w to v10w do
@@ -710,37 +689,32 @@ begin
   db 139,126,252,209,231,139,133,134,143,49,210,3,193,19,211,139,248,7,38,138,21,139,70,238,196,126,6,3
   db 248,38,136,85,27,255,70,238,128,126,237,3,117,192
             end;
-        {@0DAC-0DB2}
         Port[975] := 0;
-        {@0DB2-0DB8}
         Port[974] := 5;
-        {@0DB8-0DBE}
         Port[975] := 0;
       end;
-      2: asm
-  db 139,70,12,177,3,211,224,139,216,139,70,10,177,3,211,224,186,64,1,247,226,3,195,137,70,242,49,192
-  db 137,70,238,196,126,233,38,139,69,2,177,3,211,224,137,70,240,139,70,10,177,3,211,224,137,70,248,139
-  db 70,248,196,126,233,38,3,5,72,137,70,244,139,70,244,137,70,231,139,70,248,59,70,231,127,67,137,70
-  db 252,235,3,255,70,252,139,70,242,49,210,5,0,0,129,210,0,160,137,199,142,194,6,87,139,70,238,196
-  db 126,6,3,248,129,199,27,0,6,87,255,118,240,154,92,26,37,8,139,70,240,1,70,238,129,70,242,64
-  db 1,139,70,252,59,70,231,117,194
-        end;
-      1: begin
-        {@0E67-0E75}
-        v16w := _w23_2word * 4;
-        {@0E75-0E7A}
+      2: begin
+        v14w := a1 * 8 * 320 + a0 * 8;
         v18w := 0;
-        {@0E7A-0E84}
+        v16w := _w23_2word * 8;
         v8w := a1 * 8;
-        {@0E84-0E91}
         v12w := v8w + _w23_0word - 1;
-        {@0E91-0E9B}
+        for v4i := v8w to v12w do
+        begin
+          Move(PB(v14w + $A0000000)^, PRA27_byte(a2)^.a[v18w], v16w);
+          Inc(v18w, v16w);
+          Inc(v14w, 320);
+        end;
+      end;
+      1: begin
+        v16w := _w23_2word * 4;
+        v18w := 0;
+        v8w := a1 * 8;
+        v12w := v8w + _w23_0word - 1;
         v6w := a0 * 4;
         for v4i := v8w to v12w do
         begin
-          {@0EB1-0ED7}
           Move(Mem[a9116_2fc5[v4w]:v6w], PRA27_byte(a2)^.a[v18w], v16w);
-          {@0ED7-0EDD}
           Inc(v18w, v16w);
         end;
       end;
@@ -860,12 +834,29 @@ end;
 
 { 10FD }
 procedure pR1C3_10FD;
+type
+  PB = ^byte;
 var
   v2w: word;
   v4w: word;
   v6w: word;
   v8w: word;
   _f1: array[1..258] of byte;
+  a884E_ec3f: array[0..32759] of byte absolute d884E;
+  a88F6_2fc5: array[0..16379] of word absolute d88F6;
+  a8A46_2fc5: array[0..16379] of word absolute d8A46;
+  a8B96_2fc5: array[0..16379] of word absolute d8B96;
+  a8F86_2fc5: array[0..16379] of word absolute d8F86;
+  a9116_2fc5: array[0..16379] of word absolute d9116;
+  b3DBC: byte absolute d3DBC;
+  b3DBD: byte absolute d3DBD;
+  b3DBE: byte absolute d3DBE;
+  b3DBF: byte absolute d3DBF;
+  p8836: pointer absolute d8836;
+  w8F96: word absolute d8F96;
+  b884E: byte absolute d884E;
+  b8A46: byte absolute d8A46;
+  b8B96: byte absolute d8B96;
 begin
   {@1104-1109}
   pR6DD_0051;
@@ -977,12 +968,8 @@ Move(PRA27_byte(p8836)^.a[a8A46_2fc5[v2w]], Mem[a9116_2fc5[v2w + 8]:a88F6_2fc5[v
       begin
         {@1379-13E4}
         if a884E_ec3f[v2w] <> 0 then
-          asm
-  db 139,126,254,209,231,139,133,70,138,196,62,54,136,3,248,129,199,27,0,6,87,139,126,254,209,231,139,133
-  db 246,136,49,210,139,200,139,218,139,70,254,5,8,0,186,64,1,247,226,49,210,5,0,0,129,210,0,160
-  db 3,193,19,211,5,8,0,131,210,0,137,199,142,194,6,87,139,126,254,209,231,139,133,150,139,139,126,254
-  db 209,231,43,133,70,138,64,80,154,92,26,37,8
-          end;
+          Move(PRA27_byte(p8836)^.a[a8A46_2fc5[v2w]], PB((v2w + 8) * 320 + $A0000000 + a88F6_2fc5[v2w] + 8)^,
+            a8B96_2fc5[v2w] - a8A46_2fc5[v2w] + 1);
       end;
   end;
   {@13EB-13F9}

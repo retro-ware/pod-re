@@ -1,5 +1,5 @@
 { R030: generated skeleton (original bytes in BASM) }
-{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O-,R-,S-,V-,X-}
+{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
 unit R030;
 
 interface
@@ -16,23 +16,31 @@ uses LIT, O06E, R47F, R670;
 
 { 0042 }
 function pR030_0042(a0: word): word;
-var loc: array[1..38] of byte;
+var
+  done: byte;
+  b8816: byte absolute d8816;
 begin
   if false then begin
     if LV = 'WARNING: Insufficient Memory' then;
     if LV = 'Insufficient Memory. Exiting Program' then;
   end;
-  asm
-    db 131,126,6,0,118,100,198,70,253,0,176,14,80,176,0,80,141,126,224,22,87,191,0,0,14,87,154,111
-    db 10,37,8
-    call pR47F_0B2E
-    db 128,62,22,136,0,116,19,176,1,80,176,0,80
-    call pO06E_2989
-    db 160,213,148,136,70,253,235,30,198,70,253,1,176,14,80,176,0,80,141,126,216,22,87,191,29,0,14,87
-    db 154,111,10,37,8
-    call pR47F_0B2E
-    db 128,126,253,0,116,168,176,0,80
-    call pR670_0000
+  if a0 > 0 then
+  begin
+    done := 0;
+    repeat
+      pR47F_0B2E(14, 0, 'WARNING: Insufficient Memory');
+      if b8816 <> 0 then
+      begin
+        pO06E_2989(1, 0);
+        done := d94D5;
+      end
+      else
+      begin
+        done := 1;
+        pR47F_0B2E(14, 0, 'Insufficient Memory. Exiting Program');
+      end;
+    until done <> 0;
+    pR670_0000(0);
   end;
 end;
 

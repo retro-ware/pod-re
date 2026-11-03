@@ -1,5 +1,5 @@
 { R5C3: generated skeleton (original bytes in BASM) }
-{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O-,R-,S-,V-,X-}
+{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
 unit R5C3;
 
 interface
@@ -172,36 +172,32 @@ end;
 { 01C3 }
 procedure pR5C3_01C3(a0: S80; a1: S80);
 begin
-  {@01F1-0227}
   if pR5C3_055E(a0) <> 0 then
   begin
-    {@01FE-020D}
     Assign(g9D03_3610, a0);
-    {@020D-0217}
     Close(g9D03_3610);
-    asm
-  db 191,3,157,30,87,141,190,94,255,22,87,154,13,26,37,8
-    end;
+    Rename(g9D03_3610, a1);
   end;
 end;
 
 { 0252 }
 procedure pR5C3_0252;
-var loc: array[1..12] of byte;
+var
+  key: byte;
+  ok: byte;
 begin
   if false then begin
     if LV = 'game.ovr' then;
     if LV = 'Please insert overlay disk.' then;
   end;
-  asm
-    db 141,126,245,22,87,191,45,2,14,87,154,111,10,37,8
-    push cs
-    call near ptr pR5C3_055E
-    db 136,70,254,128,126,254,0,117,31,191,144,252,30,87,191,54,2,14,87,49,192,80,154,196,8,37,8,154
-    db 245,7,37,8
-    call pR670_0187
-    db 136,70,255,128,126,254,0,116,191
-  end;
+  repeat
+    ok := pR5C3_055E('game.ovr');
+    if ok = 0 then
+    begin
+      Writeln('Please insert overlay disk.');
+      key := pR670_0187;
+    end;
+  until ok <> 0;
 end;
 
 { 02A3 }
