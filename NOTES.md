@@ -21,3 +21,8 @@
 - Main uses order needs O06E/O075 swapped vs. reverse paragraph order (MAIN_SWAP).
 - R182 init (OvrInit etc.) is {$O+}: StrLoad literal temps. TP frees string temps per statement, so a frame of
   256+6 needs one statement holding both temps (`if F2(FS, '*.exe') then;`).
+
+## GOG binary is cracked (O049:00F4, copy-protection prompt)
+The shipped code has 3 patched bytes no Pascal produces: O049+02E7 `74`->`EB` (until-exit jz made jmp)
+and O049+0300..0301 `75 06`->`90 90` (always success). Source is the honest
+`until (b7FEE = 3) or (s7EEE = s7DEE)`; the release build must apply these 3 bytes after linking.
