@@ -14,7 +14,7 @@ function pO102_0E0C(a0: pointer): byte;
 function pO102_0BA1(a0: pointer): byte;
 function pO102_0C12(a0: pointer): byte;
 function pO102_1276(a0: pointer; a1: shortint): byte;
-function pO102_12D1(a0: longint; a1: byte; a2: byte): longint;
+function pO102_12D1(a0: longint; a1: byte; a2: shortint): longint;
 procedure pO102_0000(a0: pointer);
 
 implementation
@@ -851,15 +851,19 @@ begin
 end;
 
 { 12D1 }
-function pO102_12D1(a0: longint; a1: byte; a2: byte): longint;
+function pO102_12D1(a0: longint; a1: byte; a2: shortint): longint;
+type
+  TRow = record _p: array[0..17] of byte; v: array[0..11] of longint; _q: array[1..235] of byte end;
+var
+  tab: array[0..0] of TRow absolute d719C;
+  step: array[-26..0] of longint absolute d6E73;
 begin
-  asm
-    db 199,70,252,255,255,199,70,254,255,127,128,126,8,41,115,111,128,126,8,12,115,40,138,70,8,48,228,209
-    db 224,209,224,139,200,138,70,6,152,186,45,1,247,226,139,248,3,249,139,133,174,113,139,149,176,113,137,70
-    db 252,137,86,254,235,65,138,70,6,152,139,248,209,231,209,231,139,141,219,110,139,157,221,110,138,70,8,48
-    db 228,45,11,0,153,154,191,9,37,8,139,200,139,218,138,70,6,152,186,45,1,247,226,139,248,139,133,218
-    db 113,139,149,220,113,3,193,19,211,137,70,252,137,86,254
-  end;
+  pO102_12D1 := $7FFFFFFF;
+  if a1 < 41 then
+    if a1 < 12 then
+      pO102_12D1 := tab[a2].v[a1]
+    else
+      pO102_12D1 := tab[a2].v[11] + (a1 - 11) * step[a2];
 end;
 
 { 1362 }

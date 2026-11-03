@@ -215,13 +215,13 @@ var
   bAAE5: byte absolute dAAE5;
   bAAE6: byte absolute dAAE6;
   bAB0E: byte absolute dAB0E;
-  bAE61: byte absolute dAE61;
   bAE80: byte absolute dAE80;
   bC5C3: byte absolute dC5C3;
   bC5C4: byte absolute dC5C4;
   bC5C5: byte absolute dC5C5;
   l82DE: longint absolute d82DE;
   l82E2: longint absolute d82E2;
+  l9CEE: longint absolute d9CEE;
   lA7BE: longint absolute dA7BE;
   p82DE: pointer absolute d82DE;
   p82E2: pointer absolute d82E2;
@@ -230,7 +230,6 @@ var
   p9CF2: pointer absolute d9CF2;
   p9CF6: pointer absolute d9CF6;
   pA7CA: pointer absolute dA7CA;
-  pAB3A: pointer absolute dAB3A;
   pD926: pointer absolute dD926;
   s13DB: string absolute d13DB;
   s1575: string absolute d1575;
@@ -260,7 +259,7 @@ procedure pO0AA_2564(a0: pointer; a1: pointer); far; forward;
 procedure pO0AA_274E; far; forward;
 function pO0AA_3249(a0: pointer): byte; far; forward;
 function pO0AA_32AF(a0: pointer): byte; far; forward;
-procedure pO0AA_3332(a0: pointer); far; forward;
+procedure pO0AA_3332(a0: longint); far; forward;
 procedure pO0AA_3455(a0: pointer); far; forward;
 function pO0AA_363B(a0: pointer; a1: byte): shortint; far; forward;
 
@@ -693,7 +692,7 @@ if ((PR327_byte(p82DE)^.v < 128) or (PR494_byte(p82DE)^.v = 0) or (PR493_byte(p8
         {@0EAF-0EB3}
         pO0AA_063D;
       end;
-      5: pO0AA_3332(p9CEE);
+      5: pO0AA_3332(l9CEE);
       6: pO0AA_3455(p9CEE);
     end;
     {@0ED7-0EEA}
@@ -1294,108 +1293,93 @@ end;
 
 { 1E0A }
 procedure pO0AA_1E0A(a0: pointer; a1: pointer);
+type
+  BX = array[0..$1F0] of byte;
 var
   v1b: byte;
   v3w: word;
   v4b: byte;
-  _f1: array[1..14] of byte;
   v3b: byte absolute v3w;
+  q880C: byte absolute d880C;
+  q9D93: byte absolute d9D93;
+  qAE61: byte absolute dAE61;
+  q9CEE: pointer absolute d9CEE;
+  qAB3A: pointer absolute dAB3A;
+  q6525: array[0..255] of record b: byte; _p: array[1..15] of byte end absolute d6525;
 begin
   if false then begin
     if LV = 'uses an item' then;
     if LV = 'Item:' then;
     if LV = 'oops!' then;
   end;
-  {@1E10-1E15}
   v3w := 65535;
-  {@1E15-1E1A}
-  bAE61 := 0;
-  {@1E1A-1E1E}
+  qAE61 := 0;
   v1b := 0;
-  if pO0BB_6C36(pointer(a0)) <> 0 then
+  if pO0BB_6C36(a0) <> 0 then
   begin
-    {@1E2D-1E3A}
-    pAB3A := a0;
-    {@1E3A-1E51}
+    qAB3A := a0;
     v1b := pO0AA_30F3(2, 1, @v3b, @v4b);
   end
   else
   begin
-    {@1E53-1E78}
-    if (PR61_byte(a0)^.v > 0) and (PR62_byte(a0)^.v < 128) then
+    if (BX(a0^)[61] > 0) and (BX(a0^)[62] < 128) then
     begin
-      {@1E67-1E6C}
-      bAE61 := 1;
-      {@1E6C-1E78}
-      v1b := PR61_byte(a0)^.v and 127;
+      qAE61 := 1;
+      v1b := BX(a0^)[61] and 127;
     end;
   end;
-  asm
-  db 128,126,255,0,117,10,196,126,6,38,198,5,0,233,197,1,128,62,12,136,5,117,17,196,62,238,156,38
-  db 128,189,240,1,0,117,5
-  call pO0EC_324C
-  db 128,62,97,174,0,117,3,233,147,0,255,54,240,156,255,54,238,156,141,126,239,22,87,191,241,29,14,87
-  db 154,111,10,37,8,176,10,80,176,0,80
-  call pO0EC_1B08
-  db 128,62,12,136,5,117,65,176,0,80,176,23,80,176,10,80,176,0,80,141,126,246,22,87,191,254,29,14
-  db 87,154,111,10,37,8
-  call pR47F_0354
-  db 255,54,240,156,255,54,238,156,255,118,12,255,118,10,176,5,80,176,23,80,176,0,80,176,1,80
-  call pO0EC_0484
-  db 235,31,255,54,240,156,255,54,238,156,255,118,12,255,118,10,176,1,80,176,22,80,176,0,80,176,1,80
-  call pO0EC_0484
-  call pR47F_0D1A
-  call pO0EC_1BEF
-  db 198,6,97,174,1,255,118,12,255,118,10
-  call pO0BB_6C36
-  db 8,192,117,3,233,173,0,255,54,240,156,255,54,238,156,176,5,80
-  call pO102_1276
-  db 8,192,119,20,255,54,240,156,255,54,238,156,176,0,80
-  call pO102_1276
-  db 8,192,118,29,138,70,255,80,196,62,238,156,38,138,133,240,1,80,176,0,80,196,126,6,6,87
-  call pO0BB_121C
-  db 235,102,255,54,240,156,255,54,238,156,176,6,80
-  call pO102_1276
-  db 60,9,118,44,176,1,80,176,100,80
-  call pO0E2_1374
-  db 60,75,119,29,138,70,255,80,196,62,238,156,38,138,133,240,1,80,176,0,80,196,126,6,6,87
-  call pO0BB_121C
-  db 235,38,255,54,240,156,255,54,238,156,141,126,246,22,87,191,4,30,14,87,154,111,10,37,8,160,147,157
-  db 48,228,64,80,176,1,80
-  call pO0EC_1B08
-  db 235,27,138,70,255,80,196,62,238,156,38,138,133,240,1,80,176,0,80,196,126,6,6,87
-  call pO0BB_121C
-  db 198,6,97,174,0,128,62,12,136,5,117,37,138,70,255,48,228,139,248,177,4,211,231,128,189,37,101,0
-  db 116,19,255,54,240,156,255,54,238,156
-  call pO0EC_2CF6
-  db 196,126,6,38,136,5
-  end;
-  {@204D-20BF}
-  if PR0_byte(a1)^.v <> 0 then
+  if v1b = 0 then
+    byte(a1^) := 0
+  else
   begin
-    {@2056-207E}
-    if pO0BB_6C36(pointer(a0)) <> 0 then
+    if (q880C = 5) and (BX(q9CEE^)[$1F0] = 0) then
+      pO0EC_324C;
+    if qAE61 <> 0 then
     begin
-      {@2065-207C}
-      pO0BB_6C6B(p9CEE, pointer(a0), v1b);
-      {@207C-207E}
+      pO0EC_1B08(q9CEE, 'uses an item', 10, 0);
+      if q880C = 5 then
+      begin
+        pR47F_0354(0, 23, 10, 0, 'Item:');
+        pO0EC_0484(longint(q9CEE), a0, 5, 23, 0, 1);
+      end
+      else
+        pO0EC_0484(longint(q9CEE), a0, 1, 22, 0, 1);
+      pR47F_0D1A;
+      pO0EC_1BEF;
+    end;
+    qAE61 := 1;
+    if pO0BB_6C36(a0) <> 0 then
+    begin
+      if (pO102_1276(q9CEE, 5) > 0) or (pO102_1276(q9CEE, 0) > 0) then
+        pO0BB_121C(v1b, BX(q9CEE^)[$1F0], 0, @byte(a1^))
+      else if (pO102_1276(q9CEE, 6) > 9) and (pO0E2_1374(1, 100) <= 75) then
+        pO0BB_121C(v1b, BX(q9CEE^)[$1F0], 0, @byte(a1^))
+      else
+        pO0EC_1B08(q9CEE, 'oops!', q9D93 + 1, 1);
+    end
+    else
+      pO0BB_121C(v1b, BX(q9CEE^)[$1F0], 0, @byte(a1^));
+    qAE61 := 0;
+    if (q880C = 5) and (q6525[v1b].b <> 0) then
+      byte(a1^) := pO0EC_2CF6(q9CEE);
+  end;
+  if byte(a1^) <> 0 then
+  begin
+    if pO0BB_6C36(a0) <> 0 then
+    begin
+      pO0BB_6C6B(q9CEE, a0, v1b);
       Exit;
     end;
-    {@207E-20BF}
-    if PR60_byte(a0)^.v > 0 then
+    if BX(a0^)[60] > 0 then
     begin
-      {@2088-209B}
-      if PR57_byte(a0)^.v > 1 then
+      if BX(a0^)[57] > 1 then
       begin
-        {@2092-2099}
-        Dec(PR57_byte(a0)^.v);
-        {@2099-209B}
+        Dec(BX(a0^)[57]);
         Exit;
       end;
-      {@209B-20A2}
-      Dec(PR60_byte(a0)^.v);
-      if PR60_byte(a0)^.v = 0 then
-        pO0EC_18EF(p9CEE, pointer(a0));
+      Dec(BX(a0^)[60]);
+      if BX(a0^)[60] = 0 then
+        pO0EC_18EF(q9CEE, a0);
     end;
   end;
 end;
@@ -2026,46 +2010,32 @@ pO0AA_32AF := Ord(((PR174_byte(a0)^.v = 3) or (PR347_byte(a0)^.v > 0) and (pO102
 end;
 
 { 3332 }
-procedure pO0AA_3332(a0: pointer);
+procedure pO0AA_3332(a0: longint);
 var
   v4p: pointer;
+  q9CF2: pointer absolute d9CF2;
 begin
   if false then begin
     if LV = 'Heal whom? ' then;
     if LV = ' feels better' then;
     if LV = ' is unaffected' then;
   end;
-  {@3339-333E}
   pO0EC_2ED1;
-  {@333E-334B}
-  v4p := p9CF2;
-  asm
-  db 141,126,240,22,87,191,9,51,14,87,154,111,10,37,8,176,1,80,176,0,80,141,126,252,22,87
-  call pO0EC_3497
-  end;
+  v4p := q9CF2;
+  pO0EC_3497('Heal whom? ', 1, 0, @v4p);
   if v4p = nil then
   begin
-    asm
-  push cs
-  call near ptr pO0AA_0041
-    end;
-    asm
-  db 233,143,0
-    end;
+    pO0AA_0041;
+    exit;
   end;
-  {@3379-33EC}
   if pO0E2_212C(v4p, pO102_1276(pointer(a0), 3) * 2, 0) <> 0 then
   begin
-    {@339E-33AC}
     pO0EC_0987(v4p, 1);
-    {@33AC-33CB}
-    pO0EC_1AAC(PR0_string(v4p)^.v + ' feels better');
+    pO0EC_1AAC(string(v4p^) + ' feels better');
   end
   else
-    pO0EC_1AAC(PR0_string(v4p)^.v + ' is unaffected');
-  {@33EC-3404}
+    pO0EC_1AAC(string(v4p^) + ' is unaffected');
   pO0E2_13E5(pointer(a0), 109, 1440, 0, 0);
-  {@3404-3408}
   pO0AA_0041;
 end;
 

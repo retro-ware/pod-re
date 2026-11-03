@@ -21,8 +21,6 @@ type
   R33_byte = record _p: array[1..33] of byte; v: byte end;
   R38_byte = record _p: array[1..38] of byte; v: byte end;
   R56_byte = record _p: array[1..56] of byte; v: byte end;
-  RA0_byte = record a: array[0..32000] of byte end;
-  X17 = array[0..16] of byte;
   PR0_byte = ^R0_byte;
   PR17_byte = ^R17_byte;
   PR21_byte = ^R21_byte;
@@ -30,7 +28,6 @@ type
   PR33_byte = ^R33_byte;
   PR38_byte = ^R38_byte;
   PR56_byte = ^R56_byte;
-  PRA0_byte = ^RA0_byte;
 var
   b8226: byte absolute d8226;
   b8228: byte absolute d8228;
@@ -111,78 +108,68 @@ procedure pO079_0121; far; forward;
 
 { 0024 }
 procedure pO079_0024;
+type
+  X17H = array[0..16] of byte;
+  S17H = array[1..255] of X17H;
+  B4318 = array[1..4318] of byte;
+  BBuf = array[0..32000] of byte;
 var
   v2w: word;
   v4w: word;
   v5b: byte;
   v9p: pointer;
-  _f1: array[1..16] of byte;
-  v26b: byte;
+  s: X17H;
   v9b: byte absolute v9p;
   v2b: byte absolute v2w;
+  q9CFF: pointer absolute d9CFF;
 begin
   if false then begin
     if LV = 'ITEM0' then;
     if LV = '.dax' then;
     if LV = 'Unable to find item file' then;
-    LP1('Unable to find item file');
   end;
-  {@002A-003C}
-  FillChar(PR0_byte(p9CFF)^.v, 4318, 255);
-  {@003C-006C}
+  FillChar(B4318(q9CFF^), 4318, 255);
   pR5C3_0915('ITEM0', '.dax', 1, @v2b, @v9b);
   if v2w = 0 then
   begin
-    {@0072-008C}
     pR47F_0B2E(15, 0, 'Unable to find item file');
-    {@008C-0094}
     pR670_0000(0);
   end;
-  {@0094-0099}
   v4w := 0;
-  {@0099-009D}
   v5b := 1;
-  {@009D-00EE}
   repeat
-    {@009D-00B5}
-    Move(PRA0_byte(v9p)^.a[v4w], v26b, 17);
-    asm
-  db 141,126,230,22,87,138,70,251,48,228,186,17,0,247,226,196,62,255,156,3,248,129,199,239,255,6,87,184
-  db 17,0,80,154,163,9,37,8
-    end;
-    {@00D9-00DC}
+    Move(BBuf(v9p^)[v4w], s, 17);
+    S17H(q9CFF^)[v5b] := s;
     Inc(v5b);
-    {@00DC-00E0}
     Inc(v4w, 17);
   until (v4w >= v2w) or (v5b > 254);
-  {@00EE-00FC}
   pR5C0_0000(v9p, v2w);
 end;
 
 { 0121 }
 procedure pO079_0121;
+type
+  TSnd = record size: word; p: pointer end;
 var
-  _f1: array[1..26] of byte;
+  i: byte;
+  snd: array[1..11] of TSnd absolute dFB20;
 begin
   if false then begin
     if LV = 'zounds' then;
     if LV = '.dax' then;
     if LV = 'unable to load sound' then;
   end;
-  asm
-  db 191,32,251,30,87,184,66,0,80
-  call XR670_046E
-  db 198,70,255,1,235,3,254,70,255,138,70,255,48,228,139,248,209,231,139,247,209,231,1,247,129,199,26,251
-  db 137,126,251,140,94,253,141,126,244,22,87,191,0,1,14,87,154,111,10,37,8,141,126,239,22,87,191,7
-  db 1,14,87,154,111,10,37,8,138,70,255,80,196,126,251,6,87,196,126,251,129,199,2,0,6,87
-  call pR5C3_0915
-  db 196,126,251,38,131,61,0,117,34,176,15,80,176,0,80,141,126,230,22,87,191,12,1,14,87,154,111,10
-  db 37,8
-  call pR47F_0B2E
-  db 176,0,80
-  call pR670_0000
-  db 128,126,255,11,116,3,233,123,255
-  end;
+  XR670_046E(@snd, 66);
+  for i := 1 to 11 do
+    with snd[i] do
+    begin
+      pR5C3_0915('zounds', '.dax', i, @size, @p);
+      if size = 0 then
+      begin
+        pR47F_0B2E(15, 0, 'unable to load sound');
+        pR670_0000(0);
+      end;
+    end;
 end;
 
 { 01D1 }
