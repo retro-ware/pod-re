@@ -187,28 +187,21 @@ end;
 
 { 0252 }
 procedure pR5C3_0252;
-var
-  _f1: array[1..1] of byte;
-  v2b: byte;
+var loc: array[1..12] of byte;
 begin
   if false then begin
     if LV = 'game.ovr' then;
     if LV = 'Please insert overlay disk.' then;
   end;
-  {@0258-0299}
-  repeat
-    {@0258-026E}
-    v2b := pR5C3_055E('game.ovr');
-    if v2b = 0 then
-    begin
-      {@0274-028B}
-      WriteLn(Output, 'Please insert overlay disk.');
-      asm
-  call pR670_0187
-  db 136,70,255
-      end;
-    end;
-  until v2b <> 0;
+  asm
+    db 141,126,245,22,87,191,45,2,14,87,154,111,10,37,8
+    push cs
+    call near ptr pR5C3_055E
+    db 136,70,254,128,126,254,0,117,31,191,144,252,30,87,191,54,2,14,87,49,192,80,154,196,8,37,8,154
+    db 245,7,37,8
+    call pR670_0187
+    db 136,70,255,128,126,254,0,116,191
+  end;
 end;
 
 { 02A3 }

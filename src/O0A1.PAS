@@ -348,12 +348,14 @@ end;
 
 { 0321 }
 procedure pO0A1_0321(a0: longint; a1: pointer; a2: byte; a3: word; a4: word; a5: byte);
+type
+  TB2 = array[0..1] of byte;
+  PB2 = ^TB2;
 var
-c82: record case byte of 0: (v82a2: string[81]); 1: (v82a: string[80]); 2: (_p2: array[1..81] of byte;
-      v1b: byte) end;
-  _f1: array[1..1] of byte;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
+  vRow: byte;
+  vMsg: string[80];
+  vRes: byte;
+  b9D93: byte absolute d9D93;
 begin
   if false then begin
     if LV = '-Backstabs-' then;
@@ -371,138 +373,76 @@ begin
     if LV = 'and is Dying' then;
     if LSV = [6..8] then;
     if LV = 'is killed' then;
-    LM3_7(FS, 'Hitting for ', 'with one cruel blow', [LB], [LB], [LB], [LB], [LB], [LB],
-    [LB]);
   end;
-  {@0328-0370}
   case a2 of
-    2: c82.v82a := '-Backstabs-';
-    3: c82.v82a := 'slays helpless';
+    2: vMsg := '-Backstabs-';
+    3: vMsg := 'slays helpless';
   else
-    {@035D-0370}
-    c82.v82a := 'Attacks';
+    vMsg := 'Attacks';
   end;
-  asm
-  db 255,118,20,255,118,18,141,126,174,22,87,176,10,80,176,0,80
-  call pO0EC_1B08
-  end;
-  asm
-  db 198,70,255,12
-  end;
-  asm
-  db 255,118,16,255,118,14,176,23,80,138,70,255,80,176,0,80
-  call pO0EC_1C22
-  end;
-  asm
-  db 254,70,255
-  end;
+  pO0EC_1B08(pointer(a0), vMsg, 10, 0);
+  vRow := 12;
+  pO0EC_1C22(a1, 23, vRow, 0);
+  inc(vRow);
   if a2 = 1 then
-    c82.v82a := '(from behind) '
+    vMsg := '(from behind) '
   else
-    asm
-  db 198,70,174,0
-    end;
-  {@03C1-04DA}
+    vMsg := '';
   if a5 <> 0 then
   begin
-    asm
-  db 128,126,12,3,117,22,191,140,2,14,87,141,126,174,22,87,184,80,0,80,154,137,10,37,8,233,188,0
-  db 141,190,173,254,22,87,141,126,174,22,87,154,111,10,37,8,191,160,2,14,87,154,252,10,37,8,141,190
-  db 173,253,22,87,138,70,8,80
-  call pO0EC_142F
-  db 154,252,10,37,8,141,126,174,22,87,184,80,0,80,154,137,10,37,8,131,126,8,1,117,42,141,190,173
-  db 254,22,87,141,126,174,22,87,154,111,10,37,8,191,173,2,14,87,154,252,10,37,8,141,126,174,22,87
-  db 184,80,0,80,154,137,10,37,8,235,40,141,190,173,254,22,87,141,126,174,22,87,154,111,10,37,8,191
-  db 181,2,14,87,154,252,10,37,8,141,126,174,22,87,184,80,0,80,154,137,10,37,8,141,190,173,254,22
-  db 87,141,126,174,22,87,154,111,10,37,8,191,190,2,14,87,154,252,10,37,8,141,126,174,22,87,184,80
-  db 0,80,154,137,10,37,8
+    if a2 = 3 then
+      vMsg := 'with one cruel blow'
+    else
+    begin
+      vMsg := vMsg + 'Hitting for ' + pO0EC_142F(a4);
+      if a4 = 1 then
+        vMsg := vMsg + ' point '
+      else
+        vMsg := vMsg + ' points ';
+      vMsg := vMsg + 'of damage';
     end;
-    asm
-  db 255,118,16,255,118,14,255,118,10
-  call pO0EC_2851
-    end;
+    pO0EC_2851(a1, a3);
   end
   else
-    c82.v82a := c82.v82a2 + 'and Misses';
-  asm
-  db 196,126,14,38,128,189,237,1,8,116,38,176,23,80,138,70,255,80,176,38,80,138,70,255,48,228,5,3
-  db 0,80,176,10,80,176,0,80,176,1,80,141,126,174,22,87
-  call pR47F_0498
-  end;
-  asm
-  db 160,147,157,48,228,64,136,70,255
-  end;
+    vMsg := vMsg + 'and Misses';
+  if PR493_byte(a1)^.v <> 8 then
+    pR47F_0498(23, vRow, 38, vRow + 3, 10, 0, 1, vMsg);
+  vRow := b9D93 + 1;
   if a3 > 0 then
   begin
-    asm
-  db 196,126,14,38,196,189,231,1,38,198,69,1,0
-    end;
+    PB2(PR487_pointer(a1)^.v)^[1] := 0;
     if PR0_byte(PR487_pointer(a1)^.v)^.v > 0 then
     begin
-      asm
-  call pR47F_0D1A
-      end;
-      {@053A-055A}
-      pO0EC_1B08(pointer(a1), 'lost a spell', 12, 1);
-      asm
-  db 255,118,16,255,118,14,196,126,14,38,196,189,231,1,38,138,5,80
-  call pO0EC_186D
-      end;
-      asm
-  db 255,118,16,255,118,14
-  call pO0EC_2CF6
-  db 136,70,173
-      end;
+      pR47F_0D1A;
+      pO0EC_1B08(a1, 'lost a spell', 12, 1);
+      pO0EC_186D(a1, PR0_byte(PR487_pointer(a1)^.v)^.v);
+      vRes := pO0EC_2CF6(a1);
     end
     else
-      asm
-  call pR47F_0D1A
-      end;
+      pR47F_0D1A;
   end
   else
-    asm
-  call pR47F_0D1A
-    end;
-  {@058D-0674}
+    pR47F_0D1A;
   if PR494_byte(a1)^.v = 0 then
   begin
-    {@059B-05BC}
-    pO0EC_1B08(pointer(a1), 'goes down', c82.v1b, 0);
+    pO0EC_1B08(a1, 'goes down', vRow, 0);
     if (PR421_byte(a1)^.v and 8) = 0 then
     begin
-      asm
-  db 128,70,255,2
-      end;
+      inc(vRow, 2);
       if PR493_byte(a1)^.v = 5 then
-        pR47F_0354(23, c82.v1b, 10, 0, 'and is Dying');
-      {@05FA-0630}
+        pR47F_0354(23, vRow, 10, 0, 'and is Dying');
       if PR493_byte(a1)^.v in [6..8] then
-        pO0EC_1B08(pointer(a1), 'is killed', c82.v1b, 0);
-      asm
-  db 128,70,255,2
-      end;
+        pO0EC_1B08(a1, 'is killed', vRow, 0);
+      inc(vRow, 2);
     end;
-    asm
-  db 255,118,16,255,118,14
-  call pO0E2_15A0
-    end;
-    asm
-  db 176,13,80,141,126,14,22,87
-  call pO0E2_04DD
-    end;
+    pO0E2_15A0(a1);
+    pO0E2_04DD(13, @a1);
     if (PR494_byte(a1)^.v = 0) and (PR493_byte(a1)^.v <> 10) then
-      asm
-  db 255,118,16,255,118,14
-  call pO135_0F14
-      end
+      pO135_0F14(a1)
     else
-      asm
-  call pR47F_0D1A
-      end;
+      pR47F_0D1A;
   end;
-  asm
-  call pO0EC_1BEF
-  end;
+  pO0EC_1BEF;
 end;
 
 { 067F }

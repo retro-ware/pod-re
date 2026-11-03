@@ -330,42 +330,25 @@ end;
 
 { 0352 }
 procedure pR1C3_0352(a0: string; a1: byte; a2: byte; a3: byte; a4: pointer);
-var
-  v258w: word;
-  _f1: array[1..3] of byte;
-  v262b: byte;
-  v258b: byte absolute v258w;
-  _fb: byte absolute a0;
-  _fw: word absolute a0;
+var loc: array[1..12] of byte;
 begin
   if false then begin
     if LV = '.dax' then;
-    for a1 := a1 to a1 do LM0_8([LB], [LB], [LB], [LB], [LB], [LB], [LB], [LB]);
   end;
   asm
-  db 196,126,6,38,139,5,38,11,69,2,116,9,196,126,6,6,87
-  push cs
-  call near ptr pR1C3_1A83
-  end;
-  {@0382-03AD}
-  pR5C3_0915(a0, '.dax', a1, @v258b, @v262b);
-  if v258w = 0 then
-    asm
-  db 235,67
-    end;
-  asm
-  db 141,190,250,254,22,87,138,70,12,80,138,70,10,80,128,62,52,136,2,176,0,116,1,64,80,255,182,254
-  db 254,196,126,6,6,87
-  push cs
-  call near ptr pR1C3_00B9
-  end;
-  if b8834 <> 2 then
-    asm
-  db 255,182,252,254,255,182,250,254,255,182,254,254
-  call pR5C0_0000
-    end;
-  asm
-  call pR670_0311
+    db 196,126,6,38,139,5,38,11,69,2,116,9,196,126,6,6,87
+    push cs
+    call near ptr pR1C3_1A83
+    db 141,190,0,255,22,87,141,190,245,254,22,87,191,77,3,14,87,154,111,10,37,8,138,70,14,80,141,190
+    db 254,254,22,87,141,190,250,254,22,87
+    call pR5C3_0915
+    db 131,190,254,254,0,117,2,235,67,141,190,250,254,22,87,138,70,12,80,138,70,10,80,128,62,52,136,2
+    db 176,0,116,1,64,80,255,182,254,254,196,126,6,6,87
+    push cs
+    call near ptr pR1C3_00B9
+    db 128,62,52,136,2,116,17,255,182,252,254,255,182,250,254,255,182,254,254
+    call pR5C0_0000
+    call pR670_0311
   end;
 end;
 
