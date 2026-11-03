@@ -9,5 +9,5 @@
 - [ ] Lift all procedures to Pascal (System calls real -> relocations, RTL linked)
 - [ ] Hand-written main program body (data/main_body.pas)
 - [ ] Full image + GAME.OVR identical (tools/fullcmp.py)
-- [ ] Release script: TPC -> EP405 13AF/B3AF -> compare with gog/
+- [x] Release script (tools/release.sh, applies the 3-byte crack): TPC -> EP405 13AF/B3AF -> compare with gog/
 - [ ] Lessons appended to ~/notes/how-to-decompile.md

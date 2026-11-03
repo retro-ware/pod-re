@@ -1,5 +1,5 @@
 { R47F: generated skeleton (original bytes in BASM) }
-{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O-,R-,S-,V-,X-}
+{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
 unit R47F;
 
 interface
@@ -48,7 +48,6 @@ var
   MBA00_160: array[0..405, 0..159] of byte absolute $BA00:0;
   MBC00_160: array[0..405, 0..159] of byte absolute $BC00:0;
   MBE00_160: array[0..405, 0..159] of byte absolute $BE00:0;
-  b880E: byte absolute d880E;
   b8815: byte absolute d8815;
   b8818: byte absolute d8818;
   b8819: byte absolute d8819;
@@ -175,20 +174,19 @@ end;
 
 { 017C }
 procedure pR47F_017C;
-var loc: array[1..18] of byte;
+var
+  v2w: word;
+  v6p: pointer;
+  p9D86: pointer absolute d9D86;
 begin
   if false then begin
     if LV = '8X8d0' then;
     if LV = '.dax' then;
   end;
-  asm
-    db 141,126,244,22,87,191,113,1,14,87,154,111,10,37,8,141,126,239,22,87,191,119,1,14,87,154,111,10
-    db 37,8,176,201,80,141,126,254,22,87,141,126,250,22,87
-    call pR5C3_0915
-    db 131,126,254,0,117,2,235,33,196,126,250,6,87,196,62,134,157,6,87,255,118,254,154,92,26,37,8,255
-    db 118,252,255,118,250,255,118,254
-    call pR5C0_0000
-  end;
+  pR5C3_0915('8X8d0', '.dax', 201, @v2w, @v6p);
+  if v2w = 0 then Exit;
+  Move(v6p^, p9D86^, v2w);
+  pR5C0_0000(v6p, v2w);
 end;
 
 { 01DF }
@@ -254,12 +252,15 @@ end;
 
 { 0498 }
 procedure pR47F_0498(a0: byte; a1: byte; a2: byte; a3: byte; a4: byte; a5: byte; a6: byte; a7: string);
+type
+  TPunct = set of ' '..'?';
 var
   v257b: byte;
   v258b: byte;
   v259b: byte;
   v260b: byte;
-  _f1: array[1..34] of byte;
+  v261b: byte;  { unused }
+  pset: TPunct absolute d0E04;
   { 03E3 }
   procedure pR47F_03E3;
   begin
@@ -286,104 +287,65 @@ var
   end;
 
 begin
-  {@04B3-04B8}
   pR6DD_0051;
   if (a0 > 39) or (a1 > 24) or (a2 > 39) or (a3 > 39) then
     Exit;
-  {@04D3-04FF}
   if (b9D92 < a0) or (b9D92 > a2) or (b9D93 < a1) or (b9D93 > a3) then
   begin
-    {@04F3-04F9}
     b9D92 := a0;
-    {@04F9-04FF}
     b9D93 := a1;
   end;
-  {@04FF-0525}
   if a6 <> 0 then
   begin
-    {@0505-0519}
     pR47F_0F07(a0, a1, a2, a3);
-    {@0519-051F}
     b9D92 := a0;
-    {@051F-0525}
     b9D93 := a1;
   end;
-  {@0525-052A}
   v259b := 1;
-  {@052A-0532}
   v257b := Length(a7);
   if v257b = 0 then
   begin
-    {@0539-053E}
     pR6DD_0030;
-    {@053E-0541}
     Exit;
   end;
-  {@0541-0554}
   v258b := a2 - a0 + 1;
-  {@0554-06F2}
   repeat
-    {@0554-055C}
     v260b := v259b;
-    asm
-  db 138,134,252,254,58,134,255,254,115,46,138,134,252,254,48,228,139,248,138,131,0,255,80,141,190,219,254,22
-  db 87,191,4,14,30,87,184,4,4,80,154,118,12,37,8,154,36,13,37,8,116,6,254,134,252,254,235,200
-    end;
-    asm
-  db 138,134,252,254,58,134,255,254,115,61,138,134,252,254,48,228,139,248,138,131,0,255,80,141,190,219,254,22
-  db 87,191,4,14,30,87,184,4,4,80,154,118,12,37,8,154,36,13,37,8,117,21,138,134,252,254,48,228
-  db 139,248,128,187,0,255,32,116,6,254,134,252,254,235,185
-    end;
-    asm
-  db 138,134,252,254,48,228,139,248,128,187,0,255,32,116,66,138,134,255,254,48,228,139,208,138,134,252,254,48
-  db 228,64,59,194,125,47,138,134,252,254,48,228,64,139,248,138,131,0,255,80,141,190,219,254,22,87,191,4
-  db 14,30,87,184,4,4,80,154,118,12,37,8,154,36,13,37,8,116,6,254,134,252,254,235,190
-    end;
-    {@062C-06E5}
+    while (v260b < v257b) and (a7[v260b] in pset) do
+      Inc(v260b);
+    while (v260b < v257b) and not (a7[v260b] in pset) and (a7[v260b] <> ' ') do
+      Inc(v260b);
+    if a7[v260b] <> ' ' then
+      while (v260b + 1 < v257b) and (a7[v260b + 1] in pset) do
+        Inc(v260b);
     if (v260b - v259b + b9D92) > a2 then
     begin
-      {@0653-068F}
       if ((v260b - v259b + b9D92) = a2) and (Ord(a7[v260b]) = 32) then
       begin
-        {@0686-068A}
         Dec(v260b);
-        {@068A-068F}
         pR47F_03E3;
       end;
-      {@068F-0695}
       b9D92 := a0;
-      {@0695-0699}
       Inc(b9D93);
-      {@0699-069E}
       pR47F_045E;
       if (b9D93 > a3) and (v259b < v257b) then
       begin
-        {@06B0-06B6}
         b9D92 := a0;
-        {@06B6-06BC}
         b9D93 := a1;
-        {@06BC-06C0}
         pR47F_0F25;
-        {@06C0-06C5}
         pR670_0311;
-        {@06C5-06D9}
         pR47F_0F07(a0, a1, a2, a3);
-        {@06D9-06DE}
         pR47F_03E3;
       end;
     end
     else
       pR47F_03E3;
   until v259b > v257b;
-  {@06F2-0704}
   if b9D92 > a2 then
   begin
-    {@06FA-0700}
     b9D92 := a0;
-    {@0700-0704}
     Inc(b9D93);
   end;
-  {@0704-0709}
   pR6DD_0030;
 end;
 
@@ -393,34 +355,24 @@ var
   v42b: byte;
   v43b: byte;
   v299a: string;
-  v300b: byte;
-  v300a: char absolute v300b;
+  v300a: char;
+  v300b: byte absolute v300a;
   v299a2: array[0..255] of byte absolute v299a;
-  v299b: byte absolute v299a;
+  b880E: byte absolute d880E;
 begin
   if false then begin
     if LV = ' ' then;
   end;
-  {@072B-073B}
   pR47F_030B(0, 24, 0, 40);
-  {@073B-0752}
   pR47F_0354(0, 24, a1, a2, a0);
-  {@0752-0758}
   v42b := Length(a0);
-  {@0758-075D}
-  v299b := 0;
-  {@075D-093E}
+  v299a := '';
   repeat
-    {@075D-0771}
     pR47F_030B(v42b + 1, 24, 15, 1);
-    {@0771-077A}
-    v300b := Ord(ReadKey);
+    v300a := ReadKey;
     if v300b = 0 then
     begin
-      asm
-  call ReadKey
-  db 136,134,212,254
-      end;
+      v300a := ReadKey;
       case v300b of
         71: v300b := 55;
         72: v300b := 56;
@@ -433,61 +385,38 @@ begin
         81: v300b := 51;
         82: v300b := 48;
       else
-        asm
-  db 198,134,212,254,0
-        end;
+        v300b := 0;
       end;
     end;
-    asm
-  db 138,134,213,254,136,70,213
-    end;
+    v43b := Length(v299a);
     case v300b of
-      32: asm
-  db 128,126,213,0,116,86,138,70,213,58,70,6,115,78,141,190,212,253,22,87,141,190,213,254,22,87,154,111
-  db 10,37,8,191,15,7,14,87,154,252,10,37,8,141,190,213,254,22,87,184,255,0,80,154,137,10,37,8
-  db 254,70,214,138,70,214,80,176,24,80,176,15,80,176,0,80,141,190,210,254,22,87,191,15,7,14,87,154
-  db 111,10,37,8
-  push cs
-  call near ptr pR47F_0354
-        end;
-      33..122: begin
-        {@087A-08DB}
-        if v43b < a3 then
+      32: if (v43b <> 0) and (v43b < a3) then
         begin
-          {@0882-08B7}
-          v299a := v299a + v300a;
-          {@08B7-08BA}
+          v299a := v299a + ' ';
           Inc(v42b);
-          {@08BA-08DB}
+          pR47F_0354(v42b, 24, 15, 0, ' ');
+        end;
+      33..122: if v43b < a3 then
+        begin
+          v299a := v299a + v300a;
+          Inc(v42b);
           pR47F_0354(v42b, 24, 15, 0, v300a);
         end;
-      end;
-      8: begin
-        {@08E1-0926}
-        if v43b > 0 then
+      8: if v43b > 0 then
         begin
-          {@08E7-0912}
           v299a := Copy(v299a, 1, v43b - 1);
-          {@0912-0923}
           pR47F_030B(v42b, 24, 0, 2);
-          {@0923-0926}
           Dec(v42b);
         end;
-      end;
     end;
   until (v300b = 13) or (v300b = 27) or (b880E <> 0);
-  {@093E-094E}
   pR47F_030B(0, 24, 0, 40);
-  {@094E-0955}
-  v43b := v299b;
-  {@0955-0968}
+  v43b := Length(v299a);
   while v299a2[v43b] = 32 do
     Dec(v43b);
-  {@0968-0992}
   v299a := Copy(v299a, 1, v43b);
   for v42b := 1 to v43b do
     v299a2[v42b] := Ord(UpCase(Chr(v299a2[v42b])));
-  {@09D0-09E4}
   pR47F_0711 := v299a;
 end;
 

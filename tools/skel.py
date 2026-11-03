@@ -46,7 +46,7 @@ for (k, e), n in list(NAME.items()):
         NAME[(k, e)] = None  # unit initialization block
 
 DEAD_EXTRA = {}
-OPLUS = {'R182'}
+OPLUS = {'R182', 'R47F'}
 DMINUS = {'O075'}   # D- frees local symbols ("Too many symbols"); costs the map line numbers used to locate mismatches
 OPLUS_PROCS = set()   # (key, entry) of procedures compiled {$O+} inside $O- units (set by tools/lift/prog.py)   # resident units compiled overlay-safe ($O+: literal arguments copied to stack temps)
 EXTRA_USES = {}

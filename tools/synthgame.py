@@ -1,8 +1,9 @@
-"""synthgame.py OUT MINALLOC MAXALLOC: plain MZ from orig/GAME.bin + orig/GAME.bin.relocs, header fields taken from the
+"""synthgame.py OUT MINALLOC MAXALLOC [IMAGE]: plain MZ from IMAGE (default orig/GAME.bin) + IMAGE.relocs, header fields taken from the
 EXEPACK header of gog/GAME.EXE (SS:SP 19C5:4000, CS:IP 0000:0002). Input to EXEPACK for the round-trip test."""
 import struct, sys
-img = open('orig/GAME.bin', 'rb').read()
-rel = sorted(int(l, 16) for l in open('orig/GAME.bin.relocs') if l.strip())
+src = sys.argv[4] if len(sys.argv) > 4 else 'orig/GAME.bin'
+img = open(src, 'rb').read()
+rel = sorted(int(l, 16) for l in open(src + '.relocs') if l.strip())
 out, mn, mx = sys.argv[1], int(sys.argv[2], 16), int(sys.argv[3], 16)
 hdr_paras = (0x1C + 4 * len(rel) + 15) // 16
 size = hdr_paras * 16 + len(img)
