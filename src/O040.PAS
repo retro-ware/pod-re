@@ -65,7 +65,6 @@ type
   R5_pointer = record _p: array[1..5] of byte; v: pointer end;
   RA30_byte = record _p: array[1..30] of byte; a: array[0..32000] of byte end;
   RA337_byte = record _p: array[1..337] of byte; a: array[0..32000] of byte end;
-  X17 = array[0..16] of byte;
   PAL17_byte = ^AL17_byte;
   PAL32768_byte = ^AL32768_byte;
   PR0_X510 = ^R0_X510;
@@ -115,8 +114,6 @@ type
   PRA30_byte = ^RA30_byte;
   PRA337_byte = ^RA337_byte;
 var
-  a000C_ec3f: array[0..32759] of byte absolute d000C;
-  a0017_ec3f: array[0..32759] of byte absolute d0017;
   a7D08_ec3f: array[0..32759] of byte absolute d7D08;
   aB01D_ec3f: array[0..32759] of byte absolute dB01D;
   aB06E_e1c0: array[0..126] of string[255] absolute dB06E;
@@ -2373,7 +2370,11 @@ end;
 
 { 251F }
 procedure pO040_251F;
+type
+  X17 = array[0..16] of byte;
 var
+  a000C_ec3f: array[0..32759] of byte absolute d000C;
+  a0017_ec3f: array[0..32759] of byte absolute d0017;
   _f1: array[1..16] of byte;
   v17b: byte;
   v18b: byte;
@@ -2394,6 +2395,8 @@ var
   v88b: byte absolute v88w;
   v17a: X17 absolute v17b;
   v82a: X63 absolute _v82;
+  a0001: array[1..11] of byte absolute d0002;
+type PA17 = ^TA17; TA17 = array[1..1000] of X17;
 begin
   {@2525-252D}
   pO055_0000(1);
@@ -2403,9 +2406,7 @@ begin
   v18b := pO055_0136(1);
   if (v18b > 11) or (v18b < 1) then
     v18b := 1;
-  asm
-  db 138,70,238,48,228,139,248,138,133,1,0,48,228,137,70,168
-  end;
+  v88w := a0001[v18b];
   {@255D-256D}
   v90w := a000C_ec3f[v18b];
   for v91b := v88b to v90b do
@@ -2415,10 +2416,7 @@ begin
     if v19b = 255 then
       pO055_1ABE(@v17b)
     else
-      asm
-  db 138,70,237,48,228,186,17,0,247,226,196,62,255,156,3,248,129,199,239,255,6,87,141,126,239,22,87,184
-  db 17,0,80,154,163,9,37,8
-      end;
+      v17a := PA17(p9CFF)^[v19b];
     {@25CA-266C}
     if v17b <> 255 then
     begin

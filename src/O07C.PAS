@@ -923,8 +923,6 @@ end;
 
 { 0A11 }
 procedure pO07C_0A11(a0: pointer; a1: word; a2: word; a3: word);
-var
-  _f1: array[1..12] of byte;
 begin
   if false then begin
     if LV = 'is coughing' then;
@@ -932,11 +930,8 @@ begin
   {@0A17-0A21}
   if b880C <> 5 then
     Exit;
-  asm
-  db 196,126,12,38,196,61,38,196,189,231,1,38,128,125,2,0,116,36,196,126,12,38,255,117,2,38,255,53
-  db 141,126,244,22,87,191,5,10,14,87,154,111,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  end;
+  if PR2_byte(PR487_pointer(PR0_pointer(a0)^.v)^.v)^.v <> 0 then
+    pO0EC_1B08(pointer(PR0_pointer(a0)^.v), 'is coughing', 10, 1);
   {@0A57-0A67}
   PR2_byte(PR487_pointer(PR0_pointer(a0)^.v)^.v)^.v := 0;
   {@0A67-0A77}
@@ -1209,8 +1204,11 @@ end;
 
 { 105C }
 procedure pO07C_105C(a0: pointer; a1: pointer; a2: byte);
+type
+  PS17 = ^RS17;
+  RS17 = record _p: array[1..17] of byte; v: byte end;
 var
-  _f1: array[1..260] of byte;
+  _f1: longint;
 begin
   if false then begin
     if LV = 'weakened' then;
@@ -1218,12 +1216,12 @@ begin
   {@1063-10EB}
   if (a2 = 0) and (pO07C_00A0(@PR0_byte(a0)^.v, 43, PR3_byte(a1)^.v, 60) <> 0) then
   begin
-    asm
-  db 196,126,12,38,196,61,38,128,125,17,3,118,59,196,126,12,38,255,117,2,38,255,53,141,190,252,254,22
-  db 87,191,37,64,30,87,154,111,10,37,8,191,83,16,14,87,154,252,10,37,8,176,10,80,176,1,80
-  call pO0EC_1B08
-  db 196,126,12,38,196,61,38,254,77,17,235,27
-    end;
+    if PS17(PR0_pointer(a0)^.v)^.v > 3 then
+    begin
+      pO0EC_1B08(pointer(PR0_pointer(a0)^.v), s4025 + 'weakened', 10, 1);
+      Dec(PS17(PR0_pointer(a0)^.v)^.v);
+    end
+    else
     {@10D0-10EB}
     pO0E2_13E5(pointer(PR0_pointer(a0)^.v), 31, 0, 255, 0);
   end;

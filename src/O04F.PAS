@@ -14,8 +14,6 @@ implementation
 uses LIT, O052, O075, O0AA, O0B5, O0BB, O0E2, O0EC, O108, R142, R47F, R670;
 
 type
-  X63 = array[0..62] of byte;
-  R0_X63 = record v: X63 end;
   R0_byte = record v: byte end;
   R0_longint = record v: longint end;
   R174_shortint = record _p: array[1..174] of byte; v: shortint end;
@@ -32,8 +30,6 @@ type
   R31_byte = record _p: array[1..31] of byte; v: byte end;
   R327_byte = record _p: array[1..327] of byte; v: byte end;
   R370_longint = record _p: array[1..370] of byte; v: longint end;
-  R408_word = record _p: array[1..408] of byte; v: word end;
-  R423_pointer = record _p: array[1..423] of byte; v: pointer end;
   R42_pointer = record _p: array[1..42] of byte; v: pointer end;
   R46_byte = record _p: array[1..46] of byte; v: byte end;
   R47_byte = record _p: array[1..47] of byte; v: byte end;
@@ -47,9 +43,7 @@ type
   R49_byte = record _p: array[1..49] of byte; v: byte end;
   R508_byte = record _p: array[1..508] of byte; v: byte end;
   R50_byte = record _p: array[1..50] of byte; v: byte end;
-  R50_shortint = record _p: array[1..50] of byte; v: shortint end;
   R51_byte = record _p: array[1..51] of byte; v: byte end;
-  R52_byte = record _p: array[1..52] of byte; v: byte end;
   R54_byte = record _p: array[1..54] of byte; v: byte end;
   R55_word = record _p: array[1..55] of byte; v: word end;
   R57_byte = record _p: array[1..57] of byte; v: byte end;
@@ -57,8 +51,6 @@ type
   R61_byte = record _p: array[1..61] of byte; v: byte end;
   R62_byte = record _p: array[1..62] of byte; v: byte end;
   RA30_byte = record _p: array[1..30] of byte; a: array[0..32000] of byte end;
-  RA331_word = record _p: array[1..331] of byte; a: array[0..16000] of word end;
-  PR0_X63 = ^R0_X63;
   PR0_byte = ^R0_byte;
   PR0_longint = ^R0_longint;
   PR174_shortint = ^R174_shortint;
@@ -75,8 +67,6 @@ type
   PR31_byte = ^R31_byte;
   PR327_byte = ^R327_byte;
   PR370_longint = ^R370_longint;
-  PR408_word = ^R408_word;
-  PR423_pointer = ^R423_pointer;
   PR42_pointer = ^R42_pointer;
   PR46_byte = ^R46_byte;
   PR47_byte = ^R47_byte;
@@ -90,9 +80,7 @@ type
   PR49_byte = ^R49_byte;
   PR508_byte = ^R508_byte;
   PR50_byte = ^R50_byte;
-  PR50_shortint = ^R50_shortint;
   PR51_byte = ^R51_byte;
-  PR52_byte = ^R52_byte;
   PR54_byte = ^R54_byte;
   PR55_word = ^R55_word;
   PR57_byte = ^R57_byte;
@@ -100,10 +88,8 @@ type
   PR61_byte = ^R61_byte;
   PR62_byte = ^R62_byte;
   PRA30_byte = ^RA30_byte;
-  PRA331_word = ^RA331_word;
 var
   a4015_ec3f: array[0..32759] of byte absolute d4015;
-  aA7BE_b676: array[0..8189] of longint absolute dA7BE;
   b5363: byte absolute d5363;
   b7FF4: byte absolute d7FF4;
   b7FF5: byte absolute d7FF5;
@@ -124,14 +110,10 @@ var
   bC57A: byte absolute dC57A;
   bC57B: byte absolute dC57B;
   bC57F: byte absolute dC57F;
-  lA7BE: longint absolute dA7BE;
-  lA7C2: longint absolute dA7C2;
-  lA7C6: longint absolute dA7C6;
   lC57B: longint absolute dC57B;
   p87F8: pointer absolute d87F8;
   p9CEE: pointer absolute d9CEE;
   p9CF2: pointer absolute d9CF2;
-  p9CFA: pointer absolute d9CFA;
   pA7CA: pointer absolute dA7CA;
   s0E12: string absolute d0E12;
   s23B4: string absolute d23B4;
@@ -226,7 +208,26 @@ end;
 
 { 0247 }
 procedure pO04F_0247(a0: pointer);
+type
+  X63 = array[0..62] of byte;
+  R0_X63 = record v: X63 end;
+  PR0_X63 = ^R0_X63;
+  R408_word = record _p: array[1..408] of byte; v: word end;
+  PR408_word = ^R408_word;
+  R423_pointer = record _p: array[1..423] of byte; v: pointer end;
+  PR423_pointer = ^R423_pointer;
+  R50_shortint = record _p: array[1..50] of byte; v: shortint end;
+  PR50_shortint = ^R50_shortint;
+  R52_byte = record _p: array[1..52] of byte; v: byte end;
+  PR52_byte = ^R52_byte;
+  RA331_word = record _p: array[1..331] of byte; a: array[0..16000] of word end;
+  PRA331_word = ^RA331_word;
 var
+  aA7BE_b676: array[0..8189] of longint absolute dA7BE;
+  lA7BE: longint absolute dA7BE;
+  lA7C2: longint absolute dA7C2;
+  lA7C6: longint absolute dA7C6;
+  p9CFA: pointer absolute d9CFA;
   v4p: pointer;
   v5b: byte;
   v9l: longint;
@@ -235,6 +236,7 @@ var
   v18b: byte;
   v5sb: shortint absolute v5b;
   v4l: longint absolute v4p;
+type PL = ^longint;
 begin
   {@024D-0255}
   v9l := 0;
@@ -321,10 +323,7 @@ if (PR495_byte(v4p)^.v = 1) and (PR493_byte(v4p)^.v <> 0) and (PR493_byte(v4p)^.
     {@04D7-04E8}
     v13p := PR42_pointer(v13p)^.v;
   end;
-  asm
-  db 160,122,197,48,228,139,208,196,62,248,135,38,138,69,31,48,228,43,194,153,139,200,139,218,139,70,247,139
-  db 86,249,154,218,9,37,8,196,126,6,38,137,5,38,137,85,2
-  end;
+  PL(a0)^ := v9l div (PR31_byte(p87F8)^.v - bC57A);
 end;
 
 { 051D }
