@@ -265,6 +265,11 @@ class Frame:
                 if p.copy['rtl'] == 0xA89 and t is None and l.size == 1:
                     return 'Length(%s)' % nm          # s[0]
                 return nm
+            if p.copy and p.copy['rtl'] == 0xA89 and p.copy['dst'] < off <= p.copy['dst'] + p.copy['n'] and \
+                    l.size == 1 and l.index is None:
+                # a character of a copied string value parameter
+                nm = '%s%d[%d]' % (self.pl, pr.params.index(p), off - p.copy['dst'])
+                return nm if t == 'char' else 'Byte(%s)' % nm
         rs = {'byte': 1, 'word': 2, 'longint': 4, 'real': 6, None: 0}[pr.result]
         if rs and off == -rs:
             raise LiftError('function result read/written as variable')

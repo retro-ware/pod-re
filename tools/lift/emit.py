@@ -76,7 +76,7 @@ class Emitter:
         if l.kind == 'deref' and isinstance(p, Loc) and p.kind == 'l' and p.size == 4 and \
                 p.off not in getattr(self.ctx, 'withs', {}) and any(t.off == p.off and type(t).__name__ == 'Loc'
                                                                    for t in self.ctx.temps_for):
-            raise LiftError('with temp outside its with')
+            raise LiftError('with temp outside its with (temp %d, withs %s)' % (p.off, sorted(getattr(self.ctx, 'withs', {}))))
         if l.kind == 'deref' and isinstance(p, Loc) and p.kind == 'l' and p.size == 4 and \
                 p.off in getattr(self.ctx, 'withs', {}):
             return p.off

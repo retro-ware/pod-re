@@ -19,6 +19,9 @@ implementation
 
 uses LIT, Dos;
 
+type
+  R0_word = record v: word end;
+  PR0_word = ^R0_word;
 var
   b881A: byte absolute d881A;
   bC5C2: byte absolute dC5C2;
@@ -79,11 +82,25 @@ end;
 procedure pR6DD_0072(a0: pointer; a1: pointer; a2: pointer);
 begin
   asm
-    db 128,62,196,197,0,117,2,235,71,199,6,24,136,3,0,176,51,80,191,24,136,30,87
-    call Intr
-    db 161,26,136,196,126,14,38,137,5,161,28,136,196,126,10,38,137,5,128,62,194,197,0,117,18,196,126,10
-    db 38,139,5,153,185,2,0,247,249,196,126,10,38,137,5,161,30,136,196,126,6,38,137,5
+  db 128,62,196,197,0,117,2,235,71
   end;
+  asm
+  db 199,6,24,136,3,0
+  end;
+  asm
+  db 176,51,80,191,24,136,30,87
+  call Intr
+  end;
+  asm
+  db 161,26,136,196,126,14,38,137,5
+  end;
+  asm
+  db 161,28,136,196,126,10,38,137,5
+  end;
+  if bC5C2 = 0 then
+    PR0_word(a1)^.v := PR0_word(a1)^.v div 2;
+  {@00BC-00C5}
+  PR0_word(a2)^.v := w881E;
 end;
 
 { 00C9 }

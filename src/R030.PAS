@@ -12,27 +12,55 @@ implementation
 
 uses LIT, O06E, R47F, R670;
 
+var
+  b8816: byte absolute d8816;
 
 
 { 0042 }
 function pR030_0042(a0: word): word;
-var loc: array[1..38] of byte;
+var
+  v3b: byte;
+  _fb: byte absolute a0;
+  _fw: word absolute a0;
 begin
   if false then begin
     if LV = 'WARNING: Insufficient Memory' then;
     if LV = 'Insufficient Memory. Exiting Program' then;
+    with LPR^ do with LPR^ do LM0_1([LB]);
   end;
-  asm
-    db 131,126,6,0,118,100,198,70,253,0,176,14,80,176,0,80,141,126,224,22,87,191,0,0,14,87,154,111
-    db 10,37,8
-    call pR47F_0B2E
-    db 128,62,22,136,0,116,19,176,1,80,176,0,80
-    call pO06E_2989
-    db 160,213,148,136,70,253,235,30,198,70,253,1,176,14,80,176,0,80,141,126,216,22,87,191,29,0,14,87
-    db 154,111,10,37,8
-    call pR47F_0B2E
-    db 128,126,253,0,116,168,176,0,80
-    call pR670_0000
+  {@0048-00B2}
+  if a0 > 0 then
+  begin
+    asm
+  db 198,70,253,0
+    end;
+    {@0052-00AA}
+    repeat
+      {@0052-006C}
+      pR47F_0B2E(14, 0, 'WARNING: Insufficient Memory');
+      if b8816 <> 0 then
+      begin
+        asm
+  db 176,1,80,176,0,80
+  call pO06E_2989
+        end;
+        asm
+  db 160,213,148,136,70,253
+        end;
+      end
+      else
+      begin
+        asm
+  db 198,70,253,1
+        end;
+        {@008A-00A4}
+        pR47F_0B2E(14, 0, 'Insufficient Memory. Exiting Program');
+      end;
+    until v3b <> 0;
+    asm
+  db 176,0,80
+  call pR670_0000
+    end;
   end;
 end;
 
