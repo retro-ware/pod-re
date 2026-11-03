@@ -2090,5 +2090,7 @@
 "raw:R6DD:0167": [
 "016D-017B",
 "017B-0189"
-]
+],
+"O075:06DF": "fail: too many symbols (with record)",
+"O0A1:3344": "fail: compile Type mismatch (w8l := a0)"
 }

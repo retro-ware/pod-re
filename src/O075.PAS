@@ -1,5 +1,5 @@
 { O075: generated skeleton (original bytes in BASM) }
-{$A-,B-,D+,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
+{$A-,B-,D-,E-,F+,G-,I-,L-,N-,O+,R-,S-,V-,X-}
 unit O075;
 
 interface
@@ -17,9 +17,6 @@ uses LIT, Crt, O06E, O079, O0AA, O0E2, O0EC, O102, O108, O13E, R142, R1C3, R47F,
 
 type
   AL17_byte = array[17..32017] of byte;
-  E10_byte = record f: byte; _r: array[1..9] of byte end;
-  E10_word = record f: word; _r: array[1..8] of byte end;
-  E14_byte = record f: byte; _r: array[1..13] of byte end;
   E16_byte = record f: byte; _r: array[1..15] of byte end;
   E2_byte = record f: byte; _r: array[1..1] of byte end;
   E42_byte = record f: byte; _r: array[1..41] of byte end;
@@ -30,9 +27,6 @@ type
   R0_string = record v: string end;
   R0_string_15_ = record v: string[15] end;
   R0_string_40_ = record v: string[40] end;
-  R173_shortint = record _p: array[1..173] of byte; v: shortint end;
-  R174_shortint = record _p: array[1..174] of byte; v: shortint end;
-  R175_byte = record _p: array[1..175] of byte; v: byte end;
   R178_byte = record _p: array[1..178] of byte; v: byte end;
   R18_word = record _p: array[1..18] of byte; v: word end;
   R1_byte = record _p: array[1..1] of byte; v: byte end;
@@ -51,14 +45,11 @@ type
   R343_byte = record _p: array[1..343] of byte; v: byte end;
   R347_byte = record _p: array[1..347] of byte; v: byte end;
   R348_byte = record _p: array[1..348] of byte; v: byte end;
-  R358_byte = record _p: array[1..358] of byte; v: byte end;
   R35_byte = record _p: array[1..35] of byte; v: byte end;
   R370_longint = record _p: array[1..370] of byte; v: longint end;
   R412_byte = record _p: array[1..412] of byte; v: byte end;
   R413_byte = record _p: array[1..413] of byte; v: byte end;
   R41_byte = record _p: array[1..41] of byte; v: byte end;
-  R420_byte = record _p: array[1..420] of byte; v: byte end;
-  R421_byte = record _p: array[1..421] of byte; v: byte end;
   R422_byte = record _p: array[1..422] of byte; v: byte end;
   R423_pointer = record _p: array[1..423] of byte; v: pointer end;
   R42_longint = record _p: array[1..42] of byte; v: longint end;
@@ -76,8 +67,6 @@ type
   RA16_byte = record _p: array[1..16] of byte; a: array[0..32000] of byte end;
   RA178_byte = record _p: array[1..178] of byte; a: array[0..32000] of byte end;
   RA17_byte = record _p: array[1..17] of byte; a: array[0..32000] of byte end;
-  RA337_byte = record _p: array[1..337] of byte; a: array[0..32000] of byte end;
-  RA344_byte = record _p: array[1..344] of byte; a: array[0..32000] of byte end;
 W0_12_441E = record case byte of 0: (_p0: array[1..337] of byte;
       _w12_337abyte: array[0..32000] of byte) end;
 W0_4_23CA = record case byte of 0: (_w4_0string: string); 1: (_p1: array[1..494] of byte;
@@ -216,14 +205,6 @@ W27_69_2668 = record case byte of 0: (_p0: array[1..17] of byte; _w69_17r2_0: ar
 W29_69_2668 = record case byte of 0: (_p0: array[1..178] of byte; _w69_178byte: byte);
       1: (_p1: array[1..337] of byte; _w69_337abyte: array[0..32000] of byte);
       2: (_p2: array[1..380] of byte; _w69_380byte: byte) end;
-W29_91_06DF = record case byte of 0: (_p0: array[1..17] of byte; _w91_17r2_0: array[0..16000] of WE2_byte);
-      1: (_p1: array[1..17] of byte; _w91_17byte: byte); 2: (_p2: array[1..28] of byte; _w91_28byte: byte);
-      3: (_p3: array[1..173] of byte; _w91_173shortint: shortint); 4: (_p4: array[1..174] of byte;
-      _w91_174shortint: shortint); 5: (_p5: array[1..174] of byte; _w91_174byte: byte);
-      6: (_p6: array[1..176] of byte; _w91_176word: word); 7: (_p7: array[1..339] of byte;
-      _w91_339byte: byte); 8: (_p8: array[1..340] of byte; _w91_340byte: byte);
-      9: (_p9: array[1..341] of byte; _w91_341byte: byte); 10: (_p10: array[1..358] of byte;
-      _w91_358shortint: shortint) end;
 W2_4_23CA = record case byte of 0: (_w4_0string: string); 1: (_p1: array[1..494] of byte;
       _w4_494byte: byte) end;
 W2_5_21EE = record case byte of 0: (_p0: array[1..259] of byte; _w5_259byte: byte);
@@ -273,14 +254,6 @@ W2_5_21EE = record case byte of 0: (_p0: array[1..259] of byte; _w5_259byte: byt
   W357_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W359_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W35_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
-W35_91_06DF = record case byte of 0: (_p0: array[1..17] of byte; _w91_17r2_0: array[0..16000] of WE2_byte);
-      1: (_p1: array[1..17] of byte; _w91_17byte: byte); 2: (_p2: array[1..28] of byte; _w91_28byte: byte);
-      3: (_p3: array[1..173] of byte; _w91_173shortint: shortint); 4: (_p4: array[1..174] of byte;
-      _w91_174shortint: shortint); 5: (_p5: array[1..174] of byte; _w91_174byte: byte);
-      6: (_p6: array[1..176] of byte; _w91_176word: word); 7: (_p7: array[1..339] of byte;
-      _w91_339byte: byte); 8: (_p8: array[1..340] of byte; _w91_340byte: byte);
-      9: (_p9: array[1..341] of byte; _w91_341byte: byte); 10: (_p10: array[1..358] of byte;
-      _w91_358shortint: shortint) end;
   W361_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W363_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W365_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
@@ -292,13 +265,6 @@ W35_91_06DF = record case byte of 0: (_p0: array[1..17] of byte; _w91_17r2_0: ar
   W377_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W379_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W37_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
-W37_91_06DF = record case byte of 0: (_p0: array[1..178] of byte; _w91_178byte: byte);
-      1: (_p1: array[1..311] of byte; _w91_311byte: byte); 2: (_p2: array[1..331] of byte;
-      _w91_331word: word); 3: (_p3: array[1..337] of byte; _w91_337abyte: array[0..32000] of byte);
-      4: (_p4: array[1..360] of byte; _w91_360byte: byte); 5: (_p5: array[1..362] of byte;
-      _w91_362byte: byte); 6: (_p6: array[1..364] of byte; _w91_364byte: byte);
-      7: (_p7: array[1..380] of byte; _w91_380byte: byte); 8: (_p8: array[1..381] of byte;
-      _w91_381byte: byte); 9: (_p9: array[1..508] of byte; _w91_508byte: byte) end;
   W381_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W383_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W385_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
@@ -366,12 +332,6 @@ W37_91_06DF = record case byte of 0: (_p0: array[1..178] of byte; _w91_178byte: 
   W497_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W499_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W49_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
-W49_91_06DF = record case byte of 0: (_p0: array[1..172] of byte; _w91_172byte: byte);
-      1: (_p1: array[1..305] of byte; _w91_305byte: byte); 2: (_p2: array[1..368] of byte;
-      _w91_368byte: byte); 3: (_p3: array[1..412] of byte; _w91_412byte: byte);
-      4: (_p4: array[1..413] of byte; _w91_413abyte: array[0..32000] of byte);
-      5: (_p5: array[1..493] of byte; _w91_493byte: byte); 6: (_p6: array[1..494] of byte;
-      _w91_494byte: byte) end;
   W501_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
   W503_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W505_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
@@ -385,46 +345,10 @@ W515_281_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w281_410byt
       4: (_p4: array[1..413] of byte; _w281_413abyte: array[0..32000] of byte);
       5: (_p5: array[1..414] of byte; _w281_414X6: X6) end;
   W51_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
-W51_91_06DF = record case byte of 0: (_p0: array[1..173] of byte; _w91_173byte: byte);
-      1: (_p1: array[1..413] of byte; _w91_413byte: byte) end;
   W53_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
-W53_91_06DF = record case byte of 0: (_p0: array[1..172] of byte; _w91_172byte: byte);
-      1: (_p1: array[1..173] of byte; _w91_173shortint: shortint); 2: (_p2: array[1..174] of byte;
-      _w91_174byte: byte); 3: (_p3: array[1..174] of byte; _w91_174shortint: shortint);
-      4: (_p4: array[1..312] of byte; _w91_312byte: byte); 5: (_p5: array[1..337] of byte;
-      _w91_337abyte: array[0..32000] of byte); 6: (_p6: array[1..337] of byte; _w91_337byte: byte);
-      7: (_p7: array[1..339] of byte; _w91_339byte: byte); 8: (_p8: array[1..340] of byte;
-      _w91_340byte: byte); 9: (_p9: array[1..341] of byte; _w91_341byte: byte);
-      10: (_p10: array[1..342] of byte; _w91_342byte: byte); 11: (_p11: array[1..343] of byte;
-      _w91_343byte: byte); 12: (_p12: array[1..370] of byte; _w91_370word: word);
-      13: (_p13: array[1..372] of byte; _w91_372word: word); 14: (_p14: array[1..379] of byte;
-      _w91_379byte: byte) end;
   W55_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
-W55_91_06DF = record case byte of 0: (_p0: array[1..17] of byte; _w91_17r2_0: array[0..16000] of WE2_byte);
-      1: (_p1: array[1..17] of byte; _w91_17byte: byte); 2: (_p2: array[1..28] of byte; _w91_28byte: byte);
-      3: (_p3: array[1..173] of byte; _w91_173shortint: shortint); 4: (_p4: array[1..174] of byte;
-      _w91_174shortint: shortint); 5: (_p5: array[1..174] of byte; _w91_174byte: byte);
-      6: (_p6: array[1..176] of byte; _w91_176word: word); 7: (_p7: array[1..339] of byte;
-      _w91_339byte: byte); 8: (_p8: array[1..340] of byte; _w91_340byte: byte);
-      9: (_p9: array[1..341] of byte; _w91_341byte: byte); 10: (_p10: array[1..358] of byte;
-      _w91_358shortint: shortint) end;
   W57_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
-W57_91_06DF = record case byte of 0: (_p0: array[1..17] of byte; _w91_17r2_0: array[0..16000] of WE2_byte);
-      1: (_p1: array[1..17] of byte; _w91_17byte: byte); 2: (_p2: array[1..28] of byte; _w91_28byte: byte);
-      3: (_p3: array[1..173] of byte; _w91_173shortint: shortint); 4: (_p4: array[1..174] of byte;
-      _w91_174shortint: shortint); 5: (_p5: array[1..174] of byte; _w91_174byte: byte);
-      6: (_p6: array[1..176] of byte; _w91_176word: word); 7: (_p7: array[1..339] of byte;
-      _w91_339byte: byte); 8: (_p8: array[1..340] of byte; _w91_340byte: byte);
-      9: (_p9: array[1..341] of byte; _w91_341byte: byte); 10: (_p10: array[1..358] of byte;
-      _w91_358shortint: shortint) end;
   W59_285_3D36 = record case byte of 0: (_p0: array[1..410] of byte; _w285_410byte: byte) end;
-W59_91_06DF = record case byte of 0: (_p0: array[1..178] of byte; _w91_178byte: byte);
-      1: (_p1: array[1..311] of byte; _w91_311byte: byte); 2: (_p2: array[1..331] of byte;
-      _w91_331word: word); 3: (_p3: array[1..337] of byte; _w91_337abyte: array[0..32000] of byte);
-      4: (_p4: array[1..360] of byte; _w91_360byte: byte); 5: (_p5: array[1..362] of byte;
-      _w91_362byte: byte); 6: (_p6: array[1..364] of byte; _w91_364byte: byte);
-      7: (_p7: array[1..380] of byte; _w91_380byte: byte); 8: (_p8: array[1..381] of byte;
-      _w91_381byte: byte); 9: (_p9: array[1..508] of byte; _w91_508byte: byte) end;
   W5_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W61_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
   W63_285_3D36 = record case byte of 0: (_p0: array[1..411] of byte; _w285_411byte: byte) end;
@@ -468,9 +392,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PR0_string = ^R0_string;
   PR0_string_15_ = ^R0_string_15_;
   PR0_string_40_ = ^R0_string_40_;
-  PR173_shortint = ^R173_shortint;
-  PR174_shortint = ^R174_shortint;
-  PR175_byte = ^R175_byte;
   PR178_byte = ^R178_byte;
   PR18_word = ^R18_word;
   PR1_byte = ^R1_byte;
@@ -489,14 +410,11 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PR343_byte = ^R343_byte;
   PR347_byte = ^R347_byte;
   PR348_byte = ^R348_byte;
-  PR358_byte = ^R358_byte;
   PR35_byte = ^R35_byte;
   PR370_longint = ^R370_longint;
   PR412_byte = ^R412_byte;
   PR413_byte = ^R413_byte;
   PR41_byte = ^R41_byte;
-  PR420_byte = ^R420_byte;
-  PR421_byte = ^R421_byte;
   PR422_byte = ^R422_byte;
   PR423_pointer = ^R423_pointer;
   PR42_longint = ^R42_longint;
@@ -514,8 +432,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PRA16_byte = ^RA16_byte;
   PRA178_byte = ^RA178_byte;
   PRA17_byte = ^RA17_byte;
-  PRA337_byte = ^RA337_byte;
-  PRA344_byte = ^RA344_byte;
   PW0_12_441E = ^W0_12_441E;
   PW0_4_23CA = ^W0_4_23CA;
   PW0_4_38C5 = ^W0_4_38C5;
@@ -632,7 +548,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PW299_285_3D36 = ^W299_285_3D36;
   PW29_285_3D36 = ^W29_285_3D36;
   PW29_69_2668 = ^W29_69_2668;
-  PW29_91_06DF = ^W29_91_06DF;
   PW2_4_23CA = ^W2_4_23CA;
   PW2_5_21EE = ^W2_5_21EE;
   PW301_285_3D36 = ^W301_285_3D36;
@@ -668,7 +583,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PW357_285_3D36 = ^W357_285_3D36;
   PW359_285_3D36 = ^W359_285_3D36;
   PW35_285_3D36 = ^W35_285_3D36;
-  PW35_91_06DF = ^W35_91_06DF;
   PW361_285_3D36 = ^W361_285_3D36;
   PW363_285_3D36 = ^W363_285_3D36;
   PW365_285_3D36 = ^W365_285_3D36;
@@ -680,7 +594,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PW377_285_3D36 = ^W377_285_3D36;
   PW379_285_3D36 = ^W379_285_3D36;
   PW37_285_3D36 = ^W37_285_3D36;
-  PW37_91_06DF = ^W37_91_06DF;
   PW381_285_3D36 = ^W381_285_3D36;
   PW383_285_3D36 = ^W383_285_3D36;
   PW385_285_3D36 = ^W385_285_3D36;
@@ -748,7 +661,6 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PW497_285_3D36 = ^W497_285_3D36;
   PW499_285_3D36 = ^W499_285_3D36;
   PW49_285_3D36 = ^W49_285_3D36;
-  PW49_91_06DF = ^W49_91_06DF;
   PW501_285_3D36 = ^W501_285_3D36;
   PW503_285_3D36 = ^W503_285_3D36;
   PW505_285_3D36 = ^W505_285_3D36;
@@ -758,15 +670,10 @@ W9_40_3B04 = record case byte of 0: (_p0: array[1..413] of byte;
   PW513_285_3D36 = ^W513_285_3D36;
   PW515_281_3D36 = ^W515_281_3D36;
   PW51_285_3D36 = ^W51_285_3D36;
-  PW51_91_06DF = ^W51_91_06DF;
   PW53_285_3D36 = ^W53_285_3D36;
-  PW53_91_06DF = ^W53_91_06DF;
   PW55_285_3D36 = ^W55_285_3D36;
-  PW55_91_06DF = ^W55_91_06DF;
   PW57_285_3D36 = ^W57_285_3D36;
-  PW57_91_06DF = ^W57_91_06DF;
   PW59_285_3D36 = ^W59_285_3D36;
-  PW59_91_06DF = ^W59_91_06DF;
   PW5_285_3D36 = ^W5_285_3D36;
   PW61_285_3D36 = ^W61_285_3D36;
   PW63_285_3D36 = ^W63_285_3D36;
@@ -797,16 +704,11 @@ var
   a09B7_c768: array[0..5459, 0..5] of byte absolute d09B7;
   a09B7_ec3f: array[0..32759] of byte absolute d09B7;
   a0E57_b7cc: array[0..1212] of string[26] absolute d0E57;
-  a103D_c528: array[0..3639] of string[8] absolute d103D;
-  a107C_6df8: array[0..1926] of string[16] absolute d107C;
-  a1115_ae45: array[0..4679] of string[6] absolute d1115;
   a11B9_9ec9: array[0..779] of string[41] absolute d11B9;
   a11E2_620f: array[0..779] of E42_byte absolute d11E2;
   a3191_738a: array[0..711] of string[45] absolute d3191;
   a5364_ec3f: array[0..32759] of byte absolute d5364;
   a651A_3981: array[0..2046] of E16_byte absolute d651A;
-  a6D18_9aee: array[0..1488, 0..21] of byte absolute d6D18;
-  a6DB2_ec3f: array[0..32759] of byte absolute d6DB2;
   a6DB9_ec3f: array[0..32759] of byte absolute d6DB9;
   a6DC9_ec3f: array[0..32759] of byte absolute d6DC9;
   a6DDD_ec3f: array[0..32759] of byte absolute d6DDD;
@@ -823,22 +725,12 @@ var
   a6F04_3981: array[0..2046] of E16_byte absolute d6F04;
   a6F05_3981: array[0..2046] of E16_byte absolute d6F05;
   a6F06_3981: array[0..2046] of E16_byte absolute d6F06;
-  a6F57_527e: array[0..2339, 0..13] of byte absolute d6F57;
-  a6F57_5caa: array[0..2339, 0..13] of shortint absolute d6F57;
-  a6F57_9794: array[0..2339] of E14_byte absolute d6F57;
-  a7053_9461: array[0..3275] of E10_word absolute d7053;
-  a7055_9461: array[0..3275] of E10_word absolute d7055;
-  a7057_9461: array[0..3275] of E10_word absolute d7057;
-  a7059_9461: array[0..3275] of E10_word absolute d7059;
   a708F_07d2: array[0..5459] of E6_byte absolute d708F;
-  a708F_c768: array[0..5459, 0..5] of byte absolute d708F;
   a7090_07d2: array[0..5459] of E6_byte absolute d7090;
   a7091_07d2: array[0..5459] of E6_byte absolute d7091;
   a7092_07d2: array[0..5459] of E6_byte absolute d7092;
   a7093_07d2: array[0..5459] of E6_byte absolute d7093;
   a7094_07d2: array[0..5459] of E6_byte absolute d7094;
-  a70F5_3b44: array[0..3275, 0..9] of shortint absolute d70F5;
-  a70F5_7b1e: array[0..3275] of E10_byte absolute d70F5;
   a719C_ec3f: array[0..32759] of byte absolute d719C;
   a9DC4_7c92: array[0..4094] of E8_pointer absolute d9DC4;
   a9DC8_7c92: array[0..4094] of E8_pointer absolute d9DC8;
@@ -891,10 +783,6 @@ var
   p9CFF: pointer absolute d9CFF;
   s199F: string absolute d199F;
   s19C8: string absolute d19C8;
-  s19F1: string absolute d19F1;
-  s1A1A: string absolute d1A1A;
-  s1A43: string absolute d1A43;
-  s1A95: string absolute d1A95;
   s1C2F: string absolute d1C2F;
   s1C58: string absolute d1C58;
   s1C81: string absolute d1C81;
@@ -1304,24 +1192,7 @@ end;
 
 { 06DF }
 procedure pO075_06DF;
-var
-c77: record case byte of 0: (v77a2: string[76]); 1: (v77a: string[40]); 2: (v77b: byte);
-      3: (_p3: array[1..41] of byte; v36b: byte); 4: (_p4: array[1..43] of byte; v34b: byte);
-      5: (_p5: array[1..44] of byte; v33b: byte); 6: (_p6: array[1..45] of byte; v32b: byte);
-      7: (_p7: array[1..46] of byte; v31b: byte); 8: (_p8: array[1..50] of byte; v27b: byte);
-      9: (_p9: array[1..51] of byte; v26b: byte); 10: (_p10: array[1..51] of byte; v26sb: shortint);
-      11: (_p11: array[1..52] of byte; v25b: byte); 12: (_p12: array[1..52] of byte; v25sb: shortint);
-      13: (_p13: array[1..53] of byte; v24b: byte); 14: (_p14: array[1..53] of byte; v24sb: shortint);
-      15: (_p15: array[1..54] of byte; v23b: byte); 16: (_p16: array[1..54] of byte; v23sb: shortint);
-      17: (_p17: array[1..55] of byte; v22b: byte); 18: (_p18: array[1..56] of byte; v21b: byte);
-      19: (_p19: array[1..57] of byte; v20b: byte); 20: (_p20: array[1..58] of byte; v19b: byte);
-      21: (_p21: array[1..59] of byte; v18w: word); 22: (_p22: array[1..59] of byte; v18b: byte);
-      23: (_p23: array[1..61] of byte; v16p: pointer); 24: (_p24: array[1..61] of byte; v16b: byte);
-      25: (_p25: array[1..65] of byte; v12p: pointer); 26: (_p26: array[1..65] of byte; v12b: byte);
-      27: (_p27: array[1..69] of byte; v8p: pointer); 28: (_p28: array[1..73] of byte; v4p: pointer);
-      29: (_p29: array[1..73] of byte; v4b: byte) end;
-  v78b: byte;
-  _f1: array[1..9] of byte;
+var loc: array[1..600] of byte;
 begin
   if false then begin
     if LV = '  ' then;
@@ -1335,695 +1206,349 @@ begin
     if LSV = [49..57] then;
     if LV = 'Save ' then;
     if LV = '? ' then;
-    LM4_7(FS, '', 'Reroll stats? ', 'Character name: ', [LB], [LB], [LB], [LB], [LB], [LB],
-    [LB]);
   end;
-  {@06E6-06F5}
-  GetMem(c77.v4p, 510);
-  {@06F5-0703}
-  XR670_046E(@PR0_byte(c77.v4p)^.v, 510);
-  with PW49_91_06DF(c77.v4p)^ do
-  begin
-    for c77.v19b := 1 to 6 do
-      _w91_413abyte[c77.v19b] := a6DDD_ec3f[c77.v19b] + (a6DDD_ec3f[c77.v19b] + 8) * 16;
-    {@0751-075A}
-    _w91_368byte := 50;
-    {@075A-0763}
-    _w91_172byte := 40;
-    {@0763-076C}
-    _w91_493byte := 0;
-    {@076C-0775}
-    _w91_494byte := 1;
-    {@0775-077E}
-    _w91_305byte := 1;
-    {@077E-0787}
-    _w91_412byte := 10;
-  end;
-  {@0787-0795}
-  pO108_22B0(7, @c77.v12b);
-  {@0795-079D}
-  PR41_byte(c77.v12p)^.v := 1;
-  {@079D-07B0}
-  PR0_string_40_(c77.v12p)^.v := s19F1;
-  for c77.v23b := 0 to 5 do
-  begin
-    {@07B9-07D0}
-    c77.v16p := pO108_0000(c77.v23sb + 1, c77.v12p);
-    {@07D0-0804}
-    PR0_string_40_(c77.v16p)^.v := '  ' + a103D_c528[c77.v23sb];
-  end;
-  {@080A-0816}
-  c77.v16p := c77.v12p;
-  {@0816-081B}
-  c77.v18w := 1;
-  {@081B-081F}
-  c77.v34b := 1;
-  {@081F-0823}
-  c77.v33b := 1;
-  {@0823-082B}
-  pO108_00CB(0);
-  {@082B-08B2}
-  repeat
-    {@082B-0879}
-c77.v22b := pO108_1D45('', 'Select', 1, 2, 38, 22, c77.v12p, c77.v33b, 0, @c77.v34b, @c77.v18b,
-        @c77.v16b);
-    if (bAAE6 <> 0) and (c77.v22b = 27) or (bAAE6 = 0) and (c77.v22b > 0) then
-    begin
-      {@0893-089D}
-      pO108_2363(@c77.v12b);
-      {@089D-08A6}
-      pO075_0015(@c77.v4b);
-      {@08A6-08A9}
-      Exit;
-    end;
-  until c77.v22b = 0;
-  {@08B2-09E0}
-  with PW51_91_06DF(c77.v4p)^ do
-  begin
-    _w91_173byte := c77.v18w - 1;
-    _w91_413byte := 2;
-    case _w91_173byte of
-      4: begin
-        {@08DC-08F3}
-        pO0E2_13E5(c77.v4p, 97, 0, 255, 0);
-        {@08F3-08FC}
-        _w91_413byte := 1;
-      end;
-      2: begin
-        {@0903-091A}
-        pO0E2_13E5(c77.v4p, 47, 0, 255, 0);
-        {@091A-0931}
-        pO0E2_13E5(c77.v4p, 26, 0, 255, 0);
-        {@0931-0948}
-        pO0E2_13E5(c77.v4p, 97, 0, 255, 0);
-        {@0948-0951}
-        _w91_413byte := 1;
-      end;
-      3: begin
-        {@0958-096F}
-        pO0E2_13E5(c77.v4p, 48, 0, 255, 0);
-        {@096F-0986}
-        pO0E2_13E5(c77.v4p, 7, 0, 255, 0);
-        {@0986-099D}
-        pO0E2_13E5(c77.v4p, 97, 0, 255, 0);
-        {@099D-09A6}
-        _w91_413byte := 1;
-      end;
-      0: pO0E2_13E5(c77.v4p, 95, 0, 255, 0);
-      1: pO0E2_13E5(c77.v4p, 18, 0, 255, 0);
-    end;
-  end;
-  {@09E0-09EA}
-  pO108_2363(@c77.v12b);
-  {@09EA-09F8}
-  pO108_22B0(3, @c77.v12b);
-  {@09F8-0A00}
-  PR41_byte(c77.v12p)^.v := 1;
-  {@0A00-0A13}
-  PR0_string_40_(c77.v12p)^.v := s1A1A;
-  for c77.v24b := 0 to 1 do
-  begin
-    {@0A1C-0A33}
-    c77.v16p := pO108_0000(c77.v24sb + 1, c77.v12p);
-    {@0A33-0A67}
-    PR0_string_40_(c77.v16p)^.v := '  ' + a1115_ae45[c77.v24sb];
-  end;
-  {@0A6D-0A79}
-  c77.v16p := c77.v12p;
-  {@0A79-0A7E}
-  c77.v18w := 1;
-  {@0A7E-0A82}
-  c77.v33b := 1;
-  {@0A82-0A86}
-  c77.v34b := 1;
-  {@0A86-0B0D}
-  repeat
-    {@0A86-0AD4}
-c77.v22b := pO108_1D45('', 'Select', 1, 2, 38, 22, c77.v12p, c77.v33b, 0, @c77.v34b, @c77.v18b,
-        @c77.v16b);
-    if (bAAE6 <> 0) and (c77.v22b = 27) or (bAAE6 = 0) and (c77.v22b > 0) then
-    begin
-      {@0AEE-0AF8}
-      pO108_2363(@c77.v12b);
-      {@0AF8-0B01}
-      pO075_0015(@c77.v4b);
-      {@0B01-0B04}
-      Exit;
-    end;
-  until c77.v22b = 0;
-  {@0B0D-0B19}
-  PR358_byte(c77.v4p)^.v := c77.v18w - 1;
-  {@0B19-0B23}
-  pO108_2363(@c77.v12b);
-  {@0B23-0B3A}
-  c77.v27b := a6F57_9794[PR173_shortint(c77.v4p)^.v].f;
-  {@0B3A-0B4B}
-  pO108_22B0(c77.v27b + 1, @c77.v12b);
-  {@0B4B-0B53}
-  PR41_byte(c77.v12p)^.v := 1;
-  {@0B53-0B66}
-  PR0_string_40_(c77.v12p)^.v := s1A43;
-  for c77.v19b := 1 to c77.v27b do
-  begin
-    {@0B7B-0B92}
-    c77.v16p := pO108_0000(c77.v19b, c77.v12p);
-    {@0B92-0BE0}
-    PR0_string_40_(c77.v16p)^.v := '  ' + a0E57_b7cc[a6F57_5caa[PR173_shortint(c77.v4p)^.v, c77.v19b]];
-  end;
-  {@0BE8-0BF4}
-  c77.v16p := c77.v12p;
-  {@0BF4-0BF9}
-  c77.v18w := 1;
-  {@0BF9-0BFD}
-  c77.v33b := 1;
-  {@0BFD-0C01}
-  c77.v34b := 1;
-  {@0C01-0C88}
-  repeat
-    {@0C01-0C4F}
-c77.v22b := pO108_1D45('', 'Select', 1, 2, 38, 22, c77.v12p, c77.v33b, 0, @c77.v34b, @c77.v18b,
-        @c77.v16b);
-    if (bAAE6 <> 0) and (c77.v22b = 27) or (bAAE6 = 0) and (c77.v22b > 0) then
-    begin
-      {@0C69-0C73}
-      pO108_2363(@c77.v12b);
-      {@0C73-0C7C}
-      pO075_0015(@c77.v4b);
-      {@0C7C-0C7F}
-      Exit;
-    end;
-  until c77.v22b = 0;
-  {@0C88-0F07}
-  with PW53_91_06DF(c77.v4p)^ do
-  begin
-    _w91_370word := 58209;
-    _w91_372word := 22;
-    _w91_174byte := a6F57_527e[_w91_173shortint, c77.v18w];
-    _w91_312byte := 1;
-    case _w91_174shortint of
-      0..2: _w91_337abyte[_w91_174shortint] := 1;
-      5..6: _w91_337abyte[_w91_174shortint] := 1;
-      3: begin
-        {@0D16-0D1F}
-        PR175_byte(c77.v4p)^.v := 1;
-        {@0D1F-0D28}
-        _w91_340byte := 1;
-        {@0D28-0D3F}
-        pO0E2_13E5(c77.v4p, 8, 0, 255, 0);
-      end;
-      4: begin
-        {@0D46-0D4F}
-        _w91_341byte := 1;
-        {@0D4F-0D66}
-        pO0E2_13E5(c77.v4p, 105, 0, 255, 0);
-      end;
-      8: begin
-        {@0D6D-0D76}
-        _w91_337byte := 1;
-        {@0D76-0D7F}
-        _w91_339byte := 1;
-        {@0D7F-0D89}
-        _w91_370word := 29104;
-        {@0D89-0D90}
-        _w91_372word := 11;
-      end;
-      9: begin
-        {@0D97-0DA0}
-        _w91_337byte := 1;
-        {@0DA0-0DA9}
-        _w91_339byte := 1;
-        {@0DA9-0DB2}
-        _w91_342byte := 1;
-        {@0DB2-0DBC}
-        _w91_370word := 41248;
-        {@0DBC-0DC3}
-        _w91_372word := 7;
-      end;
-      10: begin
-        {@0DCA-0DD3}
-        _w91_337byte := 1;
-        {@0DD3-0DDC}
-        _w91_341byte := 1;
-        {@0DDC-0DF3}
-        pO0E2_13E5(c77.v4p, 105, 0, 255, 0);
-        {@0DF3-0DFD}
-        _w91_370word := 29104;
-        {@0DFD-0E04}
-        _w91_372word := 11;
-      end;
-      11: begin
-        {@0E0B-0E14}
-        _w91_337byte := 1;
-        {@0E14-0E1D}
-        _w91_342byte := 1;
-        {@0E1D-0E27}
-        _w91_370word := 29104;
-        {@0E27-0E2E}
-        _w91_372word := 11;
-      end;
-      12: begin
-        {@0E35-0E3E}
-        _w91_337byte := 1;
-        {@0E3E-0E47}
-        _w91_343byte := 1;
-        {@0E47-0E51}
-        _w91_370word := 29104;
-        {@0E51-0E58}
-        _w91_372word := 11;
-      end;
-      13: begin
-        {@0E5F-0E68}
-        _w91_339byte := 1;
-        {@0E68-0E71}
-        _w91_342byte := 1;
-        {@0E71-0E7B}
-        _w91_370word := 29104;
-        {@0E7B-0E82}
-        _w91_372word := 11;
-      end;
-      14: begin
-        {@0E89-0E92}
-        _w91_339byte := 1;
-        {@0E92-0E9B}
-        _w91_343byte := 1;
-        {@0E9B-0EA5}
-        _w91_370word := 29104;
-        {@0EA5-0EAC}
-        _w91_372word := 11;
-      end;
-      15: begin
-        {@0EB2-0EBB}
-        _w91_339byte := 1;
-        {@0EBB-0EC4}
-        _w91_342byte := 1;
-        {@0EC4-0ECD}
-        _w91_343byte := 1;
-        {@0ECD-0ED7}
-        _w91_370word := 41248;
-        {@0ED7-0EDE}
-        _w91_372word := 7;
-      end;
-      16: begin
-        {@0EE4-0EED}
-        _w91_342byte := 1;
-        {@0EED-0EF6}
-        _w91_343byte := 1;
-        {@0EF6-0F00}
-        _w91_370word := 29104;
-        {@0F00-0F07}
-        _w91_372word := 11;
-      end;
-    end;
-    {@0F07-0F1D}
-    if _w91_343byte > 0 then
-      pO102_0970(c77.v4p);
-    {@0F1D-0F26}
-    _w91_379byte := 0;
-    {@0F26-0F2F}
-    _w91_172byte := 0;
-    for c77.v25b := 0 to 6 do
-    begin
-      {@0F38-0FB3}
-      if _w91_337abyte[c77.v25sb] > 0 then
-      begin
-        {@0F49-0FA1}
-        if a6D18_9aee[c77.v25sb, _w91_337abyte[c77.v25sb]] > _w91_172byte then
-          _w91_172byte := a6D18_9aee[c77.v25sb, _w91_337abyte[c77.v25sb]];
-        {@0FA1-0FB3}
-        Inc(_w91_379byte, a6DB2_ec3f[c77.v25sb]);
-      end;
-    end;
-  end;
-  {@0FBC-0FC7}
-  pO102_0738(c77.v4p);
-  {@0FC7-0FDE}
-  c77.v27b := a70F5_7b1e[PR174_shortint(c77.v4p)^.v].f;
-  {@0FDE-0FEF}
-  pO108_22B0(c77.v27b + 1, @c77.v12b);
-  {@0FEF-0FF7}
-  PR41_byte(c77.v12p)^.v := 1;
-  {@0FF7-100A}
-  PR0_string_40_(c77.v12p)^.v := s1A95;
-  for c77.v19b := 1 to c77.v27b do
-  begin
-    {@101F-1036}
-    c77.v16p := pO108_0000(c77.v19b, c77.v12p);
-    {@1036-1084}
-    PR0_string_40_(c77.v16p)^.v := '  ' + a107C_6df8[a70F5_3b44[PR174_shortint(c77.v4p)^.v, c77.v19b]];
-  end;
-  {@108C-1098}
-  c77.v16p := c77.v12p;
-  {@1098-109D}
-  c77.v18w := 1;
-  {@109D-10A1}
-  c77.v33b := 1;
-  {@10A1-10A5}
-  c77.v34b := 1;
-  {@10A5-112C}
-  repeat
-    {@10A5-10F3}
-c77.v22b := pO108_1D45('', 'Select', 1, 2, 38, 22, c77.v12p, c77.v33b, 0, @c77.v34b, @c77.v18b,
-        @c77.v16b);
-    if (bAAE6 <> 0) and (c77.v22b = 27) or (bAAE6 = 0) and (c77.v22b > 0) then
-    begin
-      {@110D-1117}
-      pO108_2363(@c77.v12b);
-      {@1117-1120}
-      pO075_0015(@c77.v4b);
-      {@1120-1123}
-      Exit;
-    end;
-  until c77.v22b = 0;
   asm
-  db 139,78,238,196,126,252,38,138,133,174,0,152,186,10,0,247,226,139,248,3,249,138,133,245,112,196,126,252
-  db 38,136,133,103,1,141,126,244,22,87
-  call pO108_2363
-  db 196,126,252,38,128,189,174,0,6,127,86,196,126,252,38,138,133,174,0,152,209,224,209,224,139,200,196,126
-  db 252,38,138,133,173,0,152,186,28,0,247,226,139,248,3,249,129,199,171,111,137,126,165,140,94,167,196,126
-  db 165,38,138,69,2,80,196,126,165,38,138,69,3,80
-  call pO0E2_1374
-  db 48,228,196,126,165,38,3,5,5,10,0,196,126,252,38,137,133,176,0,233,38,1,196,126,252,137,126,165
-  db 140,70,167,196,126,165,38,138,133,174,0,60,8,116,12,60,9,116,8,60,11,116,4,60,10,117,83,196
-  db 126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,173,111,48,228,139,200,196,126,165,38,138
-  db 133,173,0,152,186,28,0,247,226,139,248,138,133,174,111,48,228,247,225,139,200,196,126,165,38,138,133,173
-  db 0,152,186,28,0,247,226,139,248,139,133,171,111,3,193,196,126,165,38,137,133,176,0,233,178,0,60,13
-  db 116,8,60,15,116,4,60,16,117,82,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133
-  db 193,111,48,228,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,194,111,48,228
-  db 247,225,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,139,133,191,111,3,193,196,126
-  db 165,38,137,133,176,0,235,84,60,14,117,80,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248
-  db 138,133,181,111,48,228,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,182,111
-  db 48,228,247,225,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,139,133,179,111,3,193
-  db 196,126,165,38,137,133,176,0
+    db 184,254,1,80,154,63,2,37,8,137,70,252,137,86,254,196,126,252,6,87,184,254,1,80
+    call XR670_046E
+    db 196,126,252,137,126,165,140,70,167,198,70,237,1,235,3,254,70,237,138,70,237,48,228,139,248,138,133,221
+    db 109,48,228,5,8,0,177,4,211,224,139,208,138,70,237,48,228,139,248,138,133,221,109,48,228,3,194,138
+    db 208,138,70,237,48,228,196,126,165,3,248,38,136,149,157,1,128,126,237,6,117,193,196,126,165,38,198,133
+    db 112,1,50,196,126,165,38,198,133,172,0,40,196,126,165,38,198,133,237,1,0,196,126,165,38,198,133,238
+    db 1,1,196,126,165,38,198,133,49,1,1,196,126,165,38,198,133,156,1,10,184,7,0,80,141,126,244,22
+    db 87
+    call pO108_22B0
+    db 196,126,244,38,198,69,41,1,191,241,25,30,87,196,126,244,6,87,184,40,0,80,154,137,10,37,8,198
+    db 70,233,0,235,3,254,70,233,138,70,233,152,64,80,255,118,246,255,118,244
+    call pO108_0000
+    db 137,70,240,137,86,242,141,190,169,254,22,87,191,103,6,14,87,154,111,10,37,8,138,70,233,152,186,9
+    db 0,247,226,139,248,129,199,61,16,30,87,154,252,10,37,8,196,126,240,6,87,184,40,0,80,154,137,10
+    db 37,8,128,126,233,5,117,172,139,70,244,139,86,246,137,70,240,137,86,242,199,70,238,1,0,198,70,222
+    db 1,198,70,223,1,176,0,80
+    call pO108_00CB
+    db 141,126,168,22,87,191,106,6,14,87,154,111,10,37,8,141,126,161,22,87,191,107,6,14,87,154,111,10
+    db 37,8,176,1,80,176,2,80,176,38,80,176,22,80,255,118,246,255,118,244,138,70,223,80,176,0,80,141
+    db 126,222,22,87,141,126,238,22,87,141,126,240,22,87
+    call pO108_1D45
+    db 136,70,234,128,62,230,170,0,116,6,128,126,234,27,116,13,128,62,230,170,0,117,28,128,126,234,0,118
+    db 22,141,126,244,22,87
+    call pO108_2363
+    db 141,126,252,22,87
+    push cs
+    call near ptr pO075_0015
+    db 233,65,25,128,126,234,0,116,3,233,121,255,196,126,252,137,126,165,140,70,167,139,70,238,72,196,126,165
+    db 38,136,133,173,0,196,126,165,38,198,133,157,1,2,196,126,165,38,138,133,173,0,60,4,117,35,255,118
+    db 254,255,118,252,176,97,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 196,126,165,38,198,133,157,1,1,233,225,0,60,2,117,81,255,118,254,255,118,252,176,47,80,49,192,80
+    db 176,255,80,176,0,80
+    call pO0E2_13E5
+    db 255,118,254,255,118,252,176,26,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 255,118,254,255,118,252,176,97,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 196,126,165,38,198,133,157,1,1,233,140,0,60,3,117,80,255,118,254,255,118,252,176,48,80,49,192,80
+    db 176,255,80,176,0,80
+    call pO0E2_13E5
+    db 255,118,254,255,118,252,176,7,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 255,118,254,255,118,252,176,97,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 196,126,165,38,198,133,157,1,1,235,56,60,0,117,25,255,118,254,255,118,252,176,95,80,49,192,80,176
+    db 255,80,176,0,80
+    call pO0E2_13E5
+    db 235,27,60,1,117,23,255,118,254,255,118,252,176,18,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 141,126,244,22,87
+    call pO108_2363
+    db 184,3,0,80,141,126,244,22,87
+    call pO108_22B0
+    db 196,126,244,38,198,69,41,1,191,26,26,30,87,196,126,244,6,87,184,40,0,80,154,137,10,37,8,198
+    db 70,232,0,235,3,254,70,232,138,70,232,152,64,80,255,118,246,255,118,244
+    call pO108_0000
+    db 137,70,240,137,86,242,141,190,169,254,22,87,191,103,6,14,87,154,111,10,37,8,138,70,232,152,186,7
+    db 0,247,226,139,248,129,199,21,17,30,87,154,252,10,37,8,196,126,240,6,87,184,40,0,80,154,137,10
+    db 37,8,128,126,232,1,117,172,139,70,244,139,86,246,137,70,240,137,86,242,199,70,238,1,0,198,70,223
+    db 1,198,70,222,1,141,126,168,22,87,191,106,6,14,87,154,111,10,37,8,141,126,161,22,87,191,107,6
+    db 14,87,154,111,10,37,8,176,1,80,176,2,80,176,38,80,176,22,80,255,118,246,255,118,244,138,70,223
+    db 80,176,0,80,141,126,222,22,87,141,126,238,22,87,141,126,240,22,87
+    call pO108_1D45
+    db 136,70,234,128,62,230,170,0,116,6,128,126,234,27,116,13,128,62,230,170,0,117,28,128,126,234,0,118
+    db 22,141,126,244,22,87
+    call pO108_2363
+    db 141,126,252,22,87
+    push cs
+    call near ptr pO075_0015
+    db 233,230,22,128,126,234,0,116,3,233,121,255,139,70,238,72,196,126,252,38,136,133,102,1,141,126,244,22
+    db 87
+    call pO108_2363
+    db 196,126,252,38,138,133,173,0,152,186,14,0,247,226,139,248,138,133,87,111,136,70,229,138,70,229,48,228
+    db 64,80,141,126,244,22,87
+    call pO108_22B0
+    db 196,126,244,38,198,69,41,1,191,67,26,30,87,196,126,244,6,87,184,40,0,80,154,137,10,37,8,138
+    db 70,229,136,70,168,176,1,58,70,168,119,117,136,70,237,235,3,254,70,237,138,70,237,48,228,80,255,118
+    db 246,255,118,244
+    call pO108_0000
+    db 137,70,240,137,86,242,141,190,168,254,22,87,191,103,6,14,87,154,111,10,37,8,138,70,237,48,228,139
+    db 200,196,126,252,38,138,133,173,0,152,186,14,0,247,226,139,248,3,249,138,133,87,111,152,186,27,0,247
+    db 226,139,248,129,199,87,14,30,87,154,252,10,37,8,196,126,240,6,87,184,40,0,80,154,137,10,37,8
+    db 138,70,237,58,70,168,117,144,139,70,244,139,86,246,137,70,240,137,86,242,199,70,238,1,0,198,70,223
+    db 1,198,70,222,1,141,126,168,22,87,191,106,6,14,87,154,111,10,37,8,141,126,161,22,87,191,107,6
+    db 14,87,154,111,10,37,8,176,1,80,176,2,80,176,38,80,176,22,80,255,118,246,255,118,244,138,70,223
+    db 80,176,0,80,141,126,222,22,87,141,126,238,22,87,141,126,240,22,87
+    call pO108_1D45
+    db 136,70,234,128,62,230,170,0,116,6,128,126,234,27,116,13,128,62,230,170,0,117,28,128,126,234,0,118
+    db 22,141,126,244,22,87
+    call pO108_2363
+    db 141,126,252,22,87
+    push cs
+    call near ptr pO075_0015
+    db 233,107,21,128,126,234,0,116,3,233,121,255,196,126,252,137,126,165,140,70,167,196,126,165,38,199,133,114
+    db 1,97,227,38,199,133,116,1,22,0,139,78,238,196,126,165,38,138,133,173,0,152,186,14,0,247,226,139
+    db 248,3,249,138,133,87,111,196,126,165,38,136,133,174,0,196,126,165,38,198,133,56,1,1,196,126,165,38
+    db 138,133,174,0,60,0,124,27,60,2,127,23,196,126,165,38,138,133,174,0,152,196,126,165,3,248,38,198
+    db 133,81,1,1,233,20,2,60,5,124,27,60,6,127,23,196,126,165,38,138,133,174,0,152,196,126,165,3
+    db 248,38,198,133,81,1,1,233,245,1,60,3,117,44,196,126,252,38,198,133,175,0,1,196,126,165,38,198
+    db 133,84,1,1,255,118,254,255,118,252,176,8,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 233,197,1,60,4,117,35,196,126,165,38,198,133,85,1,1,255,118,254,255,118,252,176,105,80,49,192,80
+    db 176,255,80,176,0,80
+    call pO0E2_13E5
+    db 233,158,1,60,8,117,38,196,126,165,38,198,133,81,1,1,196,126,165,38,198,133,83,1,1,196,126,165
+    db 38,199,133,114,1,176,113,38,199,133,116,1,11,0,233,116,1,60,9,117,47,196,126,165,38,198,133,81
+    db 1,1,196,126,165,38,198,133,83,1,1,196,126,165,38,198,133,86,1,1,196,126,165,38,199,133,114,1
+    db 32,161,38,199,133,116,1,7,0,233,65,1,60,10,117,61,196,126,165,38,198,133,81,1,1,196,126,165
+    db 38,198,133,85,1,1,255,118,254,255,118,252,176,105,80,49,192,80,176,255,80,176,0,80
+    call pO0E2_13E5
+    db 196,126,165,38,199,133,114,1,176,113,38,199,133,116,1,11,0,233,0,1,60,11,117,38,196,126,165,38
+    db 198,133,81,1,1,196,126,165,38,198,133,86,1,1,196,126,165,38,199,133,114,1,176,113,38,199,133,116
+    db 1,11,0,233,214,0,60,12,117,38,196,126,165,38,198,133,81,1,1,196,126,165,38,198,133,87,1,1
+    db 196,126,165,38,199,133,114,1,176,113,38,199,133,116,1,11,0,233,172,0,60,13,117,38,196,126,165,38
+    db 198,133,83,1,1,196,126,165,38,198,133,86,1,1,196,126,165,38,199,133,114,1,176,113,38,199,133,116
+    db 1,11,0,233,130,0,60,14,117,37,196,126,165,38,198,133,83,1,1,196,126,165,38,198,133,87,1,1
+    db 196,126,165,38,199,133,114,1,176,113,38,199,133,116,1,11,0,235,89,60,15,117,46,196,126,165,38,198
+    db 133,83,1,1,196,126,165,38,198,133,86,1,1,196,126,165,38,198,133,87,1,1,196,126,165,38,199,133
+    db 114,1,32,161,38,199,133,116,1,7,0,235,39,60,16,117,35,196,126,165,38,198,133,86,1,1,196,126
+    db 165,38,198,133,87,1,1,196,126,165,38,199,133,114,1,176,113,38,199,133,116,1,11,0,196,126,165,38
+    db 128,189,87,1,0,118,11,255,118,254,255,118,252
+    call pO102_0970
+    db 196,126,165,38,198,133,123,1,0,196,126,165,38,198,133,172,0,0,198,70,231,0,235,3,254,70,231,138
+    db 70,231,152,196,126,165,3,248,38,128,189,81,1,0,118,106,138,70,231,152,196,126,165,3,248,38,138,133
+    db 81,1,48,228,139,200,138,70,231,152,186,22,0,247,226,139,248,3,249,138,133,24,109,196,126,165,38,58
+    db 133,172,0,118,43,138,70,231,152,196,126,165,3,248,38,138,133,81,1,48,228,139,200,138,70,231,152,186
+    db 22,0,247,226,139,248,3,249,138,133,24,109,196,126,165,38,136,133,172,0,138,70,231,152,139,248,138,133
+    db 178,109,196,126,165,38,0,133,123,1,128,126,231,6,116,3,233,121,255,255,118,254,255,118,252
+    call pO102_0738
+    db 196,126,252,38,138,133,174,0,152,186,10,0,247,226,139,248,138,133,245,112,136,70,229,138,70,229,48,228
+    db 64,80,141,126,244,22,87
+    call pO108_22B0
+    db 196,126,244,38,198,69,41,1,191,149,26,30,87,196,126,244,6,87,184,40,0,80,154,137,10,37,8,138
+    db 70,229,136,70,168,176,1,58,70,168,119,117,136,70,237,235,3,254,70,237,138,70,237,48,228,80,255,118
+    db 246,255,118,244
+    call pO108_0000
+    db 137,70,240,137,86,242,141,190,168,254,22,87,191,103,6,14,87,154,111,10,37,8,138,70,237,48,228,139
+    db 200,196,126,252,38,138,133,174,0,152,186,10,0,247,226,139,248,3,249,138,133,245,112,152,186,17,0,247
+    db 226,139,248,129,199,124,16,30,87,154,252,10,37,8,196,126,240,6,87,184,40,0,80,154,137,10,37,8
+    db 138,70,237,58,70,168,117,144,139,70,244,139,86,246,137,70,240,137,86,242,199,70,238,1,0,198,70,223
+    db 1,198,70,222,1,141,126,168,22,87,191,106,6,14,87,154,111,10,37,8,141,126,161,22,87,191,107,6
+    db 14,87,154,111,10,37,8,176,1,80,176,2,80,176,38,80,176,22,80,255,118,246,255,118,244,138,70,223
+    db 80,176,0,80,141,126,222,22,87,141,126,238,22,87,141,126,240,22,87
+    call pO108_1D45
+    db 136,70,234,128,62,230,170,0,116,6,128,126,234,27,116,13,128,62,230,170,0,117,28,128,126,234,0,118
+    db 22,141,126,244,22,87
+    call pO108_2363
+    db 141,126,252,22,87
+    push cs
+    call near ptr pO075_0015
+    db 233,199,16,128,126,234,0,116,3,233,121,255,139,78,238,196,126,252,38,138,133,174,0,152,186,10,0,247
+    db 226,139,248,3,249,138,133,245,112,196,126,252,38,136,133,103,1,141,126,244,22,87
+    call pO108_2363
+    db 196,126,252,38,128,189,174,0,6,127,86,196,126,252,38,138,133,174,0,152,209,224,209,224,139,200,196,126
+    db 252,38,138,133,173,0,152,186,28,0,247,226,139,248,3,249,129,199,171,111,137,126,165,140,94,167,196,126
+    db 165,38,138,69,2,80,196,126,165,38,138,69,3,80
+    call pO0E2_1374
+    db 48,228,196,126,165,38,3,5,5,10,0,196,126,252,38,137,133,176,0,233,38,1,196,126,252,137,126,165
+    db 140,70,167,196,126,165,38,138,133,174,0,60,8,116,12,60,9,116,8,60,11,116,4,60,10,117,83,196
+    db 126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,173,111,48,228,139,200,196,126,165,38,138
+    db 133,173,0,152,186,28,0,247,226,139,248,138,133,174,111,48,228,247,225,139,200,196,126,165,38,138,133,173
+    db 0,152,186,28,0,247,226,139,248,139,133,171,111,3,193,196,126,165,38,137,133,176,0,233,178,0,60,13
+    db 116,8,60,15,116,4,60,16,117,82,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133
+    db 193,111,48,228,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,194,111,48,228
+    db 247,225,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,139,133,191,111,3,193,196,126
+    db 165,38,137,133,176,0,235,84,60,14,117,80,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248
+    db 138,133,181,111,48,228,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,138,133,182,111
+    db 48,228,247,225,139,200,196,126,165,38,138,133,173,0,152,186,28,0,247,226,139,248,139,133,179,111,3,193
+    db 196,126,165,38,137,133,176,0,161,238,156,139,22,240,156,137,70,248,137,86,250,139,70,252,139,86,254,163
+    db 238,156,137,22,240,156
+    call pO0AA_0041
+    db 198,70,231,0,235,3,254,70,231,138,70,231,152,196,62,238,156,3,248,38,128,189,81,1,0,118,16,138
+    db 70,231,152,196,62,238,156,3,248,38,198,133,81,1,1,128,126,231,6,117,213,196,126,252,38,198,69,28
+    db 0,198,70,230,0,235,3,254,70,230,138,70,230,152,209,224,196,126,252,3,248,38,198,69,17,0,198,70
+    db 236,1,235,3,254,70,236,176,3,80,176,6,80
+    call pO0E2_1374
+    db 48,228,64,136,70,235,138,70,233,60,2,117,21,138,70,230,60,4,117,5,254,70,235,235,7,60,5,117
+    db 3,254,78,235,235,48,60,0,117,21,138,70,230,60,3,117,5,254,70,235,235,7,60,4,117,3,254,78
+    db 235,235,23,60,4,117,19,138,70,230,60,0,117,5,254,78,235,235,7,60,3,117,3,254,70,235,138,70
+    db 230,152,209,224,196,126,252,3,248,38,138,69,17,58,70,235,115,18,138,86,235,138,70,230,152,209,224,196
+    db 126,252,3,248,38,136,85,17,128,126,236,6,116,3,233,113,255,196,126,252,137,126,165,140,70,167,138,70
+    db 230,60,0,116,3,233,179,2,138,70,230,152,209,224,196,126,165,3,248,38,128,125,17,0,118,45,196,126
+    db 165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,83,112,196,126,165,38,59,133,176,0,115,15
+    db 138,70,230,152,209,224,196,126,165,3,248,38,254,69,17,138,70,230,152,209,224,196,126,165,3,248,38,128
+    db 125,17,0,118,45,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,85,112,196,126,165
+    db 38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254,77,17,138,70,230,152,209,224
+    db 196,126,165,3,248,38,128,125,17,0,118,46,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248
+    db 139,133,87,112,196,126,165,38,59,133,176,0,115,16,138,70,230,152,209,224,196,126,165,3,248,38,128,109
+    db 17,2,138,70,230,152,209,224,196,126,165,3,248,38,128,125,17,0,118,45,196,126,165,38,138,133,173,0
+    db 152,186,10,0,247,226,139,248,139,133,89,112,196,126,165,38,59,133,176,0,115,15,138,70,230,152,209,224
+    db 196,126,165,3,248,38,254,77,17,196,126,165,38,138,133,102,1,152,139,208,196,126,165,38,138,133,173,0
+    db 152,139,248,177,4,211,231,3,250,138,149,247,110,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17
+    db 58,194,115,47,196,126,165,38,138,133,102,1,152,139,208,196,126,165,38,138,133,173,0,152,139,248,177,4
+    db 211,231,3,250,138,149,247,110,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,196,126,165,38,138
+    db 133,102,1,152,139,208,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,3,250,138,149,249,110,138
+    db 70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,118,47,196,126,165,38,138,133,102,1,152,139
+    db 208,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,3,250,138,149,249,110,138,70,230,152,209,224
+    db 196,126,165,3,248,38,136,85,17,138,70,230,152,139,208,196,126,165,38,138,133,174,0,152,139,248,209,231
+    db 139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58
+    db 194,115,46,138,70,230,152,139,208,196,126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247
+    db 3,250,138,149,143,112,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,196,126,165,38,128,125,17
+    db 18,116,3,233,130,0,196,126,165,38,128,189,83,1,0,119,22,196,126,165,38,128,189,85,1,0,119,11
+    db 196,126,165,38,128,189,84,1,0,118,97,184,100,0,80,154,151,21,37,8,64,196,126,165,38,136,69,28
+    db 196,126,165,38,138,133,102,1,152,139,208,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,3,250
+    db 138,133,251,110,196,126,165,38,58,69,28,115,39,196,126,165,38,138,133,102,1,152,139,208,196,126,165,38
+    db 138,133,173,0,152,139,248,177,4,211,231,3,250,138,133,251,110,196,126,165,38,136,69,28,233,6,7,60
+    db 1,116,3,233,77,1,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,85,112,196,126
+    db 165,38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254,69,17,196,126,165,38,138
+    db 133,173,0,152,186,10,0,247,226,139,248,139,133,89,112,196,126,165,38,59,133,176,0,115,15,138,70,230
+    db 152,209,224,196,126,165,3,248,38,254,69,17,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138
+    db 149,253,110,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115,34,196,126,165,38,138,133
+    db 173,0,152,139,248,177,4,211,231,138,149,253,110,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17
+    db 196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,254,110,138,70,230,152,209,224,196,126,165
+    db 3,248,38,138,69,17,58,194,118,34,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,254
+    db 110,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,138,70,230,152,139,208,196,126,165,38,138,133
+    db 174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209,224,196,126,165
+    db 3,248,38,138,69,17,58,194,115,46,138,70,230,152,139,208,196,126,165,38,138,133,174,0,152,139,248,209
+    db 231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17
+    db 233,178,5,60,2,116,3,233,222,1,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133
+    db 83,112,196,126,165,38,59,133,176,0,114,15,138,70,230,152,209,224,196,126,165,3,248,38,254,77,17,196
+    db 126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,85,112,196,126,165,38,59,133,176,0,115
+    db 15,138,70,230,152,209,224,196,126,165,3,248,38,254,69,17,196,126,165,38,138,133,173,0,152,186,10,0
+    db 247,226,139,248,139,133,87,112,196,126,165,38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3
+    db 248,38,254,69,17,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,89,112,196,126,165
+    db 38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254,69,17,196,126,165,38,138,133
+    db 173,0,152,139,248,177,4,211,231,138,149,255,110,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17
+    db 58,194,115,34,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,255,110,138,70,230,152,209
+    db 224,196,126,165,3,248,38,136,85,17,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,0
+    db 111,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,118,34,196,126,165,38,138,133,173,0
+    db 152,139,248,177,4,211,231,138,149,0,111,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,138,70
+    db 230,152,139,208,196,126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143
+    db 112,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115,46,138,70,230,152,139,208,196,126
+    db 165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209
+    db 224,196,126,165,3,248,38,136,85,17,138,70,230,152,209,224,196,126,165,3,248,38,128,125,17,13,115,37
+    db 196,126,165,38,138,133,174,0,80,191,114,6,14,87,154,36,13,37,8,116,16,138,70,230,152,209,224,196
+    db 126,165,3,248,38,198,69,17,13,233,205,3,60,3,116,3,233,78,1,196,126,165,38,138,133,173,0,152
+    db 186,10,0,247,226,139,248,139,133,87,112,196,126,165,38,59,133,176,0,115,16,138,70,230,152,209,224,196
+    db 126,165,3,248,38,128,109,17,2,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,89
+    db 112,196,126,165,38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254,77,17,196,126
+    db 165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,1,111,138,70,230,152,209,224,196,126,165,3,248
+    db 38,138,69,17,58,194,115,34,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,1,111,138
+    db 70,230,152,209,224,196,126,165,3,248,38,136,85,17,196,126,165,38,138,133,173,0,152,139,248,177,4,211
+    db 231,138,149,2,111,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,118,34,196,126,165,38
+    db 138,133,173,0,152,139,248,177,4,211,231,138,149,2,111,138,70,230,152,209,224,196,126,165,3,248,38,136
+    db 85,17,138,70,230,152,139,208,196,126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3
+    db 250,138,149,143,112,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115,46,138,70,230,152
+    db 139,208,196,126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138
+    db 70,230,152,209,224,196,126,165,3,248,38,136,85,17,233,120,2,60,4,116,3,233,122,1,196,126,165,38
+    db 138,133,173,0,152,186,10,0,247,226,139,248,139,133,85,112,196,126,165,38,59,133,176,0,115,15,138,70
+    db 230,152,209,224,196,126,165,3,248,38,254,77,17,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139
+    db 248,139,133,87,112,196,126,165,38,59,133,176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254
+    db 77,17,196,126,165,38,138,133,173,0,152,186,10,0,247,226,139,248,139,133,89,112,196,126,165,38,59,133
+    db 176,0,115,15,138,70,230,152,209,224,196,126,165,3,248,38,254,77,17,196,126,165,38,138,133,173,0,152
+    db 139,248,177,4,211,231,138,149,3,111,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115
+    db 34,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,3,111,138,70,230,152,209,224,196,126
+    db 165,3,248,38,136,85,17,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,4,111,138,70
+    db 230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,118,34,196,126,165,38,138,133,173,0,152,139,248
+    db 177,4,211,231,138,149,4,111,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,138,70,230,152,139
+    db 208,196,126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70
+    db 230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115,46,138,70,230,152,139,208,196,126,165,38,138
+    db 133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209,224,196,126
+    db 165,3,248,38,136,85,17,233,247,0,60,5,116,3,233,240,0,196,126,165,38,138,133,173,0,152,139,248
+    db 177,4,211,231,138,149,5,111,138,70,230,152,209,224,196,126,165,3,248,38,138,69,17,58,194,115,34,196
+    db 126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,5,111,138,70,230,152,209,224,196,126,165,3
+    db 248,38,136,85,17,196,126,165,38,138,133,173,0,152,139,248,177,4,211,231,138,149,6,111,138,70,230,152
+    db 209,224,196,126,165,3,248,38,138,69,17,58,194,118,34,196,126,165,38,138,133,173,0,152,139,248,177,4
+    db 211,231,138,149,6,111,138,70,230,152,209,224,196,126,165,3,248,38,136,85,17,138,70,230,152,139,208,196
+    db 126,165,38,138,133,174,0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152
+    db 209,224,196,126,165,3,248,38,138,69,17,58,194,115,46,138,70,230,152,139,208,196,126,165,38,138,133,174
+    db 0,152,139,248,209,231,139,247,209,231,1,247,3,250,138,149,143,112,138,70,230,152,209,224,196,126,165,3
+    db 248,38,136,85,17,138,70,230,152,209,224,196,126,252,3,248,38,138,85,17,138,70,230,152,209,224,196,126
+    db 252,3,248,38,136,85,16,128,126,230,0,117,14,196,126,252,38,138,69,28,196,126,252,38,136,69,29,138
+    db 70,230,80,176,0,80
+    call pO0AA_0AE5
+    db 128,126,230,5,116,3,233,69,245,196,126,252,137,126,165,140,70,167,196,126,165,38,138,133,178,0,196,126
+    db 165,38,136,133,252,1,196,126,165,38,198,133,104,1,2,196,126,165,38,198,133,106,1,1,196,126,165,38
+    db 198,133,108,1,2,196,126,165,38,198,133,55,1,12,198,70,224,0,198,70,225,0,196,126,165,129,199,125
+    db 1,6,87,184,27,0,80
+    call XR670_046E
+    db 198,70,231,0,235,3,254,70,231,138,70,231,152,196,126,165,3,248,38,128,189,81,1,0,118,100,128,126
+    db 231,0,117,91,196,126,165,38,198,133,125,1,2,255,118,254,255,118,252
+    call pO102_0594
+    db 198,70,237,1,235,3,254,70,237,138,70,237,48,228,139,248,177,4,211,231,129,199,26,101,137,126,161,140
+    db 94,163,196,126,161,38,128,61,0,117,26,196,126,161,38,128,125,1,1,117,16,138,70,237,48,228,196,126
+    db 165,3,248,38,198,133,178,0,1,128,126,237,126,117,191,254,70,225,128,126,231,6,117,130,196,126,165,38
+    db 199,133,75,1,200,0,196,126,165,38,198,133,178,0,0,196,126,165,38,198,133,124,1,0,196,126,165,38
+    db 198,133,252,1,0,255,118,254,255,118,252,176,255,80,138,70,225,80,176,1,80
+    call pO0AA_36BA
+    db 196,62,248,135,38,138,69,47,136,70,178,196,62,248,135,38,198,69,47,255,198,6,132,174,0,198,6,135
+    db 174,1
+    push cs
+    call near ptr pO075_4638
+    db 128,62,132,174,0,116,245,138,70,178,196,62,248,135,38,136,69,47,198,6,135,174,0,198,70,220,0,198
+    db 70,179,0,198,70,231,0,235,3,254,70,231,138,70,231,152,196,62,238,156,3,248,38,128,189,81,1,0
+    db 119,58,255,54,240,156,255,54,238,156
+    call pO102_0BA1
+    db 138,208,138,70,231,152,196,62,238,156,3,248,38,138,133,88,1,58,194,114,3,233,156,0,138,70,231,152
+    db 196,62,238,156,3,248,38,128,189,88,1,0,119,3,233,135,0,128,126,220,0,116,40,141,190,169,254,22
+    db 87,141,126,179,22,87,154,111,10,37,8,191,146,6,14,87,154,252,10,37,8,141,126,179,22,87,184,40
+    db 0,80,154,137,10,37,8,141,190,169,253,22,87,141,126,179,22,87,154,111,10,37,8,141,190,169,254,22
+    db 87,138,70,231,152,196,62,238,156,3,248,38,138,133,88,1,48,228,139,208,138,70,231,152,196,62,238,156
+    db 3,248,38,138,133,81,1,48,228,3,194,80
+    call pR47F_0FB2
+    db 154,252,10,37,8,141,126,179,22,87,184,40,0,80,154,137,10,37,8,198,70,220,1,128,126,231,6,116
+    db 3,233,33,255,141,190,169,254,22,87,141,126,179,22,87,154,111,10,37,8,191,148,6,14,87,154,252,10
+    db 37,8,141,126,179,22,87,184,40,0,80,154,137,10,37,8,176,7,80,176,7,80,176,15,80,176,0,80
+    db 141,126,179,22,87
+    call pR47F_0354
+    call pO0AA_0791
+    call pO0AA_063D
+    db 141,126,154,22,87,191,150,6,14,87,154,111,10,37,8,160,98,83,80
+    call pO108_2254
+    db 136,70,234,138,70,234,58,6,99,83,116,3,233,92,242
+    call pO0AA_0041
+    db 141,190,152,254,22,87,141,126,152,22,87,191,165,6,14,87,154,111,10,37,8,176,13,80,176,0,80,176
+    db 15,80
+    call pR47F_0711
+    db 196,126,252,6,87,184,15,0,80,154,137,10,37,8,196,126,252,38,128,61,0,116,198,196,126,252,38,138
+    db 69,1,80,191,182,6,14,87,154,36,13,37,8,117,178
+    push cs
+    call near ptr pO075_38C5
+    push cs
+    call near ptr pO075_3D36
+    db 198,70,230,0,235,3,254,70,230,138,70,230,152,209,224,196,126,252,3,248,38,138,85,17,138,70,230,152
+    db 209,224,196,126,252,3,248,38,136,85,16,128,126,230,5,117,217,196,126,252,38,138,69,28,196,126,252,38
+    db 136,69,29,196,126,252,38,198,133,164,1,2,196,126,252,38,198,133,165,1,2,141,190,169,254,22,87,191
+    db 214,6,14,87,154,111,10,37,8,196,126,252,6,87,154,252,10,37,8,191,220,6,14,87,154,252,10,37
+    db 8,160,98,83,80
+    call pO108_2254
+    db 136,70,234,138,70,234,58,6,99,83,117,30,255,118,254,255,118,252,184,254,1,80,154,84,2,37,8,139
+    db 70,248,139,86,250,163,238,156,137,22,240,156,235,74,255,118,254,255,118,252
+    push cs
+    call near ptr pO075_21EE
+    db 255,118,254,255,118,252
+    push cs
+    call near ptr pO075_5478
+    db 255,118,254,255,118,252,141,126,168,22,87,191,106,6,14,87,154,111,10,37,8
+    call pO06E_0AD8
+    db 255,118,254,255,118,252,184,254,1,80,154,84,2,37,8,139,70,248,139,86,250,163,238,156,137,22,240,156
   end;
-  {@12DE-12EB}
-  c77.v8p := p9CEE;
-  {@12EB-12F8}
-  p9CEE := c77.v4p;
-  {@12F8-12FD}
-  pO0AA_0041;
-  {@12FD-20A1}
-  repeat
-    {@12FD-132E}
-    for c77.v25b := 0 to 6 do
-    begin
-      {@1306-1328}
-      if PRA337_byte(p9CEE)^.a[c77.v25sb] > 0 then
-        PRA337_byte(p9CEE)^.a[c77.v25sb] := 1;
-    end;
-    {@132E-1336}
-    PR28_byte(c77.v4p)^.v := 0;
-    for c77.v26b := 0 to 5 do
-    begin
-      {@133F-134F}
-      PRA17_byte(c77.v4p)^.a[c77.v26sb * 2] := 0;
-      for c77.v20b := 1 to 6 do
-      begin
-        {@1358-1369}
-        c77.v21b := pO0E2_1374(3, 6) + 1;
-        case c77.v23b of
-          2: case c77.v26b of
-              4: Inc(c77.v21b);
-              5: Dec(c77.v21b);
-            end;
-          0: case c77.v26b of
-              3: Inc(c77.v21b);
-              4: Dec(c77.v21b);
-            end;
-          4: case c77.v26b of
-              0: Dec(c77.v21b);
-              3: Inc(c77.v21b);
-            end;
-        end;
-        {@13B5-13DB}
-        if PRA17_byte(c77.v4p)^.a[c77.v26sb * 2] < c77.v21b then
-          PRA17_byte(c77.v4p)^.a[c77.v26sb * 2] := c77.v21b;
-      end;
-      {@13E4-1DB0}
-      with PW57_91_06DF(c77.v4p)^ do
-      begin
-        case c77.v26b of
-          0: begin
-            {@13F7-1436}
-            if (_w91_17r2_0[c77.v26sb].f > 0) and (a7053_9461[_w91_173shortint].f < _w91_176word) then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@1436-1475}
-            if (_w91_17r2_0[c77.v26sb].f > 0) and (a7055_9461[_w91_173shortint].f < _w91_176word) then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1475-14B5}
-            if (_w91_17r2_0[c77.v26sb].f > 0) and (a7057_9461[_w91_173shortint].f < _w91_176word) then
-              Dec(_w91_17r2_0[c77.v26sb].f, 2);
-            {@14B5-14F4}
-            if (_w91_17r2_0[c77.v26sb].f > 0) and (a7059_9461[_w91_173shortint].f < _w91_176word) then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@14F4-1556}
-            if _w91_17r2_0[c77.v26sb].f < a6EF7_9d21[_w91_173shortint, _w91_358shortint] then
-              _w91_17r2_0[c77.v26sb].f := a6EF7_9d21[_w91_173shortint, _w91_358shortint];
-            {@1556-15B8}
-            if _w91_17r2_0[c77.v26sb].f > a6EF9_9d21[_w91_173shortint, _w91_358shortint] then
-              _w91_17r2_0[c77.v26sb].f := a6EF9_9d21[_w91_173shortint, _w91_358shortint];
-            {@15B8-1618}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-            {@1618-16A7}
-            if (_w91_17byte = 18) and ((_w91_339byte > 0) or (_w91_341byte > 0) or (_w91_340byte > 0)) then
-            begin
-              {@1646-1657}
-              _w91_28byte := Random(100) + 1;
-              if a6EFB_9d21[_w91_173shortint, _w91_358shortint] < _w91_28byte then
-                _w91_28byte := a6EFB_9d21[_w91_173shortint, _w91_358shortint];
-            end;
-          end;
-          1: begin
-            {@16B1-16DE}
-            if a7055_9461[_w91_173shortint].f < _w91_176word then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@16DE-170B}
-            if a7059_9461[_w91_173shortint].f < _w91_176word then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@170B-1753}
-            if _w91_17r2_0[c77.v26sb].f < a6EFD_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6EFD_3981[_w91_173shortint].f;
-            {@1753-179B}
-            if _w91_17r2_0[c77.v26sb].f > a6EFE_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6EFE_3981[_w91_173shortint].f;
-            {@179B-17FB}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-          end;
-          2: begin
-            {@1805-1832}
-            if a7053_9461[_w91_173shortint].f >= _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1832-185F}
-            if a7055_9461[_w91_173shortint].f < _w91_176word then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@185F-188C}
-            if a7057_9461[_w91_173shortint].f < _w91_176word then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@188C-18B9}
-            if a7059_9461[_w91_173shortint].f < _w91_176word then
-              Inc(_w91_17r2_0[c77.v26sb].f);
-            {@18B9-1901}
-            if _w91_17r2_0[c77.v26sb].f < a6EFF_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6EFF_3981[_w91_173shortint].f;
-            {@1901-1949}
-            if _w91_17r2_0[c77.v26sb].f > a6F00_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F00_3981[_w91_173shortint].f;
-            {@1949-19A9}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-            {@19A9-19E0}
-            if (_w91_17r2_0[c77.v26sb].f < 13) and (_w91_174byte in [8..12]) then
-              _w91_17r2_0[c77.v26sb].f := 13;
-          end;
-          3: begin
-            {@19EA-1A18}
-            if a7057_9461[_w91_173shortint].f < _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f, 2);
-            {@1A18-1A45}
-            if a7059_9461[_w91_173shortint].f < _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1A45-1A8D}
-            if _w91_17r2_0[c77.v26sb].f < a6F01_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F01_3981[_w91_173shortint].f;
-            {@1A8D-1AD5}
-            if _w91_17r2_0[c77.v26sb].f > a6F02_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F02_3981[_w91_173shortint].f;
-            {@1AD5-1B35}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-          end;
-          4: begin
-            {@1B3F-1B6C}
-            if a7055_9461[_w91_173shortint].f < _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1B6C-1B99}
-            if a7057_9461[_w91_173shortint].f < _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1B99-1BC6}
-            if a7059_9461[_w91_173shortint].f < _w91_176word then
-              Dec(_w91_17r2_0[c77.v26sb].f);
-            {@1BC6-1C0E}
-            if _w91_17r2_0[c77.v26sb].f < a6F03_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F03_3981[_w91_173shortint].f;
-            {@1C0E-1C56}
-            if _w91_17r2_0[c77.v26sb].f > a6F04_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F04_3981[_w91_173shortint].f;
-            {@1C56-1CB6}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-          end;
-          5: begin
-            {@1CC0-1D08}
-            if _w91_17r2_0[c77.v26sb].f < a6F05_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F05_3981[_w91_173shortint].f;
-            {@1D08-1D50}
-            if _w91_17r2_0[c77.v26sb].f > a6F06_3981[_w91_173shortint].f then
-              _w91_17r2_0[c77.v26sb].f := a6F06_3981[_w91_173shortint].f;
-            {@1D50-1DB0}
-            if _w91_17r2_0[c77.v26sb].f < a708F_c768[_w91_174shortint, c77.v26sb] then
-              _w91_17r2_0[c77.v26sb].f := a708F_c768[_w91_174shortint, c77.v26sb];
-          end;
-        end;
-      end;
-      {@1DB0-1DCE}
-      PRA16_byte(c77.v4p)^.a[c77.v26sb * 2] := PRA17_byte(c77.v4p)^.a[c77.v26sb * 2];
-      if c77.v26b = 0 then
-        PR29_byte(c77.v4p)^.v := PR28_byte(c77.v4p)^.v;
-      {@1DE2-1DEE}
-      pO0AA_0AE5(c77.v26b, 0);
-    end;
-    {@1DF7-1ED2}
-    with PW59_91_06DF(c77.v4p)^ do
-    begin
-      _w91_508byte := _w91_178byte;
-      _w91_360byte := 2;
-      _w91_362byte := 1;
-      _w91_364byte := 2;
-      _w91_311byte := 12;
-      c77.v32b := 0;
-      c77.v31b := 0;
-      XR670_046E(@_w91_381byte, 27);
-      for c77.v25b := 0 to 6 do
-      begin
-        {@1E57-1ECC}
-        if _w91_337abyte[c77.v25sb] > 0 then
-        begin
-          {@1E68-1EC9}
-          if c77.v25b = 0 then
-            asm
-  db 196,126,165,38,198,133,125,1,2,255,118,254,255,118,252
-  call pO102_0594
-  db 198,70,237,1,235,3,254,70,237,138,70,237,48,228,139,248,177,4,211,231,129,199,26,101,137,126,161,140
-  db 94,163,196,126,161,38,128,61,0,117,26,196,126,161,38,128,125,1,1,117,16,138,70,237,48,228,196,126
-  db 165,3,248,38,198,133,178,0,1,128,126,237,126,117,191
-            end;
-          {@1EC9-1ECC}
-          Inc(c77.v31b);
-        end;
-      end;
-      {@1ED2-1EDC}
-      _w91_331word := 200;
-      {@1EDC-1EE5}
-      _w91_178byte := 0;
-      {@1EE5-1EEE}
-      _w91_380byte := 0;
-      {@1EEE-1EF7}
-      _w91_508byte := 0;
-    end;
-    {@1EF7-1F0C}
-    pO0AA_36BA(c77.v4p, 255, c77.v31b, 1);
-    {@1F0C-1F17}
-    v78b := PR47_byte(p87F8)^.v;
-    {@1F17-1F20}
-    PR47_byte(p87F8)^.v := 255;
-    {@1F20-1F25}
-    bAE84 := 0;
-    {@1F25-1F2A}
-    bAE87 := 1;
-    {@1F2A-1F35}
-    repeat
-      {@1F2A-1F2E}
-      pO075_4638;
-    until bAE84 <> 0;
-    {@1F35-1F40}
-    PR47_byte(p87F8)^.v := v78b;
-    {@1F40-1F45}
-    bAE87 := 0;
-    {@1F45-1F49}
-    c77.v36b := 0;
-    {@1F49-1F4D}
-    c77.v77b := 0;
-    for c77.v25b := 0 to 6 do
-    begin
-      {@1F56-2029}
-if (PRA337_byte(p9CEE)^.a[c77.v25sb] > 0) or (PRA344_byte(p9CEE)^.a[c77.v25sb] < Byte(pO102_0BA1(p9CEE)))
-          and (PRA344_byte(p9CEE)^.a[c77.v25sb] > 0) then
-      begin
-        {@1FA2-1FD0}
-        if c77.v36b <> 0 then
-          c77.v77a := c77.v77a2 + '/';
-        {@1FD0-2025}
-c77.v77a := c77.v77a2 + pR47F_0FB2(PRA337_byte(p9CEE)^.a[c77.v25sb]
-            + PRA344_byte(p9CEE)^.a[c77.v25sb]);
-        {@2025-2029}
-        c77.v36b := 1;
-      end;
-    end;
-    {@2032-205A}
-    c77.v77a := c77.v77a2 + ' ';
-    {@205A-2070}
-    pR47F_0354(7, 7, 15, 0, c77.v77a2);
-    {@2070-2075}
-    pO0AA_0791;
-    {@2075-207A}
-    pO0AA_063D;
-    {@207A-2095}
-    c77.v22b := pO108_2254('Reroll stats? ', b5362);
-  until c77.v22b = b5363;
-  {@20A1-20A6}
-  pO0AA_0041;
-  {@20A6-20F4}
-  repeat
-    {@20A6-20E0}
-    repeat
-      {@20A6-20D7}
-      PR0_string_15_(c77.v4p)^.v := pR47F_0711('Character name: ', 13, 0, 15);
-    until PR0_byte(c77.v4p)^.v <> 0;
-  until not (PR1_byte(c77.v4p)^.v in [49..57]);
-  {@20F4-20F8}
-  pO075_38C5;
-  {@20F8-20FC}
-  pO075_3D36;
-  for c77.v26b := 0 to 5 do
-    PRA16_byte(c77.v4p)^.a[c77.v26sb * 2] := PRA17_byte(c77.v4p)^.a[c77.v26sb * 2];
-  {@2129-2137}
-  PR29_byte(c77.v4p)^.v := PR28_byte(c77.v4p)^.v;
-  {@2137-2140}
-  PR420_byte(c77.v4p)^.v := 2;
-  {@2140-2149}
-  PR421_byte(c77.v4p)^.v := 2;
-  {@2149-2179}
-  c77.v22b := pO108_2254('Save ' + PR0_string(c77.v4p)^.v + '? ', b5362);
-  if c77.v22b = b5363 then
-  begin
-    {@2182-2191}
-    FreeMem(c77.v4p, 510);
-    {@2191-219E}
-    p9CEE := c77.v8p;
-    {@219E-21A0}
-    Exit;
-  end;
-  {@21A0-21AA}
-  pO075_21EE(c77.v4p);
-  {@21AA-21B4}
-  pO075_5478(c77.v4p);
-  {@21B4-21CE}
-  pO06E_0AD8(c77.v4p, '');
-  {@21CE-21DD}
-  FreeMem(c77.v4p, 510);
-  {@21DD-21EA}
-  p9CEE := c77.v8p;
 end;
 
 { 21EE }

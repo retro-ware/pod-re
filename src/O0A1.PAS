@@ -181,7 +181,6 @@ var
   a9EF2_2a50: array[0..8189] of E4_byte absolute d9EF2;
   a9EF4_2a50: array[0..8189] of E4_byte absolute d9EF4;
   aA583_9f8b: array[0..8189] of pointer absolute dA583;
-  aA583_b676: array[0..8189] of longint absolute dA583;
   aA6A0_b509: array[0..4679] of E7_pointer absolute dA6A0;
   aA6A4_30da: array[0..4679] of E7_byte absolute dA6A4;
   aA6A5_30da: array[0..4679] of E7_byte absolute dA6A5;
@@ -2432,14 +2431,9 @@ end;
 procedure pO0A1_3713(a0: pointer; a1: byte; a2: byte; a3: byte; a4: byte; a5: pointer; a6: pointer);
 var
   _f1: array[1..216] of byte;
-c219: record case byte of 0: (v219a: array[0..0] of E3_byte); 1: (v219a2: array[0..0] of X3);
-      2: (v219b: byte); 3: (_p3: array[1..1] of byte; v218b: byte); 4: (_p4: array[1..2] of byte;
-      v217b: byte) end;
-  _f2: array[1..1] of byte;
-  v221b: byte;
-  v222b: byte;
-  v223b: byte;
-  v224b: byte;
+c219: record case byte of 0: (v219a: array[0..0] of X3); 1: (v219b: byte); 2: (_p2: array[1..1] of byte;
+      v218b: byte); 3: (_p3: array[1..2] of byte; v217b: byte) end;
+  _f2: array[1..5] of byte;
   v228p: pointer;
   v229b: byte;
   v230b: byte;
@@ -2451,61 +2445,36 @@ c219: record case byte of 0: (v219a: array[0..0] of E3_byte); 1: (v219a2: array[
   v236b: byte;
   _f3: array[1..2] of byte;
   v228l: longint absolute v228p;
-  v224sb: shortint absolute v224b;
-  v223sb: shortint absolute v223b;
-  v222sb: shortint absolute v222b;
-  v221sb: shortint absolute v221b;
   { 3344 }
   function pO0A1_3344(b0: byte): pointer;
-  var
-    w8l: longint;
-    w12l: longint;
+  var loc: array[1..8] of byte;
   begin
     asm
-    db 139,126,6,54,138,133,37,255,48,228,139,240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228
-    db 139,248,209,231,209,231,139,133,131,165,139,149,133,165,137,70,248,137,86,250
+      db 139,126,6,54,138,133,37,255,48,228,139,240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228
+      db 139,248,209,231,209,231,139,133,131,165,139,149,133,165,137,70,248,137,86,250,139,70,248,11,70,250,117,17
+      db 139,126,6,54,139,69,22,54,139,85,24,137,70,248,137,86,250,139,126,6,54,128,189,38,255,1,115,8
+      db 176,0,80
+      call pR670_0000
+      db 139,126,6,54,138,133,37,255,48,228,139,240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228
+      db 139,248,209,231,209,231,138,133,241,158,139,126,6,54,136,133,35,255,139,126,6,54,138,133,37,255,48,228
+      db 139,240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228,139,248,209,231,209,231,138,133,242,158
+      db 139,126,6,54,136,133,34,255,138,70,8,139,126,6,54,0,133,37,255,139,126,6,54,128,189,37,255,0
+      db 117,16,139,126,6,54,138,133,38,255,139,126,6,54,136,133,37,255,139,126,6,54,138,133,37,255,139,126
+      db 6,54,58,133,38,255,118,9,139,126,6,54,198,133,37,255,1,139,126,6,54,138,133,37,255,48,228,139
+      db 240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228,139,248,209,231,209,231,139,133,131,165,139
+      db 149,133,165,137,70,244,137,86,246,139,126,6,54,138,133,37,255,48,228,139,240,209,224,1,240,139,126,6
+      db 3,248,54,138,133,37,255,48,228,139,248,209,231,209,231,138,133,241,158,139,126,6,54,136,133,33,255,139
+      db 126,6,54,138,133,37,255,48,228,139,240,209,224,1,240,139,126,6,3,248,54,138,133,37,255,48,228,139
+      db 248,209,231,209,231,138,133,242,158,139,126,6,54,136,133,32,255,139,70,244,11,70,246,116,22,139,126,6
+      db 54,128,189,33,255,0,124,11,139,126,6,54,128,189,32,255,0,125,46,139,70,248,139,86,250,137,70,252
+      db 137,86,254,139,126,6,54,138,133,35,255,139,126,6,54,136,133,33,255,139,126,6,54,138,133,34,255,139
+      db 126,6,54,136,133,32,255,235,95,139,70,244,139,86,246,137,70,252,137,86,254,139,126,6,54,138,133,35
+      db 255,152,80,139,126,6,54,138,133,34,255,152,80,139,126,6,54,138,133,33,255,152,80,139,126,6,54,138
+      db 133,32,255,152,80,176,1,80,176,0,80
+      call pO0EC_1F07
+      db 139,126,6,54,138,133,33,255,139,126,6,54,136,133,35,255,139,126,6,54,138,133,32,255,139,126,6,54
+      db 136,133,34,255
     end;
-    if w8l = 0 then
-      w8l := a0;
-    {@3393-33A6}
-    if c219.v218b < 1 then
-      pR670_0000(0);
-    {@33A6-33D4}
-    v221b := a9EF1_2a50[c219.v219a[c219.v219b].f].f;
-    {@33D4-3402}
-    v222b := a9EF2_2a50[c219.v219a[c219.v219b].f].f;
-    {@3402-340D}
-    Inc(c219.v219b, b0);
-    if c219.v219b = 0 then
-      c219.v219b := c219.v218b;
-    {@3428-3443}
-    if c219.v219b > c219.v218b then
-      c219.v219b := 1;
-    {@3443-3473}
-    w12l := aA583_b676[c219.v219a[c219.v219b].f];
-    {@3473-34A1}
-    v223b := a9EF1_2a50[c219.v219a[c219.v219b].f].f;
-    {@34A1-34CF}
-    v224b := a9EF2_2a50[c219.v219a[c219.v219b].f].f;
-    if (w12l = 0) or (v223sb < 0) or (v224sb < 0) then
-    begin
-      {@34ED-34F9}
-      pO0A1_3344 := w8l;
-      {@34F9-3509}
-      v223b := v221b;
-      {@3509-3519}
-      v224b := v222b;
-      {@3519-351B}
-      Exit;
-    end;
-    {@351B-3527}
-    pO0A1_3344 := w12l;
-    {@3527-355A}
-    pO0EC_1F07(v221sb, v222sb, v223sb, v224sb, 1, 0);
-    {@355A-356A}
-    v221b := v223b;
-    {@356A-357A}
-    v222b := v224b;
   end;
 
   { 3586 }
@@ -2517,21 +2486,20 @@ c219: record case byte of 0: (v219a: array[0..0] of E3_byte); 1: (v219a2: array[
     {@358C-3595}
     c219.v219b := 1;
     {@3595-35D4}
-  pO130_08D7(pO135_0CA2(longint(pointer(a0))), pO135_0CCA(longint(pointer(a0))), 255, 255,
-        pO135_0CF2(longint(pointer(a0))));
+    pO130_08D7(pO135_0CA2(longint(a0)), pO135_0CCA(longint(a0)), 255, 255, pO135_0CF2(longint(a0)));
     {@35D4-35DD}
     c219.v218b := 0;
     for w1b := 1 to bA6E4 do
     begin
       {@35F5-361C}
       w5p := aA583_9f8b[aA6E2_fd21[w1b].f];
-      if pO0A1_0FAE(pointer(pointer(a0)), w5p, 0) <> 0 then
+      if pO0A1_0FAE(pointer(a0), w5p, 0) <> 0 then
       begin
         {@3638-3640}
         Inc(c219.v218b);
         {@3640-3677}
-        c219.v219a2[c219.v218b] := aA6E2_89af[w1b];
-        if w5p = PR9_pointer(PR487_pointer(pointer(a0))^.v)^.v then
+        c219.v219a[c219.v218b] := aA6E2_89af[w1b];
+        if w5p = PR9_pointer(PR487_pointer(a0)^.v)^.v then
           c219.v219b := c219.v218b;
       end;
     end;
@@ -2541,7 +2509,7 @@ c219: record case byte of 0: (v219a: array[0..0] of E3_byte); 1: (v219a2: array[
     call near ptr pO0A1_3344
     db 139,126,6,54,137,133,28,255,54,137,149,30,255
     end;
-    if v228p <> pointer(a0) then
+    if v228p <> a0 then
     begin
       {@36E3-36E8}
       bAB0D := 255;
@@ -2567,8 +2535,8 @@ begin
   if c219.v217b = 255 then
   begin
     {@3753-3785}
-    if PR427_pointer(pointer(a0))^.v <> nil then
-      c219.v217b := a94E2_3981[PR46_byte(PR427_pointer(pointer(a0))^.v)^.v].f
+    if PR427_pointer(a0)^.v <> nil then
+      c219.v217b := a94E2_3981[PR46_byte(PR427_pointer(a0)^.v)^.v].f
     else
       c219.v217b := 1;
   end;
@@ -2576,9 +2544,9 @@ begin
   if (c219.v217b = 0) or (c219.v217b = 255) then
     c219.v217b := 1;
   {@3798-37A7}
-  v235b := pO135_0CA2(longint(pointer(a0)));
+  v235b := pO135_0CA2(longint(a0));
   {@37A7-37B6}
-  v236b := pO135_0CCA(longint(pointer(a0)));
+  v236b := pO135_0CCA(longint(a0));
   {@37B6-37C5}
   pO135_0429(v235b, v236b);
   {@37C5-37CA}
@@ -2595,7 +2563,7 @@ begin
   while v232b = 0 do
   begin
     {@3800-3836}
-    v229b := pO0A1_2ABB(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, v230b, v233b, v234b);
+    v229b := pO0A1_2ABB(pointer(a0), v228p, c219.v217b, a2, a3, a4, v230b, v233b, v234b);
     if bAAE6 = 0 then
       case v229b of
         0: begin
@@ -2612,7 +2580,7 @@ begin
         end;
         2: begin
           {@3883-38C1}
-pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, @PR0_byte(a6)^.v, v233b,
+pO0A1_2DE8(pointer(a0), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, @PR0_byte(a6)^.v, v233b,
               v234b);
           {@38C1-38D3}
           v228p := PR0_pointer(a6)^.v;
@@ -2635,7 +2603,7 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
             {@3936-393D}
             PR0_byte(a5)^.v := 1;
             if a2 = 1 then
-              pO0A1_2CA5(pointer(pointer(a0)), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
+              pO0A1_2CA5(pointer(a0), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
             {@3963-398A}
             if PR0_byte(a5)^.v = 0 then
             begin
@@ -2648,12 +2616,12 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
           else
           begin
             {@398C-39AB}
-            if (pointer(a0) <> nil) and (v231b = 0) then
+            if (a0 <> nil) and (v231b = 0) then
             begin
               {@399B-39A0}
               bAEEF := 1;
               {@39A0-39AB}
-              pO0EC_0C95(pointer(pointer(a0)));
+              pO0EC_0C95(pointer(a0));
             end;
             {@39AB-39B0}
             bAAE5 := 3;
@@ -2671,7 +2639,7 @@ pO0A1_2DE8(pointer(pointer(a0)), v228p, c219.v217b, a2, a3, a4, @v230b, @v231b, 
           {@39FA-3A01}
           PR0_byte(a5)^.v := 1;
           if a2 = 1 then
-            pO0A1_2CA5(pointer(pointer(a0)), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
+            pO0A1_2CA5(pointer(a0), v228p, a2, @PR0_byte(a5)^.v, @PR0_byte(a6)^.v);
           {@3A27-3A4E}
           if PR0_byte(a5)^.v = 0 then
           begin
