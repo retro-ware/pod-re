@@ -1,7 +1,7 @@
 # Pools of Darkness 1.10 (GOG) rebuild notes
 
 ## Files
-- `gog/` shipped files from setup_pools_of_darkness_1.10_(28044).exe (Inno Setup 5.6.2 wrapper, in /Users/felix/Desktop/Games/Goldbox). Read-only.
+- `gog/` (not in git: supply your own) shipped files from setup_pools_of_darkness_1.10_(28044).exe; needs at least GAME.EXE and GAME.OVR for the comparison. Read-only.
 - `orig/GAME.bin` + `orig/GAME.bin.relocs`: EXEPACK-unpacked load image (72784 bytes, 478 relocs), `tools/unexepack.py`.
 
 ## EXEPACK (verified)
